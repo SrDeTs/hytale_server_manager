@@ -8,11 +8,11 @@ jest.mock('../../utils/logger', () => ({
 }));
 
 import { ModtaleApiService } from '../ModtaleApiService';
-import fetch from 'node-fetch';
 import { Readable } from 'stream';
 
-// Get mocked fetch
-const mockedFetch = fetch as jest.MockedFunction<typeof fetch>;
+// Mock global fetch
+const mockedFetch = jest.fn();
+global.fetch = mockedFetch as any;
 
 describe('ModtaleApiService', () => {
   let service: ModtaleApiService;

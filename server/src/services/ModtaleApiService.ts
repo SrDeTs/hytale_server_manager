@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import logger from '../utils/logger';
 
 const MODTALE_API_BASE = 'https://api.modtale.net/api/v1';
