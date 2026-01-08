@@ -148,8 +148,9 @@ class UpdateService {
         throw new Error(`No ${assetName} release package found`);
       }
 
-      // Create temp directory
+      // Clean up any previous temp directory and create fresh one
       const tempDir = path.join(getBasePath_(), 'data', 'temp-update');
+      await fs.remove(tempDir);
       await fs.ensureDir(tempDir);
 
       const downloadPath = path.join(tempDir, asset.name);
@@ -326,19 +327,15 @@ echo Running database migrations...
 cd /d "${installPath}"
 node node_modules\\prisma\\build\\index.js db push --accept-data-loss --schema=prisma\\schema.prisma 2>nul
 
-:: Cleanup temp directory
-echo Cleaning up...
-cd /d "${installPath}"
-rmdir /s /q "${tempDir}" 2>nul
-
-:: Start the server
+:: Start the server (cleanup happens on next update since we can't delete running script)
 echo.
 echo ======================================
 echo   Update complete! Starting server...
 echo ======================================
 echo.
 
-call "${installPath}\\start.bat"
+cd /d "${installPath}"
+start "" "${installPath}\\start.bat"
 `;
   }
 
