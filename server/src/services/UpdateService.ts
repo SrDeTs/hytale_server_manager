@@ -242,8 +242,9 @@ class UpdateService {
       logger.info('[UpdateService] Update initiated, shutting down for update...');
 
       // Delay exit slightly to allow response to be sent
+      // Exit code 100 signals to start.bat that this is an update (don't pause)
       setTimeout(() => {
-        process.exit(0);
+        process.exit(100);
       }, 500);
 
       return { success: true, message: 'Update started. Server will restart shortly.' };

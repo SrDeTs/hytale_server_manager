@@ -42,4 +42,17 @@ echo "Press Ctrl+C to stop"
 echo ""
 
 # Start the application
-exec node dist/index.js
+node dist/index.js
+EXIT_CODE=$?
+
+# If exit code is 100, an update is in progress - exit silently
+if [ $EXIT_CODE -eq 100 ]; then
+    echo ""
+    echo "Update in progress... This terminal will close."
+    sleep 2
+    exit 0
+fi
+
+# If we get here, the app stopped normally
+echo ""
+echo "Application stopped."
