@@ -213,7 +213,7 @@ export const HytaleServerDownloadSection = ({
           value={selectedPatchline}
           onChange={(e) => setSelectedPatchline(e.target.value)}
           className="w-full px-4 py-2 bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
-          disabled={downloadSession && ['downloading', 'extracting', 'validating'].includes(downloadSession.status)}
+          disabled={downloadSession ? ['downloading', 'extracting', 'validating'].includes(downloadSession.status) : false}
         >
           <option value="release">Release (Stable)</option>
           <option value="pre-release">Pre-release (Beta)</option>

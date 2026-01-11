@@ -382,7 +382,7 @@ export const useHytaleDownloaderStore = create<HytaleDownloaderStore>((set, get)
 
     logger.debug('Connecting to hytale-downloader WebSocket');
 
-    const newSocket = io(`${env.api.wsUrl}/hytale-downloader`, {
+    const newSocket = io(`${env.websocket.url}/hytale-downloader`, {
       withCredentials: true,
       transports: ['websocket'],
     });

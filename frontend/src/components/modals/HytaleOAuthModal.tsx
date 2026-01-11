@@ -4,7 +4,6 @@ import { Button } from '../ui/Button';
 import {
   useHytaleDownloaderStore,
   useHytaleDownloaderOAuth,
-  useHytaleDownloaderStatus,
 } from '../../stores/hytaleDownloaderStore';
 import {
   Key,
@@ -35,7 +34,6 @@ export const HytaleOAuthModal = ({ isOpen, onClose, onSuccess }: HytaleOAuthModa
   } = useHytaleDownloaderStore();
 
   const oauthSession = useHytaleDownloaderOAuth();
-  const status = useHytaleDownloaderStatus();
   const [copied, setCopied] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
 
