@@ -89,7 +89,7 @@ export class ConsoleEvents {
       // Subscribe to console logs for a server
       socket.on('subscribe', async (data: { serverId: string }) => {
         const { serverId } = data;
-        logger.info(`Client ${socket.id} subscribing to console for server ${serverId}`);
+        logger.info(`[ConsoleEvents] Client ${socket.id} subscribing to console for server ${serverId}`);
 
         // Join room for this server
         socket.join(`console:${serverId}`);
@@ -97,36 +97,40 @@ export class ConsoleEvents {
         try {
           // Get the adapter
           const adapter = await this.serverService.getAdapterForServer(serverId);
+          logger.info(`[ConsoleEvents] Got adapter for ${serverId}, existing stream: ${this.logStreams.has(serverId)}`);
 
-          // Track this subscription
+          // Track this subscription - always re-register the callback to ensure it's on the right adapter
           if (!this.logStreams.has(serverId)) {
             this.logStreams.set(serverId, new Set());
-
-            // Start streaming logs from adapter
-            const logHandler = async (log: LogEntry) => {
-              // Emit log to all subscribed clients
-              consoleNamespace.to(`console:${serverId}`).emit('log', {
-                serverId,
-                log,
-              });
-
-              // Save log to database
-              await this.consoleService.saveLog(serverId, log);
-            };
-
-            this.consoleService.streamLogs(adapter, logHandler);
           }
+
+          // Always set up log streaming (in case adapter was recreated)
+          const logHandler = async (log: LogEntry) => {
+            logger.debug(`[ConsoleEvents] Emitting log to console:${serverId}`);
+            // Emit log to all subscribed clients
+            consoleNamespace.to(`console:${serverId}`).emit('log', {
+              serverId,
+              log,
+            });
+
+            // Save log to database
+            await this.consoleService.saveLog(serverId, log);
+          };
+
+          this.consoleService.streamLogs(adapter, logHandler);
+          logger.info(`[ConsoleEvents] Registered log handler for ${serverId}`);
 
           this.logStreams.get(serverId)!.add(socket.id);
 
           // Send recent historical logs
           const recentLogs = await this.consoleService.getLogs(serverId, 50);
+          logger.info(`[ConsoleEvents] Sending ${recentLogs.length} historical logs to ${socket.id}`);
           socket.emit('logs:history', {
             serverId,
             logs: recentLogs,
           });
         } catch (error) {
-          logger.error(`Error subscribing to console for server ${serverId}:`, error);
+          logger.error(`[ConsoleEvents] Error subscribing to console for server ${serverId}:`, error);
           socket.emit('error', { message: 'Failed to subscribe to console' });
         }
       });

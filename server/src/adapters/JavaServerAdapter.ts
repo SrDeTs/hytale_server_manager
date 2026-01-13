@@ -1235,6 +1235,9 @@ export class JavaServerAdapter implements IServerAdapter {
     }
 
     // Notify callbacks
+    if (this.logCallbacks.length === 0) {
+      logger.debug(`[Java] No log callbacks registered for ${this.serverId}`);
+    }
     this.logCallbacks.forEach(callback => {
       try {
         callback(log);
