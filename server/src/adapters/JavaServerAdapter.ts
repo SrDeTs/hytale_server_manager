@@ -502,10 +502,12 @@ export class JavaServerAdapter implements IServerAdapter {
 
   async sendCommand(command: string): Promise<CommandResponse> {
     logger.info(`[Java] Sending command to ${this.serverId}: ${command}`);
+    logger.info(`[Java] State: useRcon=${this.useRcon}, hasProcess=${!!this.process}, hasStdin=${!!this.process?.stdin}, stdinWritable=${this.process?.stdin?.writable}`);
 
     // Use RCON if connected (after reconnect or when server is ready)
     if (this.useRcon && this.rconService.isConnected(this.serverId)) {
       try {
+        logger.info(`[Java] Sending via RCON`);
         const response = await this.rconService.sendCommand(this.serverId, command);
         return {
           success: true,
@@ -519,8 +521,9 @@ export class JavaServerAdapter implements IServerAdapter {
     }
 
     // Fall back to stdin if available
-    if (this.process && this.process.stdin) {
+    if (this.process && this.process.stdin && this.process.stdin.writable) {
       try {
+        logger.info(`[Java] Sending via stdin`);
         this.process.stdin.write(command + '\n');
         return {
           success: true,
@@ -528,6 +531,7 @@ export class JavaServerAdapter implements IServerAdapter {
           executedAt: new Date(),
         };
       } catch (error: any) {
+        logger.error(`[Java] stdin write failed:`, error);
         return {
           success: false,
           output: `Failed to send command: ${error.message}`,
@@ -536,6 +540,7 @@ export class JavaServerAdapter implements IServerAdapter {
       }
     }
 
+    logger.warn(`[Java] Cannot send command - no RCON or stdin available`);
     return {
       success: false,
       output: 'Server is not running or not connected',
