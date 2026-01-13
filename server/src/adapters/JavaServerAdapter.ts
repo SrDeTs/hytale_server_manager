@@ -502,25 +502,9 @@ export class JavaServerAdapter implements IServerAdapter {
 
   async sendCommand(command: string): Promise<CommandResponse> {
     logger.info(`[Java] Sending command to ${this.serverId}: ${command}`);
-    logger.info(`[Java] State: useRcon=${this.useRcon}, hasProcess=${!!this.process}, hasStdin=${!!this.process?.stdin}, stdinWritable=${this.process?.stdin?.writable}`);
+    logger.info(`[Java] State: hasProcess=${!!this.process}, hasStdin=${!!this.process?.stdin}, stdinWritable=${this.process?.stdin?.writable}`);
 
-    // Use RCON if connected (after reconnect or when server is ready)
-    if (this.useRcon && this.rconService.isConnected(this.serverId)) {
-      try {
-        logger.info(`[Java] Sending via RCON`);
-        const response = await this.rconService.sendCommand(this.serverId, command);
-        return {
-          success: true,
-          output: response || `Command sent: ${command}`,
-          executedAt: new Date(),
-        };
-      } catch (error: any) {
-        logger.error(`[Java] RCON command failed, trying stdin:`, error);
-        // Fall through to stdin if RCON fails
-      }
-    }
-
-    // Fall back to stdin if available
+    // Always try stdin first if available (more reliable than RCON for Hytale)
     if (this.process && this.process.stdin && this.process.stdin.writable) {
       try {
         logger.info(`[Java] Sending via stdin`);
@@ -532,6 +516,22 @@ export class JavaServerAdapter implements IServerAdapter {
         };
       } catch (error: any) {
         logger.error(`[Java] stdin write failed:`, error);
+        // Fall through to RCON if stdin fails
+      }
+    }
+
+    // Fall back to RCON if stdin not available (e.g., after reconnect to orphaned process)
+    if (this.useRcon && this.rconService.isConnected(this.serverId)) {
+      try {
+        logger.info(`[Java] Sending via RCON (stdin not available)`);
+        const response = await this.rconService.sendCommand(this.serverId, command);
+        return {
+          success: true,
+          output: response || `Command sent: ${command}`,
+          executedAt: new Date(),
+        };
+      } catch (error: any) {
+        logger.error(`[Java] RCON command failed:`, error);
         return {
           success: false,
           output: `Failed to send command: ${error.message}`,
@@ -540,7 +540,7 @@ export class JavaServerAdapter implements IServerAdapter {
       }
     }
 
-    logger.warn(`[Java] Cannot send command - no RCON or stdin available`);
+    logger.warn(`[Java] Cannot send command - no stdin or RCON available`);
     return {
       success: false,
       output: 'Server is not running or not connected',
