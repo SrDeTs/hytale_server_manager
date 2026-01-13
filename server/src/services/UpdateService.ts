@@ -161,6 +161,9 @@ class UpdateService {
 
       const response = await axios.get(asset.downloadUrl, {
         responseType: 'stream',
+        headers: {
+          'Accept-Encoding': 'identity',
+        },
       });
 
       const totalSize = parseInt(response.headers['content-length'] as string || '0', 10);
