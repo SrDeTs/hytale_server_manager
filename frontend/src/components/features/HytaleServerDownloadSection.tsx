@@ -108,6 +108,10 @@ export const HytaleServerDownloadSection = ({
     setShowOAuthModal(false);
   }, [fetchStatus]);
 
+  const handleCloseOAuthModal = useCallback(() => {
+    setShowOAuthModal(false);
+  }, []);
+
   // If binary not installed
   if (!status?.binaryInstalled) {
     return (
@@ -168,7 +172,7 @@ export const HytaleServerDownloadSection = ({
 
         <HytaleOAuthModal
           isOpen={showOAuthModal}
-          onClose={() => setShowOAuthModal(false)}
+          onClose={handleCloseOAuthModal}
           onSuccess={handleOAuthSuccess}
         />
       </>
