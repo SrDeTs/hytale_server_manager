@@ -3,8 +3,15 @@
   "version": "0.2.12",
   "description": "A web-based management dashboard for Hytale game servers. Built with React, TypeScript, and Node.js.",
   "main": "index.js",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "dev:frontend": "pnpm -C packages/frontend dev",
+    "dev:server": "pnpm -C packages/server dev",
+    "dev:website": "pnpm -C packages/website dev"
   },
   "repository": {
     "type": "git",
@@ -20,5 +27,9 @@
   "dependencies": {
     "archiver": "^7.0.1",
     "fs-extra": "^11.3.3"
-  }
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  },
+  "packageManager": "pnpm@9.15.0"
 }

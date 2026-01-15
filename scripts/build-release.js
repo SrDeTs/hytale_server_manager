@@ -70,8 +70,8 @@ Options:
 
 // Paths
 const rootDir = path.resolve(__dirname, '..');
-const frontendDir = path.join(rootDir, 'frontend');
-const serverDir = path.join(rootDir, 'server');
+const frontendDir = path.join(rootDir, 'packages', 'frontend');
+const serverDir = path.join(rootDir, 'packages', 'server');
 const distDir = path.join(frontendDir, 'dist');
 const serverDistDir = path.join(serverDir, 'dist');
 const outputDir = path.resolve(options.outputDir);
@@ -150,13 +150,13 @@ async function updateVersion(version) {
 
 async function buildFrontend() {
   logStep('Building frontend...');
-  exec('npm run build', frontendDir);
+  exec('pnpm -C packages/frontend build', rootDir);
   logSuccess('Frontend built');
 }
 
 async function buildBackend() {
   logStep('Building backend...');
-  exec('npm run build', serverDir);
+  exec('pnpm -C packages/server build', rootDir);
   logSuccess('Backend built');
 }
 
@@ -200,15 +200,9 @@ async function createPackageBase(packageDir) {
   };
   await fs.writeJson(path.join(packageDir, 'package.json'), serverPkg, { spaces: 2 });
 
-  // Copy package-lock.json
-  await fs.copy(
-    path.join(serverDir, 'package-lock.json'),
-    path.join(packageDir, 'package-lock.json')
-  );
-
   // Install production dependencies
   logStep('Installing production dependencies...');
-  exec('npm ci --omit=dev', packageDir);
+  exec('npm install --omit=dev', packageDir);
   logSuccess('Dependencies installed');
 
   // Generate Prisma client

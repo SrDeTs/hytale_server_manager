@@ -191,16 +191,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
 
 # Copy server files
-cp -r "$SOURCE_DIR/server/"* "$INSTALL_PATH/" 2>/dev/null || true
+cp -r "$SOURCE_DIR/packages/server/"* "$INSTALL_PATH/" 2>/dev/null || true
 mkdir -p "$INSTALL_PATH/public"
-cp -r "$SOURCE_DIR/frontend/dist/"* "$INSTALL_PATH/public/" 2>/dev/null || true
+cp -r "$SOURCE_DIR/packages/frontend/dist/"* "$INSTALL_PATH/public/" 2>/dev/null || true
 
 print_success "Files copied"
 
 # Install dependencies
 print_status "Installing dependencies..."
 cd "$INSTALL_PATH"
-npm ci --production --silent
+npm install --omit=dev --silent
 print_success "Dependencies installed"
 
 # Setup .env file

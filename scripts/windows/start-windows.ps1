@@ -21,9 +21,21 @@ try {
     exit 1
 }
 
+# Check if pnpm is installed
+try {
+    $pnpmVersion = pnpm --version
+    Write-Host "PNPM: $pnpmVersion" -ForegroundColor Green
+    Write-Host ""
+} catch {
+    Write-Host "ERROR: pnpm is not installed!" -ForegroundColor Red
+    Write-Host "Install pnpm: npm install -g pnpm" -ForegroundColor Yellow
+    Read-Host "Press Enter to exit"
+    exit 1
+}
+
 # Install backend dependencies
 Write-Host "[2/6] Installing backend dependencies..." -ForegroundColor Yellow
-Set-Location server
+Set-Location packages\server
 
 # Function to generate a random hex secret
 function New-Secret {
@@ -74,31 +86,33 @@ if (Test-Path $envPath) {
 }
 
 Write-Host "Installing backend packages..." -ForegroundColor Cyan
-npm install
+pnpm install
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: Failed to install backend dependencies" -ForegroundColor Red
     Read-Host "Press Enter to exit"
     exit 1
 }
 Write-Host "Backend dependencies installed" -ForegroundColor Green
-Set-Location ..
+Set-Location ..\..
 Write-Host ""
 
 # Install frontend dependencies
 Write-Host "[3/6] Installing frontend dependencies..." -ForegroundColor Yellow
 Write-Host "Installing frontend packages..." -ForegroundColor Cyan
-npm install
+Set-Location packages\frontend
+pnpm install
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: Failed to install frontend dependencies" -ForegroundColor Red
     Read-Host "Press Enter to exit"
     exit 1
 }
 Write-Host "Frontend dependencies installed" -ForegroundColor Green
+Set-Location ..\..
 Write-Host ""
 
 # Setup database
 Write-Host "[4/6] Setting up database..." -ForegroundColor Yellow
-Set-Location server
+Set-Location packages\server
 Write-Host "Syncing database schema..." -ForegroundColor Cyan
 $prismaBin = "node_modules\.bin\prisma.cmd"
 $env:PRISMA_SKIP_POSTINSTALL_GENERATE = "1"
@@ -108,28 +122,30 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host "Warning: Database sync returned non-zero exit code" -ForegroundColor Yellow
 }
-Set-Location ..
+Set-Location ..\..
 Write-Host ""
 
 # Build applications
 Write-Host "[5/6] Building applications..." -ForegroundColor Yellow
 Write-Host "Building backend..." -ForegroundColor Cyan
-Set-Location server
-npm run build
+Set-Location packages\server
+pnpm run build
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: Backend build failed" -ForegroundColor Red
     Read-Host "Press Enter to exit"
     exit 1
 }
-Set-Location ..
+Set-Location ..\..
 
 Write-Host "Building frontend..." -ForegroundColor Cyan
-npm run build
+Set-Location packages\frontend
+pnpm run build
 if ($LASTEXITCODE -ne 0) {
     Write-Host "ERROR: Frontend build failed" -ForegroundColor Red
     Read-Host "Press Enter to exit"
     exit 1
 }
+Set-Location ..\..
 Write-Host ""
 
 # Start servers
@@ -146,7 +162,7 @@ Write-Host "Press Ctrl+C to stop both servers" -ForegroundColor Yellow
 Write-Host ""
 
 # Check if this is a first run (no database)
-$isFirstRun = -not (Test-Path "server\dev.db")
+$isFirstRun = -not (Test-Path "packages\server\dev.db")
 if ($isFirstRun) {
     Write-Host ""
     Write-Host "========================================" -ForegroundColor Magenta
@@ -158,13 +174,13 @@ if ($isFirstRun) {
 }
 
 # Start backend in new window
-$backendJob = Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD\server'; npm start" -PassThru
+$backendJob = Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD\packages\server'; pnpm start" -PassThru
 
 # Wait a moment for backend to start
 Start-Sleep -Seconds 3
 
 # Start frontend in new window
-$frontendJob = Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; npm run dev" -PassThru
+$frontendJob = Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD\packages\frontend'; pnpm run dev" -PassThru
 
 Write-Host ""
 Write-Host "Servers are starting..." -ForegroundColor Green

@@ -23,21 +23,24 @@ Backend API for the Hytale Server Manager application.
 ### Prerequisites
 
 - Node.js 20+
-- npm or yarn
+- pnpm
 
 ### Installation
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Generate Prisma client
-npm run prisma:generate
+pnpm prisma:generate
 
 # Run database migrations
-npm run prisma:migrate
+pnpm prisma:migrate
+```
 
-# Create .env file (copy from .env.example)
+Create a `.env` file with required values (JWT secrets and encryption key) before starting the server:
+
+```bash
 cp .env.example .env
 ```
 
@@ -45,7 +48,7 @@ cp .env.example .env
 
 ```bash
 # Start development server with hot reload
-npm run dev
+pnpm dev
 ```
 
 The server will start on `http://localhost:3001`.
@@ -54,10 +57,10 @@ The server will start on `http://localhost:3001`.
 
 ```bash
 # Build the project
-npm run build
+pnpm build
 
 # Start production server
-npm start
+pnpm start
 ```
 
 ## API Endpoints
@@ -192,23 +195,23 @@ Key models:
 
 ```bash
 # Run tests
-npm test
+pnpm test
 
 # Run tests in watch mode
-npm run test:watch
+pnpm test:watch
 ```
 
 ## Database Management
 
 ```bash
 # Open Prisma Studio (GUI for database)
-npm run prisma:studio
+pnpm prisma:studio
 
 # Create a new migration
-npm run prisma:migrate
+pnpm prisma:migrate
 
 # Generate Prisma client after schema changes
-npm run prisma:generate
+pnpm prisma:generate
 ```
 
 ## Environment Variables

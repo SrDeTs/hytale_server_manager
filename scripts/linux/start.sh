@@ -16,8 +16,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Determine the application directory
 if [[ -f "$SCRIPT_DIR/dist/index.js" ]]; then
     APP_DIR="$SCRIPT_DIR"
-elif [[ -f "$SCRIPT_DIR/../../server/dist/index.js" ]]; then
-    APP_DIR="$SCRIPT_DIR/../../server"
+elif [[ -f "$SCRIPT_DIR/../../packages/server/dist/index.js" ]]; then
+    APP_DIR="$SCRIPT_DIR/../../packages/server"
 elif [[ -f "/opt/hytale-manager/dist/index.js" ]]; then
     APP_DIR="/opt/hytale-manager"
 else

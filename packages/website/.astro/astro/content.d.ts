@@ -169,13 +169,6 @@ declare module 'astro:content' {
   collection: "docs";
   data: InferEntrySchema<"docs">
 } & { render(): Render[".md"] };
-"getting-started/configuration.md": {
-	id: "getting-started/configuration.md";
-  slug: "getting-started/configuration";
-  body: string;
-  collection: "docs";
-  data: InferEntrySchema<"docs">
-} & { render(): Render[".md"] };
 "getting-started/installation.md": {
 	id: "getting-started/installation.md";
   slug: "getting-started/installation";

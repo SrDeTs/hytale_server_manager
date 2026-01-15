@@ -145,8 +145,8 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sourceDir = Split-Path -Parent (Split-Path -Parent $scriptDir)
 
 # Copy server files
-Copy-Item "$sourceDir\server\*" -Destination "$InstallPath" -Recurse -Force -Exclude @("node_modules", ".env")
-Copy-Item "$sourceDir\frontend\dist\*" -Destination "$InstallPath\public" -Recurse -Force
+Copy-Item "$sourceDir\packages\server\*" -Destination "$InstallPath" -Recurse -Force -Exclude @("node_modules", ".env")
+Copy-Item "$sourceDir\packages\frontend\dist\*" -Destination "$InstallPath\public" -Recurse -Force
 
 Write-Success "Files copied successfully"
 
@@ -154,7 +154,7 @@ Write-Success "Files copied successfully"
 Write-Status "Installing dependencies..."
 Push-Location $InstallPath
 try {
-    & npm ci --production 2>&1 | Out-Null
+    & npm install --omit=dev 2>&1 | Out-Null
     Write-Success "Dependencies installed"
 } catch {
     Write-Error "Failed to install dependencies: $_"

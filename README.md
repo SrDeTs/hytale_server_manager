@@ -13,9 +13,10 @@ A web-based management dashboard for Hytale game servers. Built with React, Type
 ## Project Structure
 
 ```
-├── frontend/    # React frontend application
-├── server/      # Node.js backend API
-├── website/     # Documentation website (Astro)
+├── packages/    # Monorepo packages
+│   ├── frontend/ # React frontend application
+│   ├── server/   # Node.js backend API
+│   └── website/  # Documentation website (Astro)
 └── scripts/     # Installation and deployment scripts
 ```
 
@@ -24,36 +25,50 @@ A web-based management dashboard for Hytale game servers. Built with React, Type
 **Frontend:** React 18, TypeScript, Tailwind CSS, Zustand, Vite
 **Backend:** Node.js, Express, Prisma, SQLite, Socket.IO
 
+## Prerequisites
+
+- Node.js 20+
+- pnpm (`npm install -g pnpm`)
+- Git
+
 ## Quick Start
 
-```bash
+```powershell
 # Clone the repository
 git clone https://github.com/nebula-codes/hytale_server_manager.git
 cd hytale_server_manager
 
-# Setup frontend
-cd frontend
-cp .env.example .env
-npm install
+# Run initial setup (Windows)
+.\scripts\windows\setup.ps1
 
-# Setup backend
-cd ../server
-cp .env.example .env
-# Edit .env with required values (JWT_SECRET, JWT_REFRESH_SECRET, SETTINGS_ENCRYPTION_KEY)
-npm install
-npx prisma migrate dev
+# Run development servers (both)
+pnpm dev
 
-# Run development servers (from respective directories)
-# Terminal 1 - Frontend (port 5173)
-cd frontend && npm run dev
-
-# Terminal 2 - Backend (port 3001)
-cd server && npm run dev
+# Or run them separately:
+# pnpm -C packages/frontend dev
+# pnpm -C packages/server dev
 ```
+
+If PowerShell blocks the script due to execution policy, run:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+Linux setup:
+
+```bash
+bash ./scripts/linux/setup.sh
+```
+
+The setup script:
+- copies `packages/frontend/.env.example` and `packages/server/.env.example` if needed
+- prompts for `JWT_SECRET`, `JWT_REFRESH_SECRET`, and `SETTINGS_ENCRYPTION_KEY` (blank = auto-generate)
+- installs dependencies and runs database migrations
 
 ## Configuration
 
-The server requires these environment variables in `server/.env`:
+The server requires these environment variables in `packages/server/.env`:
 
 | Variable | Description |
 |----------|-------------|
@@ -62,7 +77,20 @@ The server requires these environment variables in `server/.env`:
 | `SETTINGS_ENCRYPTION_KEY` | 32-character key for encrypting sensitive settings (required) |
 | `DATABASE_URL` | SQLite database path (default: `file:./data/hytalepanel.db`) |
 
-See `frontend/.env.example` and `server/.env.example` for all available options.
+## Login / Admin Credentials
+
+If you don't have an admin user yet, run the reset script to create or reset it:
+
+```powershell
+node packages/server/reset-admin.js
+```
+
+This creates (or resets) the `admin` user with password `Admin123!@#` by default.
+You can pass a custom password:
+
+```powershell
+node packages/server/reset-admin.js MyNewPassword123!
+```
 
 ## License
 
