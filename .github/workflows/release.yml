@@ -152,6 +152,9 @@ jobs:
               copy .env.example .env >nul
           )
 
+          echo Configuring database path...
+          node -e "const fs=require('fs');const path=require('path');let env=fs.readFileSync('.env','utf8');const dbPath='file:'+path.join(process.cwd(),'data','hytalepanel.db').replace(/\\/g,'/');env=env.replace(/^DATABASE_URL=.*$/m,'DATABASE_URL='+dbPath);fs.writeFileSync('.env',env);console.log('Database path: '+dbPath);"
+
           echo Generating secrets if needed...
           node -e "const fs=require('fs');const crypto=require('crypto');let env=fs.readFileSync('.env','utf8');let changed=false;if(/^JWT_SECRET=$/m.test(env)){env=env.replace(/^JWT_SECRET=$/m,'JWT_SECRET='+crypto.randomBytes(64).toString('hex'));changed=true;}if(/^JWT_REFRESH_SECRET=$/m.test(env)){env=env.replace(/^JWT_REFRESH_SECRET=$/m,'JWT_REFRESH_SECRET='+crypto.randomBytes(64).toString('hex'));changed=true;}if(/^SETTINGS_ENCRYPTION_KEY=$/m.test(env)){env=env.replace(/^SETTINGS_ENCRYPTION_KEY=$/m,'SETTINGS_ENCRYPTION_KEY='+crypto.randomBytes(16).toString('hex'));changed=true;}if(changed){fs.writeFileSync('.env',env);console.log('Generated missing secrets in .env');}else{console.log('Secrets already configured.');}"
 
@@ -276,6 +279,17 @@ jobs:
               echo "Creating .env from template..."
               cp .env.example .env
           fi
+
+          echo "Configuring database path..."
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          let env = fs.readFileSync('.env', 'utf8');
+          const dbPath = 'file:' + path.join(process.cwd(), 'data', 'hytalepanel.db');
+          env = env.replace(/^DATABASE_URL=.*$/m, 'DATABASE_URL=' + dbPath);
+          fs.writeFileSync('.env', env);
+          console.log('Database path: ' + dbPath);
+          "
 
           echo "Generating secrets if needed..."
           node -e "
