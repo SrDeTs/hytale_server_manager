@@ -34,8 +34,9 @@ RUN apk add --no-cache openssl unzip su-exec shadow
 WORKDIR /app
 
 # Create default user (will be modified at runtime based on PUID/PGID)
-RUN addgroup -g 1000 -S hsm && \
-    adduser -S hsm -u 1000 -G hsm -h /app
+# Using 911 to avoid conflicts with existing node user (1000)
+RUN addgroup -g 911 -S hsm && \
+    adduser -S hsm -u 911 -G hsm -h /app
 
 # Copy built backend
 COPY --from=builder /app/packages/server/dist ./dist
