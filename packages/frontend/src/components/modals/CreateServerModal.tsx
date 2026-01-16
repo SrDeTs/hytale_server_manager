@@ -60,6 +60,10 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
       newErrors.port = 'Port must be between 1 and 65535';
     }
 
+    if (!formData.version.trim()) {
+      newErrors.version = 'Server version is required. Download server files first.';
+    }
+
     if (!formData.gameMode.trim()) {
       newErrors.gameMode = 'Game mode is required';
     }
@@ -186,6 +190,9 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
             serverPath={formData.serverPath}
             onVersionSet={(version) => updateField('version', version)}
           />
+          {errors.version && (
+            <p className="text-danger text-sm mt-1">{errors.version}</p>
+          )}
 
           {/* Address and Port */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
