@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  hytale-server-manager:
+    image: ghcr.io/nebula-codes/hytale-server-manager:latest
+    container_name: hytale-server-manager
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - HOST=0.0.0.0
+      # Required secrets - generate your own!
+      # Generate with: openssl rand -hex 64
+      - JWT_SECRET=your-jwt-secret-here-min-32-chars-generate-with-openssl-rand
+      - JWT_REFRESH_SECRET=your-refresh-secret-here-min-32-chars-generate-openssl
+      # Generate with: openssl rand -hex 16
+      - SETTINGS_ENCRYPTION_KEY=your-32-char-encryption-key-here
+      # CORS origin - set to your server's URL for external access
+      - CORS_ORIGIN=http://localhost:3001
+      # Optional: Discord notifications
+      # - DISCORD_ENABLED=true
+      # - DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
+    volumes:
+      # Database persistence
+      - hsm-database:/app/data/db
+      # Game server files
+      - hsm-servers:/app/data/servers
+      # Backup storage
+      - hsm-backups:/app/data/backups
+      # Application logs
+      - hsm-logs:/app/data/logs
+      # SSL certificates (if using HTTPS)
+      - hsm-certs:/app/data/certs
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  hsm-database:
+  hsm-servers:
+  hsm-backups:
+  hsm-logs:
+  hsm-certs:

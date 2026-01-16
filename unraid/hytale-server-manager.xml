@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>hytale-server-manager</Name>
+  <Repository>ghcr.io/nebula-codes/hytale-server-manager:latest</Repository>
+  <Registry>https://github.com/nebula-codes/hytale_server_manager/pkgs/container/hytale-server-manager</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/nebula-codes/hytale_server_manager/issues</Support>
+  <Project>https://github.com/nebula-codes/hytale_server_manager</Project>
+  <Overview>
+Hytale Server Manager is a web-based management dashboard for Hytale game servers.
+
+Features include:
+- Server management and monitoring
+- Backup automation and restoration
+- Player tracking
+- Mod management
+- Scheduled tasks
+- Discord notifications
+- Real-time console access
+
+IMPORTANT: You must configure the JWT secrets before first use. Generate random values for JWT_SECRET, JWT_REFRESH_SECRET, and SETTINGS_ENCRYPTION_KEY using the commands shown in each variable's description.
+  </Overview>
+  <Category>GameServers: Tools:</Category>
+  <WebUI>http://[IP]:[PORT:3001]</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/nebula-codes/hytale_server_manager/main/unraid/hytale-server-manager.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/nebula-codes/hytale_server_manager/main/packages/frontend/public/favicon.ico</Icon>
+  <ExtraParams/>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText/>
+  <DonateLink/>
+  <Requires/>
+  <Config Name="Web UI Port" Target="3001" Default="3001" Mode="tcp" Description="Port for the web interface and API" Type="Port" Display="always" Required="true" Mask="false">3001</Config>
+  <Config Name="Database" Target="/app/data/db" Default="/mnt/user/appdata/hytale-server-manager/db" Mode="rw" Description="SQLite database storage" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/db</Config>
+  <Config Name="Servers" Target="/app/data/servers" Default="/mnt/user/appdata/hytale-server-manager/servers" Mode="rw" Description="Game server installations" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/servers</Config>
+  <Config Name="Backups" Target="/app/data/backups" Default="/mnt/user/appdata/hytale-server-manager/backups" Mode="rw" Description="Server backup storage" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/backups</Config>
+  <Config Name="Logs" Target="/app/data/logs" Default="/mnt/user/appdata/hytale-server-manager/logs" Mode="rw" Description="Application logs" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/hytale-server-manager/logs</Config>
+  <Config Name="Certificates" Target="/app/data/certs" Default="/mnt/user/appdata/hytale-server-manager/certs" Mode="rw" Description="SSL certificate storage (if using HTTPS)" Type="Path" Display="advanced" Required="false" Mask="false">/mnt/user/appdata/hytale-server-manager/certs</Config>
+  <Config Name="JWT_SECRET" Target="JWT_SECRET" Default="" Mode="" Description="JWT secret for authentication (min 32 chars). Generate with: openssl rand -hex 64" Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="JWT_REFRESH_SECRET" Target="JWT_REFRESH_SECRET" Default="" Mode="" Description="JWT refresh token secret (min 32 chars). Generate with: openssl rand -hex 64" Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="SETTINGS_ENCRYPTION_KEY" Target="SETTINGS_ENCRYPTION_KEY" Default="" Mode="" Description="Encryption key for sensitive settings (exactly 32 hex chars). Generate with: openssl rand -hex 16" Type="Variable" Display="always" Required="true" Mask="true"/>
+  <Config Name="CORS_ORIGIN" Target="CORS_ORIGIN" Default="http://localhost:3001" Mode="" Description="Allowed CORS origin. Set to your Unraid server URL for external access (e.g., http://192.168.1.100:3001)" Type="Variable" Display="advanced" Required="false" Mask="false">http://localhost:3001</Config>
+  <Config Name="DISCORD_ENABLED" Target="DISCORD_ENABLED" Default="false" Mode="" Description="Enable Discord webhook notifications" Type="Variable" Display="advanced" Required="false" Mask="false">false</Config>
+  <Config Name="DISCORD_WEBHOOK_URL" Target="DISCORD_WEBHOOK_URL" Default="" Mode="" Description="Discord webhook URL for notifications" Type="Variable" Display="advanced" Required="false" Mask="false"/>
+</Container>

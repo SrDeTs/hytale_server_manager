@@ -1,0 +1,48 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs (we build fresh in Docker)
+dist
+**/dist
+.turbo
+
+# Development files
+.git
+.github
+.vscode
+.idea
+*.md
+!README.md
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Test files
+**/__tests__
+**/*.test.ts
+**/*.test.js
+**/coverage
+
+# IDE and OS files
+.DS_Store
+*.suo
+*.sw?
+
+# Data directories (mounted as volumes)
+data
+packages/server/data
+packages/server/prisma/data
+
+# Development databases
+*.db
+*.db-journal
+
+# Logs
+*.log
+
+# Website package (not needed in Docker)
+packages/website
