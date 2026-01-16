@@ -258,9 +258,92 @@ model ScheduledTask {
   // Relations
   server          Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
   backups         Backup[]
+  groupMemberships TaskGroupMember[]
 
   @@index([serverId])
   @@index([enabled])
+}
+
+// ==========================================
+// Task Groups (Sequential Task Execution)
+// ==========================================
+
+model TaskGroup {
+  id                String   @id @default(cuid())
+
+  // Group Info
+  name              String
+  description       String?
+  enabled           Boolean  @default(true)
+
+  // Schedule (cron format) - triggers all tasks in sequence
+  cronExpression    String
+
+  // Execution Settings
+  failureMode       String   @default("stop")  // "stop" or "continue" on task failure
+  delayBetweenTasks Int      @default(0)       // Delay in seconds between tasks
+
+  // Execution Info
+  lastRun           DateTime?
+  nextRun           DateTime?
+  lastStatus        String?   // success, failed, partial
+  lastError         String?
+
+  // Metadata
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  taskMemberships   TaskGroupMember[]
+  executionLogs     TaskGroupExecution[]
+
+  @@index([enabled])
+}
+
+model TaskGroupMember {
+  id              String   @id @default(cuid())
+  groupId         String
+  taskId          String
+
+  // Execution order within the group
+  sortOrder       Int      @default(0)
+
+  // Metadata
+  addedAt         DateTime @default(now())
+
+  // Relations
+  group           TaskGroup      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  task            ScheduledTask  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, taskId])
+  @@index([groupId])
+  @@index([taskId])
+}
+
+model TaskGroupExecution {
+  id              String   @id @default(cuid())
+  groupId         String
+
+  // Execution Info
+  startedAt       DateTime @default(now())
+  completedAt     DateTime?
+  status          String   @default("running")  // running, success, failed, partial
+
+  // Results
+  tasksTotal      Int      @default(0)
+  tasksCompleted  Int      @default(0)
+  tasksFailed     Int      @default(0)
+  tasksSkipped    Int      @default(0)
+  errorMessage    String?
+
+  // Detailed results as JSON
+  taskResults     String?  // JSON: [{ taskId, taskName, status, error, startedAt, completedAt }]
+
+  // Relations
+  group           TaskGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([startedAt])
 }
 
 model ConsoleLog {

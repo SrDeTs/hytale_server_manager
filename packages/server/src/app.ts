@@ -17,6 +17,7 @@ import { ModService } from './services/ModService';
 import { PlayerService } from './services/PlayerService';
 import { BackupService } from './services/BackupService';
 import { SchedulerService } from './services/SchedulerService';
+import { TaskGroupService } from './services/TaskGroupService';
 import { FileService } from './services/FileService';
 import { MetricsService } from './services/MetricsService';
 import { WorldsService } from './services/WorldsService';
@@ -43,6 +44,7 @@ import { createNetworkRoutes } from './routes/networks';
 import { createPermissionRoutes } from './routes/permissions';
 import { createAlertsRoutes } from './routes/alerts';
 import { createDashboardRoutes } from './routes/dashboard';
+import { createTaskGroupRoutes } from './routes/task-groups';
 import activityRoutes from './routes/activity';
 import systemRoutes from './routes/system';
 import hytaleDownloaderRoutes from './routes/hytale-downloader';
@@ -77,6 +79,7 @@ export class App {
   private playerService: PlayerService;
   private backupService: BackupService;
   private schedulerService: SchedulerService;
+  private taskGroupService: TaskGroupService;
   private fileService: FileService;
   private metricsService: MetricsService;
   private worldsService: WorldsService;
@@ -153,6 +156,7 @@ export class App {
       this.backupService,
       this.consoleService
     );
+    this.taskGroupService = new TaskGroupService(this.prisma, this.schedulerService);
     this.fileService = new FileService();
     this.metricsService = new MetricsService();
     this.worldsService = new WorldsService();
@@ -278,6 +282,8 @@ export class App {
     this.express.use('/api/users', authenticate, createUserRoutes());
 
     this.express.use('/api/networks', authenticate, createNetworkRoutes(this.networkService));
+
+    this.express.use('/api/task-groups', authenticate, createTaskGroupRoutes(this.taskGroupService));
 
     this.express.use(
       '/api/permissions',
@@ -428,6 +434,10 @@ export class App {
       await this.schedulerService.loadTasks();
       logger.info('Scheduled tasks loaded');
 
+      // Load task groups
+      await this.taskGroupService.loadTaskGroups();
+      logger.info('Task groups loaded');
+
       // Start metrics collection
       await this.metricsService.startCollection();
       logger.info('Metrics collection started');
@@ -477,6 +487,7 @@ export class App {
 
       // Cleanup services
       this.schedulerService.cleanup();
+      this.taskGroupService.cleanup();
       this.metricsService.stopCollection();
       this.alertsService.stopMonitoring();
       this.automationRulesService.cleanup();

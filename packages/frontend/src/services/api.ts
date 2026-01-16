@@ -569,6 +569,90 @@ class ApiService {
   }
 
   // ============================================
+  // Task Groups
+  // ============================================
+
+  async getTaskGroups<T = unknown>(): Promise<T[]> {
+    return this.request<T[]>('/api/task-groups');
+  }
+
+  async getTaskGroup<T = unknown>(groupId: string): Promise<T> {
+    return this.request<T>(`/api/task-groups/${groupId}`);
+  }
+
+  async createTaskGroup<T = unknown>(data: {
+    name: string;
+    description?: string;
+    cronExpression: string;
+    failureMode?: 'stop' | 'continue';
+    delayBetweenTasks?: number;
+    enabled?: boolean;
+    taskIds?: string[];
+  }): Promise<T> {
+    return this.request<T>('/api/task-groups', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateTaskGroup<T = unknown>(groupId: string, data: Partial<{
+    name: string;
+    description: string;
+    cronExpression: string;
+    failureMode: 'stop' | 'continue';
+    delayBetweenTasks: number;
+    enabled: boolean;
+  }>): Promise<T> {
+    return this.request<T>(`/api/task-groups/${groupId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteTaskGroup(groupId: string): Promise<void> {
+    return this.request<void>(`/api/task-groups/${groupId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async toggleTaskGroup<T = unknown>(groupId: string, enabled: boolean): Promise<T> {
+    return this.request<T>(`/api/task-groups/${groupId}/toggle`, {
+      method: 'POST',
+      body: JSON.stringify({ enabled }),
+    });
+  }
+
+  async runTaskGroupNow<T = unknown>(groupId: string): Promise<T> {
+    return this.request<T>(`/api/task-groups/${groupId}/run`, {
+      method: 'POST',
+    });
+  }
+
+  async getTaskGroupExecutions<T = unknown>(groupId: string, limit = 20): Promise<T[]> {
+    return this.request<T[]>(`/api/task-groups/${groupId}/executions?limit=${limit}`);
+  }
+
+  async addTaskToGroup(groupId: string, taskId: string, sortOrder?: number): Promise<void> {
+    return this.request<void>(`/api/task-groups/${groupId}/tasks`, {
+      method: 'POST',
+      body: JSON.stringify({ taskId, sortOrder }),
+    });
+  }
+
+  async removeTaskFromGroup(groupId: string, taskId: string): Promise<void> {
+    return this.request<void>(`/api/task-groups/${groupId}/tasks/${taskId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async reorderTasksInGroup(groupId: string, taskIds: string[]): Promise<void> {
+    return this.request<void>(`/api/task-groups/${groupId}/tasks/order`, {
+      method: 'PUT',
+      body: JSON.stringify({ taskIds }),
+    });
+  }
+
+  // ============================================
   // Server Version Updates
   // ============================================
 

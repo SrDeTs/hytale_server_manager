@@ -35,6 +35,7 @@ export const RESOURCE_TYPES = {
   MOD: 'mod',
   WORLD: 'world',
   TASK: 'task',
+  TASK_GROUP: 'task_group',
   AUTOMATION: 'automation',
   NETWORK: 'network',
   USER: 'user',
@@ -109,6 +110,14 @@ export const ACTIVITY_ACTIONS = {
   TASK_DISABLE: 'task:disable',
   TASK_EXECUTE: 'task:execute',
 
+  // Task Group actions
+  TASK_GROUP_CREATE: 'task_group:create',
+  TASK_GROUP_UPDATE: 'task_group:update',
+  TASK_GROUP_DELETE: 'task_group:delete',
+  TASK_GROUP_ENABLE: 'task_group:enable',
+  TASK_GROUP_DISABLE: 'task_group:disable',
+  TASK_GROUP_RUN: 'task_group:run',
+
   // Network actions
   NETWORK_CREATE: 'network:create',
   NETWORK_UPDATE: 'network:update',
@@ -168,6 +177,7 @@ export function getActionCategory(action: string): ActionCategory {
       return ACTION_CATEGORIES.WORLD;
     case 'automation':
     case 'task':
+    case 'task_group':
       return ACTION_CATEGORIES.AUTOMATION;
     case 'network':
       return ACTION_CATEGORIES.NETWORK;
@@ -248,6 +258,14 @@ export const ACTION_LABELS: Record<string, string> = {
   [ACTIVITY_ACTIONS.TASK_ENABLE]: 'Enabled scheduled task',
   [ACTIVITY_ACTIONS.TASK_DISABLE]: 'Disabled scheduled task',
   [ACTIVITY_ACTIONS.TASK_EXECUTE]: 'Executed scheduled task',
+
+  // Task Group
+  [ACTIVITY_ACTIONS.TASK_GROUP_CREATE]: 'Created task group',
+  [ACTIVITY_ACTIONS.TASK_GROUP_UPDATE]: 'Updated task group',
+  [ACTIVITY_ACTIONS.TASK_GROUP_DELETE]: 'Deleted task group',
+  [ACTIVITY_ACTIONS.TASK_GROUP_ENABLE]: 'Enabled task group',
+  [ACTIVITY_ACTIONS.TASK_GROUP_DISABLE]: 'Disabled task group',
+  [ACTIVITY_ACTIONS.TASK_GROUP_RUN]: 'Executed task group',
 
   // Network
   [ACTIVITY_ACTIONS.NETWORK_CREATE]: 'Created network',

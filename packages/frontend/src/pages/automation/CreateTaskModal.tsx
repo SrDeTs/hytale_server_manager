@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, ModalFooter, Button, Input } from '../../components/ui';
 import { Clock } from 'lucide-react';
 
@@ -8,11 +8,24 @@ interface Server {
   status: string;
 }
 
+interface ScheduledTask {
+  id: string;
+  serverId: string;
+  name: string;
+  type: 'backup' | 'restart' | 'start' | 'stop' | 'command';
+  cronExpression: string;
+  taskData: string | null;
+  enabled: boolean;
+  backupLimit: number;
+}
+
 interface CreateTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (serverId: string, data: any) => Promise<void>;
+  onUpdate?: (taskId: string, data: any) => Promise<void>;
   servers: Server[];
+  editTask?: ScheduledTask | null;
 }
 
 const CRON_PRESETS = [
@@ -28,7 +41,7 @@ const CRON_PRESETS = [
   { label: 'Custom', value: 'custom' },
 ];
 
-export const CreateTaskModal = ({ isOpen, onClose, onSubmit, servers }: CreateTaskModalProps) => {
+export const CreateTaskModal = ({ isOpen, onClose, onSubmit, onUpdate, servers, editTask }: CreateTaskModalProps) => {
   const [serverId, setServerId] = useState('');
   const [name, setName] = useState('');
   const [type, setType] = useState<'backup' | 'restart' | 'start' | 'stop' | 'command'>('backup');
@@ -39,6 +52,39 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, servers }: CreateTa
   const [backupLimit, setBackupLimit] = useState(10);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const isEditMode = !!editTask;
+
+  // Populate form when editing
+  useEffect(() => {
+    if (editTask) {
+      setServerId(editTask.serverId);
+      setName(editTask.name);
+      setType(editTask.type);
+      setBackupLimit(editTask.backupLimit);
+
+      // Parse taskData
+      if (editTask.taskData) {
+        try {
+          const data = JSON.parse(editTask.taskData);
+          if (data.command) setCommand(data.command);
+          if (data.description) setDescription(data.description);
+        } catch {
+          // Ignore parse errors
+        }
+      }
+
+      // Check if cron matches a preset
+      const preset = CRON_PRESETS.find(p => p.value === editTask.cronExpression);
+      if (preset && preset.value !== 'custom') {
+        setCronPreset(editTask.cronExpression);
+        setCustomCron('');
+      } else {
+        setCronPreset('custom');
+        setCustomCron(editTask.cronExpression);
+      }
+    }
+  }, [editTask]);
 
   const handleSubmit = async () => {
     if (!serverId) {
@@ -77,19 +123,28 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, servers }: CreateTa
         taskData.description = description;
       }
 
-      await onSubmit(serverId, {
-        name,
-        type,
-        cronExpression,
-        taskData,
-        enabled: true,
-        backupLimit: type === 'backup' ? backupLimit : undefined,
-      });
+      if (isEditMode && editTask && onUpdate) {
+        await onUpdate(editTask.id, {
+          name,
+          cronExpression,
+          taskData,
+          backupLimit: type === 'backup' ? backupLimit : undefined,
+        });
+      } else {
+        await onSubmit(serverId, {
+          name,
+          type,
+          cronExpression,
+          taskData,
+          enabled: true,
+          backupLimit: type === 'backup' ? backupLimit : undefined,
+        });
+      }
 
       handleClose();
     } catch (err: any) {
-      console.error('Error creating task:', err);
-      setError(err.message || 'Failed to create task');
+      console.error(isEditMode ? 'Error updating task:' : 'Error creating task:', err);
+      setError(err.message || (isEditMode ? 'Failed to update task' : 'Failed to create task'));
     } finally {
       setLoading(false);
     }
@@ -117,7 +172,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, servers }: CreateTa
   const selectedServer = servers.find(s => s.id === serverId);
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Create Scheduled Task" size="lg">
+    <Modal isOpen={isOpen} onClose={handleClose} title={isEditMode ? "Edit Scheduled Task" : "Create Scheduled Task"} size="lg">
       <div className="space-y-4">
         {/* Server Selection */}
         <div>
@@ -127,7 +182,8 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, servers }: CreateTa
           <select
             value={serverId}
             onChange={(e) => setServerId(e.target.value)}
-            className="w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            disabled={isEditMode}
+            className={`w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
           >
             <option value="">Select a server...</option>
             {servers.map((server) => (
@@ -136,6 +192,11 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, servers }: CreateTa
               </option>
             ))}
           </select>
+          {isEditMode && (
+            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+              Server cannot be changed when editing a task
+            </p>
+          )}
         </div>
 
         {/* Task Name */}
@@ -159,7 +220,8 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, servers }: CreateTa
           <select
             value={type}
             onChange={(e) => setType(e.target.value as any)}
-            className="w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary"
+            disabled={isEditMode}
+            className={`w-full px-3 py-2 bg-white dark:bg-primary-bg-secondary border border-gray-300 dark:border-gray-700 rounded-lg text-text-light-primary dark:text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary ${isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
           >
             <option value="backup">Create Backup</option>
             <option value="restart">Restart Server</option>
@@ -167,6 +229,11 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, servers }: CreateTa
             <option value="stop">Stop Server</option>
             <option value="command">Execute Command</option>
           </select>
+          {isEditMode && (
+            <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+              Task type cannot be changed when editing a task
+            </p>
+          )}
         </div>
 
         {/* Command Input (only for command type) */}
@@ -302,7 +369,7 @@ export const CreateTaskModal = ({ isOpen, onClose, onSubmit, servers }: CreateTa
           Cancel
         </Button>
         <Button variant="primary" onClick={handleSubmit} loading={loading} disabled={loading || !serverId || !name}>
-          {loading ? 'Creating...' : 'Create Task'}
+          {loading ? (isEditMode ? 'Saving...' : 'Creating...') : (isEditMode ? 'Save Changes' : 'Create Task')}
         </Button>
       </ModalFooter>
     </Modal>
