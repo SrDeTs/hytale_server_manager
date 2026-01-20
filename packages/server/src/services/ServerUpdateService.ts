@@ -132,7 +132,12 @@ class ServerUpdateService extends EventEmitter {
     }
 
     // Get latest version from Hytale downloader
-    const latestVersion = await hytaleDownloaderService.getGameVersion();
+    let latestVersion = null;
+    try {
+      latestVersion = await hytaleDownloaderService.getGameVersion();
+    } catch (err: any) {
+      logger.warn(`[ServerUpdate] Could not get latest version: ${err.message}`);
+    }
 
     const result: VersionCheckResult = {
       serverId: server.id,
@@ -170,7 +175,12 @@ class ServerUpdateService extends EventEmitter {
     const results: VersionCheckResult[] = [];
 
     // Get latest version once (same for all servers)
-    const latestVersion = await hytaleDownloaderService.getGameVersion();
+    let latestVersion = null;
+    try {
+      latestVersion = await hytaleDownloaderService.getGameVersion();
+    } catch (err: any) {
+      logger.warn(`[ServerUpdate] Could not get latest version: ${err.message}`);
+    }
 
     for (const server of servers) {
       const result: VersionCheckResult = {
@@ -224,11 +234,15 @@ class ServerUpdateService extends EventEmitter {
     // Get target version (either specified or latest available)
     let toVersion = targetVersion;
     if (!toVersion) {
-      const latestVersion = await hytaleDownloaderService.getGameVersion();
-      if (!latestVersion?.version) {
-        throw new Error('Could not determine latest version. Please ensure the Hytale downloader is authenticated.');
+      try {
+        const latestVersion = await hytaleDownloaderService.getGameVersion();
+        if (!latestVersion?.version) {
+          throw new Error('Could not determine latest version. Please ensure the Hytale downloader is authenticated.');
+        }
+        toVersion = latestVersion.version;
+      } catch (err: any) {
+        throw new Error(`Could not determine latest version: ${err.message}`);
       }
-      toVersion = latestVersion.version;
     }
 
     if (toVersion === server.version) {

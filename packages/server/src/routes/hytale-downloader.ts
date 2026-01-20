@@ -97,14 +97,22 @@ router.get(
       const version = await hytaleDownloaderService.getGameVersion(patchline);
 
       if (!version) {
-        res.status(404).json({ error: 'Could not retrieve version information' });
+        res.status(404).json({ error: 'Could not parse version from output' });
         return;
       }
 
       res.json(version);
     } catch (error: any) {
       logger.error('[HytaleDownloader] Error getting versions:', error);
-      res.status(500).json({ error: 'Failed to get versions', message: error.message });
+
+      // Return specific status codes based on error type
+      if (error.message?.includes('not installed')) {
+        res.status(400).json({ error: 'Binary not installed', message: error.message });
+      } else if (error.message?.includes('Not authenticated')) {
+        res.status(401).json({ error: 'Not authenticated', message: error.message });
+      } else {
+        res.status(500).json({ error: 'Failed to get versions', message: error.message });
+      }
     }
   }
 );

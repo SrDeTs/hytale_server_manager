@@ -946,10 +946,15 @@ class HytaleDownloaderService extends EventEmitter {
 
   /**
    * Get game version info
+   * Returns version info or throws an error with a specific message
    */
   async getGameVersion(patchline?: string): Promise<GameVersionInfo | null> {
     if (!(await this.binaryExists())) {
-      return null;
+      throw new Error('Hytale downloader binary not installed. Please install it first.');
+    }
+
+    if (!(await this.credentialsExist())) {
+      throw new Error('Not authenticated. Please authenticate with your Hytale account first.');
     }
 
     const args = ['-print-version'];
@@ -957,25 +962,28 @@ class HytaleDownloaderService extends EventEmitter {
       args.push('-patchline', patchline);
     }
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const proc = spawn(this.getBinaryPath(), args, {
         cwd: this.dataDir,
         timeout: 30000,
       });
 
       let output = '';
+      let stderr = '';
 
       proc.stdout.on('data', (data) => {
         output += data.toString();
       });
 
       proc.stderr.on('data', (data) => {
-        output += data.toString();
+        stderr += data.toString();
       });
 
       proc.on('close', (code) => {
         if (code !== 0) {
-          resolve(null);
+          const errorOutput = stderr || output;
+          logger.error('[HytaleDownloader] getGameVersion failed with code', code, ':', errorOutput);
+          reject(new Error(`Version check failed (exit code ${code}): ${errorOutput.substring(0, 200)}`));
           return;
         }
 
@@ -988,12 +996,14 @@ class HytaleDownloaderService extends EventEmitter {
             checkedAt: new Date(),
           });
         } else {
+          logger.warn('[HytaleDownloader] Could not parse version from output:', output);
           resolve(null);
         }
       });
 
-      proc.on('error', () => {
-        resolve(null);
+      proc.on('error', (err) => {
+        logger.error('[HytaleDownloader] getGameVersion process error:', err);
+        reject(new Error(`Failed to run version check: ${err.message}`));
       });
     });
   }
@@ -1038,7 +1048,12 @@ class HytaleDownloaderService extends EventEmitter {
     logger.info(`[HytaleDownloader] Starting download, session: ${sessionId}, path: ${downloadPath}`);
 
     // Check if we have a cached version available
-    const currentVersion = await this.getGameVersion(patchline);
+    let currentVersion: GameVersionInfo | null = null;
+    try {
+      currentVersion = await this.getGameVersion(patchline);
+    } catch (err) {
+      logger.warn('[HytaleDownloader] Could not check game version for cache lookup:', err);
+    }
     if (currentVersion?.version) {
       const hasCached = await this.hasCachedVersion(currentVersion.version, patchline);
       if (hasCached) {
@@ -1240,12 +1255,16 @@ class HytaleDownloaderService extends EventEmitter {
 
           // Cache the zip file for future use (before deleting)
           const patchline = session.patchline || 'release';
-          const version = await this.getGameVersion(patchline);
-          if (version?.version) {
-            const cachePath = this.getCacheFilePath(version.version, patchline);
-            await fs.ensureDir(this.cacheDir);
-            await fs.copy(session.destinationPath, cachePath);
-            logger.info(`[HytaleDownloader] Cached server files: ${cachePath}`);
+          try {
+            const version = await this.getGameVersion(patchline);
+            if (version?.version) {
+              const cachePath = this.getCacheFilePath(version.version, patchline);
+              await fs.ensureDir(this.cacheDir);
+              await fs.copy(session.destinationPath, cachePath);
+              logger.info(`[HytaleDownloader] Cached server files: ${cachePath}`);
+            }
+          } catch (cacheErr) {
+            logger.warn('[HytaleDownloader] Could not cache server files:', cacheErr);
           }
 
           // Delete the zip file after extraction and caching

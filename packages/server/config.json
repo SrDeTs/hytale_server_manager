@@ -6,7 +6,7 @@
   "logToFile": true,
   "jwtExpiresIn": "7d",
   "rateLimitWindow": 900000,
-  "rateLimitMax": 250,
+  "rateLimitMax": 10000,
   "dataPath": "./data",
   "serversBasePath": "./data/servers",
   "backupsBasePath": "./data/backups",
