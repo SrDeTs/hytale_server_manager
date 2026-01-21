@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     ports:
       - "3001:3001"
+      - "5520:5520"
     environment:
       # User/Group ID for file permissions (use `id` command to find yours)
       - PUID=1000

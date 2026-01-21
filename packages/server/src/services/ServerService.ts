@@ -242,11 +242,10 @@ export class ServerService {
       data: updateData,
     });
 
-    // Update adapter config if it exists
-    const adapter = this.adapters.get(serverId);
-    if (adapter) {
-      await adapter.updateConfig(data);
-    }
+    // Invalidate cached adapter so next start uses fresh settings from DB
+    // This ensures all settings (address, port, jvmArgs, jarFile, assetsPath, javaPath)
+    // are applied when the server restarts
+    this.adapters.delete(serverId);
 
     logger.info(`Updated server: ${server.name} (${server.id})`);
 
@@ -362,6 +361,9 @@ export class ServerService {
         where: { id: serverId },
         data: { status: 'stopped' },
       });
+
+      // Clear adapter cache so next start reads fresh settings from DB
+      this.adapters.delete(serverId);
 
       logger.info(`Stopped server: ${serverId}`);
 
