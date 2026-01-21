@@ -278,6 +278,8 @@ function loadEnvConfig(): Partial<AppConfig> {
   if (process.env.LOG_LEVEL) envConfig.logLevel = process.env.LOG_LEVEL;
   if (process.env.JWT_SECRET) envConfig.jwtSecret = process.env.JWT_SECRET;
   if (process.env.JWT_EXPIRES_IN) envConfig.jwtExpiresIn = process.env.JWT_EXPIRES_IN;
+  if (process.env.RATE_LIMIT_WINDOW) envConfig.rateLimitWindow = parseInt(process.env.RATE_LIMIT_WINDOW, 10);
+  if (process.env.RATE_LIMIT_MAX) envConfig.rateLimitMax = parseInt(process.env.RATE_LIMIT_MAX, 10);
 
   // Paths
   if (process.env.DATA_PATH) envConfig.dataPath = process.env.DATA_PATH;

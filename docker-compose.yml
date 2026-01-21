@@ -21,6 +21,9 @@ services:
       - INSECURE_COOKIES=true
       # CORS origin - set to your server's URL for external access
       - CORS_ORIGIN=http://localhost:3001
+      # Rate limiting
+      - RATE_LIMIT_WINDOW=900000   # 15 minutes in milliseconds
+      - RATE_LIMIT_MAX=1000         # Max requests per window
       # Optional: Discord notifications
       # - DISCORD_ENABLED=true
       # - DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
