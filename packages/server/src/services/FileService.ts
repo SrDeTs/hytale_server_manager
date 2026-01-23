@@ -27,6 +27,10 @@ export class FileService {
   // Cache server paths to avoid repeated database queries
   private serverPathCache: Map<string, string> = new Map();
 
+  // Track concurrent extractions per destination directory to prevent race conditions
+  private extractionQueues: Map<string, Promise<void>> = new Map();
+  private extractionLocks: Map<string, boolean> = new Map();
+
   /**
    * Escape single quotes for PowerShell -LiteralPath parameters
    */
@@ -68,6 +72,76 @@ export class FileService {
     } else {
       this.serverPathCache.clear();
     }
+  }
+
+  /**
+   * Acquire lock for extraction to a destination directory
+   * Ensures only one extraction happens to the same directory at a time
+   */
+  private async acquireExtractionLock(destPath: string): Promise<void> {
+    const resolvedPath = path.resolve(destPath);
+
+    let waitCount = 0;
+    while (this.extractionLocks.get(resolvedPath)) {
+      waitCount++;
+      const existingQueue = this.extractionQueues.get(resolvedPath);
+
+      if (existingQueue) {
+        logger.debug(`Extraction lock held for ${resolvedPath}, waiting for queue (attempt ${waitCount})`);
+        try {
+          await existingQueue;
+        } catch (err) {
+          logger.warn(`Queue promise rejected while waiting:`, err);
+        }
+      } else {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+    }
+
+    this.extractionLocks.set(resolvedPath, true);
+    logger.debug(`Extraction lock acquired for ${resolvedPath}`);
+  }
+
+  /**
+   * Release lock for extraction to a destination directory
+   */
+  private releaseExtractionLock(destPath: string): void {
+    const resolvedPath = path.resolve(destPath);
+    this.extractionLocks.delete(resolvedPath);
+    this.extractionQueues.delete(resolvedPath);
+    logger.debug(`Extraction lock released for ${resolvedPath}`);
+  }
+
+  /**
+   * Queue an extraction operation to prevent concurrent extractions to the same directory
+   */
+  private queueExtraction(destPath: string, operation: () => Promise<[string[], string]>): Promise<[string[], string]> {
+    const resolvedPath = path.resolve(destPath);
+
+    const queuedOperation = async () => {
+      await this.acquireExtractionLock(resolvedPath);
+      try {
+        const result = await operation();
+        return result;
+      } catch (err) {
+        logger.error(`Extraction operation failed for ${resolvedPath}:`, err);
+        throw err;
+      } finally {
+        this.releaseExtractionLock(resolvedPath);
+      }
+    };
+
+    const promise = queuedOperation();
+    this.extractionQueues.set(resolvedPath, promise.then(
+      () => {
+        logger.debug(`Queue promise resolved for ${resolvedPath}`);
+      },
+      (err) => {
+        logger.debug(`Queue promise rejected for ${resolvedPath}:`, err);
+      }
+    ));
+
+    return promise;
   }
 
   /**
@@ -370,20 +444,103 @@ export class FileService {
 
   /**
    * Extract a zip file using native system tools, with fallback to unzipper library
+   * Queues extraction to prevent concurrent extractions to the same directory
    * Returns tuple of [extractedFiles, tempDirPath] for cleanup tracking
    */
   private async extractZip(zipPath: string, destPath: string): Promise<[string[], string]> {
-    try {
-      return await this.extractZipNative(zipPath, destPath);
-    } catch (err) {
-      const error = err as NodeJS.ErrnoException;
+    return this.queueExtraction(destPath, async () => {
+      try {
+        return await this.extractZipNative(zipPath, destPath);
+      } catch (err) {
+        const error = err as NodeJS.ErrnoException;
 
-      if (error.message?.includes('ENOENT') || error.message?.includes('not found')) {
-        logger.info('[FileService] Native extraction tool not available, using unzipper library');
-        return await this.extractZipWithLibrary(zipPath, destPath);
+        if (error.message?.includes('ENOENT') || error.message?.includes('not found')) {
+          logger.info('Native extraction tool not available, using unzipper library');
+          return await this.extractZipWithLibrary(zipPath, destPath);
+        }
+        throw err;
       }
-      throw err;
+    });
+  }
+
+  /**
+   * Move extracted files from temp directory to destination with path traversal validation
+   * Returns array of successfully moved file paths for rollback tracking
+   */
+  private async moveExtractedFiles(
+    extractedFiles: string[],
+    tempDir: string,
+    destPath: string
+  ): Promise<string[]> {
+    const movedFiles: string[] = [];
+    const resolvedTempDir = path.resolve(tempDir);
+    const resolvedDestPath = path.resolve(destPath);
+
+    for (const file of extractedFiles) {
+      const srcPath = path.resolve(tempDir, file);
+      const destFilePath = path.resolve(destPath, file);
+
+      if (!srcPath.startsWith(resolvedTempDir + path.sep) && srcPath !== resolvedTempDir) {
+        logger.warn(`Skipping extraction: source path traversal detected in ${file}`);
+        continue;
+      }
+
+      if (!destFilePath.startsWith(resolvedDestPath + path.sep) && destFilePath !== resolvedDestPath) {
+        logger.warn(`Skipping extraction: destination path traversal detected in ${file}`);
+        continue;
+      }
+
+      await fs.ensureDir(path.dirname(destFilePath));
+      await fs.move(srcPath, destFilePath, { overwrite: true });
+
+      movedFiles.push(destFilePath);
     }
+
+    return movedFiles;
+  }
+
+  /**
+   * Cleanup and rollback operations for extraction errors
+   * Removes moved files and temp directory with error handling
+   */
+  private async cleanupExtractionError(movedFiles: string[], tempDir: string): Promise<void> {
+    // Rollback moved files
+    for (const movedFile of movedFiles) {
+      try {
+        await fs.remove(movedFile);
+        logger.info(`Rolled back moved file: ${movedFile}`);
+      } catch (rollbackError) {
+        logger.warn(`Failed to roll back moved file ${movedFile}:`, rollbackError);
+      }
+    }
+
+    try {
+      await fs.remove(tempDir);
+    } catch (cleanupError) {
+      logger.warn(`Failed to clean up temp directory ${tempDir}:`, cleanupError);
+    }
+  }
+
+  /**
+   * Cleanup temp directory after successful extraction
+   */
+  private async cleanupTempDirectory(tempDir: string): Promise<void> {
+    try {
+      await fs.remove(tempDir);
+    } catch (cleanupError) {
+      logger.warn(`Failed to clean up temp directory ${tempDir}:`, cleanupError);
+    }
+  }
+
+  /**
+   * Generate a unique temporary directory name for extraction
+   * Uses timestamp + random string to ensure uniqueness even with concurrent extractions
+   */
+  private generateUniqueTempDir(destPath: string): string {
+    const timestamp = Date.now();
+    const randomId = Math.random().toString(36).substring(2, 11);
+    const uniqueId = `${timestamp}-${randomId}`;
+    return path.join(destPath, `.temp-extract-${uniqueId}`);
   }
 
   /**
@@ -394,115 +551,97 @@ export class FileService {
   private extractZipNative(zipPath: string, destPath: string): Promise<[string[], string]> {
     return new Promise(async (resolve, reject) => {
       const isWindows = process.platform === 'win32';
-      const tempDir = path.join(destPath, `.temp-extract-${Date.now()}`);
+      const tempDir = this.generateUniqueTempDir(destPath);
 
       try {
         await fs.ensureDir(tempDir);
-        logger.info(`[FileService] Created temp directory for extraction: ${tempDir}`);
-
-        let command: string;
-        let args: string[];
-
-        if (isWindows) {
-          command = 'powershell.exe';
-          const escapedZipPath = this.escapePowerShellSingleQuotes(zipPath);
-          const escapedTempDir = this.escapePowerShellSingleQuotes(tempDir);
-          args = [
-            '-NoProfile',
-            '-Command',
-            `Expand-Archive -LiteralPath '${escapedZipPath}' -DestinationPath '${escapedTempDir}' -Force`,
-          ];
-        } else {
-          command = 'unzip';
-          args = ['-o', zipPath, '-d', tempDir];
-        }
-
-        logger.info(`[FileService] Running extraction: ${command} ${args.join(' ')}`);
-
+        const { command, args } = this.getExtractionCommand(isWindows, zipPath, tempDir);
         const proc = spawn(command, args, {
           stdio: ['pipe', 'pipe', 'pipe'],
         });
 
         let stderr = '';
+        let stdout = '';
+
+        proc.stdout?.on('data', (data) => {
+          stdout += data.toString();
+        });
 
         proc.stderr.on('data', (data) => {
           stderr += data.toString();
         });
 
         proc.on('close', async (code) => {
-          const movedFiles: string[] = [];
-          const resolvedTempDir = path.resolve(tempDir);
-          const resolvedDestPath = path.resolve(destPath);
-
-          try {
-            if (code !== 0) {
-              throw new Error(`Extraction failed with code ${code}: ${stderr}`);
-            }
-
-            const extractedFiles = await this.getExtractedFiles(tempDir);
-            logger.info(`[FileService] Extracted ${extractedFiles.length} files to temp directory`);
-
-            for (const file of extractedFiles) {
-              const srcPath = path.resolve(tempDir, file);
-              const destFilePath = path.resolve(destPath, file);
-
-              if (!srcPath.startsWith(resolvedTempDir + path.sep) && srcPath !== resolvedTempDir) {
-                logger.warn(`[FileService] Skipping extraction: source path traversal detected in ${file}`);
-                continue;
-              }
-
-              if (!destFilePath.startsWith(resolvedDestPath + path.sep) && destFilePath !== resolvedDestPath) {
-                logger.warn(`[FileService] Skipping extraction: destination path traversal detected in ${file}`);
-                continue;
-              }
-
-              await fs.ensureDir(path.dirname(destFilePath));
-              await fs.move(srcPath, destFilePath, { overwrite: true });
-
-              movedFiles.push(destFilePath);
-            }
-
-            resolve([extractedFiles, tempDir]);
-
-            await fs.remove(tempDir);
-            logger.info(`[FileService] Cleaned up temp directory: ${tempDir}`);
-          } catch (error) {
-            for (const movedFile of movedFiles) {
-              try {
-                await fs.remove(movedFile);
-                logger.info(`[FileService] Rolled back moved file: ${movedFile}`);
-              } catch (rollbackError) {
-                logger.warn(`[FileService] Failed to roll back moved file ${movedFile}:`, rollbackError);
-              }
-            }
-
-            try {
-              await fs.remove(tempDir);
-              logger.info(`[FileService] Cleaned up temp directory after error: ${tempDir}`);
-            } catch (cleanupError) {
-              logger.warn(`[FileService] Failed to clean up temp directory ${tempDir}:`, cleanupError);
-            }
-            reject(error);
-          }
+          await this.handleExtractionComplete(code ?? 1, stderr, tempDir, destPath, resolve, reject);
         });
 
         proc.on('error', async (err) => {
-          try {
-            await fs.remove(tempDir);
-          } catch (cleanupError) {
-            logger.warn(`[FileService] Failed to clean up temp directory ${tempDir}:`, cleanupError);
-          }
+          logger.error(`Extraction process error:`, err);
+          await this.cleanupTempDirectory(tempDir);
           reject(new Error(`Failed to start extraction: ${err.message}`));
         });
       } catch (error) {
-        try {
-          await fs.remove(tempDir);
-        } catch (cleanupError) {
-          logger.warn(`[FileService] Failed to clean up temp directory ${tempDir}:`, cleanupError);
-        }
+        await this.cleanupTempDirectory(tempDir);
         reject(error);
       }
     });
+  }
+
+  /**
+   * Get extraction command and arguments based on platform
+   */
+  private getExtractionCommand(
+    isWindows: boolean,
+    zipPath: string,
+    tempDir: string
+  ): { command: string; args: string[] } {
+    if (isWindows) {
+      const escapedZipPath = this.escapePowerShellSingleQuotes(zipPath);
+      const escapedTempDir = this.escapePowerShellSingleQuotes(tempDir);
+      return {
+        command: 'powershell.exe',
+        args: [
+          '-NoProfile',
+          '-Command',
+          `Expand-Archive -LiteralPath '${escapedZipPath}' -DestinationPath '${escapedTempDir}' -Force`,
+        ],
+      };
+    }
+
+    return {
+      command: 'unzip',
+      args: ['-o', zipPath, '-d', tempDir],
+    };
+  }
+
+  /**
+   * Handle extraction completion and file movement
+   * IMPORTANT: Cleanup must complete before resolving to prevent race conditions
+   */
+  private async handleExtractionComplete(
+    code: number,
+    stderr: string,
+    tempDir: string,
+    destPath: string,
+    resolve: (value: [string[], string]) => void,
+    reject: (reason?: unknown) => void
+  ): Promise<void> {
+    let movedFiles: string[] = [];
+
+    try {
+      if (code !== 0) {
+        const errorMsg = `Extraction failed with code ${code}: ${stderr}`;
+        logger.error(`${errorMsg}`);
+        throw new Error(errorMsg);
+      }
+      const extractedFiles = await this.getExtractedFiles(tempDir);
+      movedFiles = await this.moveExtractedFiles(extractedFiles, tempDir, destPath);      await this.cleanupTempDirectory(tempDir);
+      resolve([extractedFiles, tempDir]);
+    } catch (error) {
+      logger.error(`Error in handleExtractionComplete:`, error);
+      await this.cleanupExtractionError(movedFiles, tempDir);
+      reject(error);
+    }
   }
 
   /**
@@ -512,13 +651,13 @@ export class FileService {
    */
   private extractZipWithLibrary(zipPath: string, destPath: string): Promise<[string[], string]> {
     return new Promise(async (resolve, reject) => {
-      const tempDir = path.join(destPath, `.temp-extract-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`);
+      const tempDir = this.generateUniqueTempDir(destPath);
       const extractedFiles: string[] = [];
       const writePromises: Promise<void>[] = [];
 
       try {
         await fs.ensureDir(tempDir);
-        logger.info(`[FileService] Created temp directory for extraction: ${tempDir}`);
+        logger.info(`Created temp directory for extraction: ${tempDir}`);
 
         const resolvedTempDir = path.resolve(tempDir);
 
@@ -568,19 +707,16 @@ export class FileService {
 
             try {
               await Promise.all(writePromises);
-              logger.info(`[FileService] Extracted ${extractedFiles.length} files to temp directory`);
 
               for (const file of extractedFiles) {
                 const srcPath = path.resolve(tempDir, file);
                 const destFilePath = path.resolve(destPath, file);
 
                 if (!srcPath.startsWith(resolvedTempDir + path.sep) && srcPath !== resolvedTempDir) {
-                  logger.warn(`[FileService] Skipping extraction: source path traversal detected in ${file}`);
                   continue;
                 }
 
                 if (!destFilePath.startsWith(resolvedDestPath + path.sep) && destFilePath !== resolvedDestPath) {
-                  logger.warn(`[FileService] Skipping extraction: destination path traversal detected in ${file}`);
                   continue;
                 }
 
@@ -591,24 +727,20 @@ export class FileService {
               }
 
               await fs.remove(tempDir);
-              logger.info(`[FileService] Cleaned up temp directory: ${tempDir}`);
-
               resolve([extractedFiles, tempDir]);
             } catch (err) {
               for (const movedFile of movedFiles) {
                 try {
                   await fs.remove(movedFile);
-                  logger.info(`[FileService] Rolled back moved file: ${movedFile}`);
                 } catch (rollbackError) {
-                  logger.warn(`[FileService] Failed to roll back moved file ${movedFile}:`, rollbackError);
+                  logger.warn(`Failed to roll back moved file ${movedFile}:`, rollbackError);
                 }
               }
 
               try {
                 await fs.remove(tempDir);
-                logger.info(`[FileService] Cleaned up temp directory after error: ${tempDir}`);
               } catch (cleanupError) {
-                logger.warn(`[FileService] Failed to clean up temp directory ${tempDir}:`, cleanupError);
+                logger.warn(`Failed to clean up temp directory ${tempDir}:`, cleanupError);
               }
               reject(err);
             }
@@ -617,7 +749,7 @@ export class FileService {
             try {
               await fs.remove(tempDir);
             } catch (cleanupError) {
-              logger.warn(`[FileService] Failed to clean up temp directory ${tempDir}:`, cleanupError);
+              logger.warn(`Failed to clean up temp directory ${tempDir}:`, cleanupError);
             }
             reject(err);
           });
@@ -625,7 +757,7 @@ export class FileService {
         try {
           await fs.remove(tempDir);
         } catch (cleanupError) {
-          logger.warn(`[FileService] Failed to clean up temp directory ${tempDir}:`, cleanupError);
+          logger.warn(`Failed to clean up temp directory ${tempDir}:`, cleanupError);
         }
         reject(error);
       }
@@ -660,6 +792,7 @@ export class FileService {
 
   /**
    * Upload a file with optional ZIP extraction
+   * Handles concurrent extractions safely with queuing mechanism
    */
   async uploadFileWithExtraction(
     serverId: string,
@@ -682,7 +815,7 @@ export class FileService {
         const [extractedFiles] = await this.extractZip(absolutePath, extractDir);
 
         await fs.remove(absolutePath);
-        logger.info(`ZIP extracted and deleted: ${filePath} for server ${serverId}`);
+        logger.info(`ZIP extracted and deleted: ${filePath} for server ${serverId} (${extractedFiles.length} files extracted)`);
 
         return {
           fileName: path.basename(filePath),
@@ -690,15 +823,17 @@ export class FileService {
           extractedFiles,
         };
       } catch (error) {
-        logger.error(`Failed to extract ZIP file ${filePath}:`, error);
+        const errorMessage = (error as Error).message || 'Unknown error';
+        logger.error(`Failed to extract ZIP file ${filePath}: ${errorMessage}`, error);
 
         try {
           await fs.remove(absolutePath);
+          logger.info(`Cleaned up failed ZIP file: ${absolutePath}`);
         } catch (zipRemoveError) {
-          logger.warn(`[FileService] Failed to remove ZIP file ${absolutePath}:`, zipRemoveError);
+          logger.warn(`Failed to remove ZIP file ${absolutePath}:`, zipRemoveError);
         }
 
-        throw new Error(`Failed to extract ZIP file: ${(error as Error).message}`);
+        throw new Error(`Failed to extract ZIP file: ${errorMessage}`);
       }
     }
 
