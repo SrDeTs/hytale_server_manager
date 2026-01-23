@@ -100,7 +100,6 @@ export class FileService {
   private releaseExtractionLock(destPath: string): void {
     const resolvedPath = path.resolve(destPath);
     this.extractionLocks.delete(resolvedPath);
-    this.extractionQueues.delete(resolvedPath);
     logger.debug(`Extraction lock released for ${resolvedPath}`);
   }
 
@@ -110,7 +109,9 @@ export class FileService {
   private queueExtraction(destPath: string, operation: () => Promise<[string[], string]>): Promise<[string[], string]> {
     const resolvedPath = path.resolve(destPath);
 
-    const queuedOperation = async () => {
+    const currentTail = this.extractionQueues.get(resolvedPath) ?? Promise.resolve();
+
+    const runOperation = async (): Promise<[string[], string]> => {
       await this.acquireExtractionLock(resolvedPath);
       try {
         const result = await operation();
@@ -123,19 +124,23 @@ export class FileService {
       }
     };
 
-    const promise = queuedOperation();
-    // Store the promise BEFORE returning so concurrent extractions can wait for it
-    const queuePromise = promise.then(
-      () => {
-        logger.debug(`Queue promise resolved for ${resolvedPath}`);
-      },
-      (err) => {
-        logger.debug(`Queue promise rejected for ${resolvedPath}:`, err);
-      }
-    );
-    this.extractionQueues.set(resolvedPath, queuePromise);
+    const chained = currentTail
+      .catch(() => undefined)
+      .then(() => runOperation());
 
-    return promise;
+    this.extractionQueues.set(
+      resolvedPath,
+      chained.then(
+        () => {
+          logger.debug(`Queue promise resolved for ${resolvedPath}`);
+        },
+        (err) => {
+          logger.debug(`Queue promise rejected for ${resolvedPath}:`, err);
+        }
+      )
+    );
+
+    return chained;
   }
 
   /**
