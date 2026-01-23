@@ -153,13 +153,19 @@ export const UploadFileModal = ({
 
     const newUploads: UploadedFile[] = validFiles
       .filter((file) => !duplicates.has(file.name) || duplicates.get(file.name) === 1)
-      .map((file) => ({
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`,
-        file,
-        progress: 0,
-        status: 'pending',
-        abortController: new AbortController(),
-      }));
+      .map((file) => {
+        const abortController = new AbortController();
+        const id = `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+        // Store controller in ref for later cancellation
+        uploadAbortControllersRef.current.set(id, abortController);
+        return {
+          id,
+          file,
+          progress: 0,
+          status: 'pending',
+          abortController,
+        };
+      });
 
     setUploads((prev) => [...prev, ...newUploads]);
 
@@ -234,12 +240,14 @@ export const UploadFileModal = ({
       );
 
       const filePath = currentPath ? `${currentPath}/${file.name}` : file.name;
+      const controller = uploadAbortControllersRef.current.get(id);
+      const signal = controller?.signal;
 
       const result = await api.uploadFile(serverId, filePath, file, autoExtractZip, (progress) => {
         setUploads((prev) =>
           prev.map((u) => (u.id === id ? { ...u, progress } : u))
         );
-      });
+      }, signal);
 
       setUploads((prev) => {
         const updated = prev.map((u) => {
@@ -306,7 +314,15 @@ export const UploadFileModal = ({
   };
 
   const clearCompleted = () => {
-    setUploads((prev) => prev.filter((u) => u.status === 'pending' || u.status === 'uploading'));
+    setUploads((prev) =>
+      prev.filter(
+        (u) =>
+          u.status === 'pending' ||
+          u.status === 'uploading' ||
+          u.status === 'error' ||
+          u.status === 'cancelled'
+      )
+    );
   };
 
   const completedCount = uploads.filter((u) => u.status === 'success' || u.status === 'extracting').length;

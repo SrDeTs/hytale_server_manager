@@ -759,7 +759,8 @@ class ApiService {
     filePath: string,
     file: File,
     autoExtractZip: boolean = true,
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: number) => void,
+    signal?: AbortSignal
   ) {
     const formData = new FormData();
     formData.append('file', file);
@@ -768,6 +769,16 @@ class ApiService {
 
     return new Promise<{ fileName: string; size: number; extractedFiles: string[] }>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
+
+      if (signal) {
+        if (signal.aborted) {
+          reject(new Error('Upload cancelled'));
+          return;
+        }
+        signal.addEventListener('abort', () => {
+          xhr.abort();
+        });
+      }
 
       // Track upload progress
       if (onProgress) {
