@@ -927,6 +927,17 @@ class ApiService {
     });
   }
 
+  async getWorldConfig<T = unknown>(serverId: string, worldId: string): Promise<T> {
+    return this.request<T>(`/api/servers/${serverId}/worlds/${worldId}/config`);
+  }
+
+  async updateWorldConfig<T = unknown>(serverId: string, worldId: string, config: unknown): Promise<T> {
+    return this.request<T>(`/api/servers/${serverId}/worlds/${worldId}/config`, {
+      method: 'PUT',
+      body: JSON.stringify(config),
+    });
+  }
+
   // ===================================
   // Alerts & Notifications
   // ===================================

@@ -7,6 +7,79 @@ import logger from '../utils/logger';
 
 const prisma = new PrismaClient();
 
+/**
+ * Hytale World Config.json structure
+ */
+export interface HytaleWorldConfig {
+  // Read-only fields
+  Version?: number;
+  UUID?: { $binary: string; $type: string };
+  Seed?: number;
+  WorldGen?: { Type?: string; Name?: string };
+  GameplayConfig?: string;
+
+  // Gameplay settings
+  IsPvpEnabled?: boolean;
+  IsFallDamageEnabled?: boolean;
+  IsSpawningNPC?: boolean;
+  IsAllNPCFrozen?: boolean;
+  IsSpawnMarkersEnabled?: boolean;
+  IsObjectiveMarkersEnabled?: boolean;
+  IsCompassUpdating?: boolean;
+
+  // Time & Effects
+  IsGameTimePaused?: boolean;
+  GameTime?: string;
+  ClientEffects?: {
+    SunHeightPercent?: number;
+    SunAngleDegrees?: number;
+    SunIntensity?: number;
+    BloomIntensity?: number;
+    BloomPower?: number;
+    SunshaftIntensity?: number;
+    SunshaftScaleFactor?: number;
+    [key: string]: unknown;
+  };
+
+  // World Management
+  IsTicking?: boolean;
+  IsBlockTicking?: boolean;
+  IsSavingPlayers?: boolean;
+  IsSavingChunks?: boolean;
+  SaveNewChunks?: boolean;
+  IsUnloadingChunks?: boolean;
+  DeleteOnUniverseStart?: boolean;
+  DeleteOnRemove?: boolean;
+
+  // Allow any other fields
+  [key: string]: unknown;
+}
+
+/** Fields that cannot be edited (immutable) */
+const IMMUTABLE_FIELDS = ['Version', 'UUID', 'Seed', 'WorldGen', 'GameplayConfig', 'WorldMap', 'ChunkStorage', 'ChunkConfig', 'ResourceStorage', 'Plugin', 'RequiredPlugins'];
+
+/** Fields that are allowed to be edited */
+const EDITABLE_FIELDS = [
+  'IsPvpEnabled',
+  'IsFallDamageEnabled',
+  'IsSpawningNPC',
+  'IsAllNPCFrozen',
+  'IsSpawnMarkersEnabled',
+  'IsObjectiveMarkersEnabled',
+  'IsCompassUpdating',
+  'IsGameTimePaused',
+  'GameTime',
+  'ClientEffects',
+  'IsTicking',
+  'IsBlockTicking',
+  'IsSavingPlayers',
+  'IsSavingChunks',
+  'SaveNewChunks',
+  'IsUnloadingChunks',
+  'DeleteOnUniverseStart',
+  'DeleteOnRemove',
+];
+
 export interface WorldInfo {
   id: string;
   serverId: string;
@@ -32,19 +105,78 @@ export class WorldsService {
       throw new Error('Server not found');
     }
 
-    // Scan server directory for world folders
     const serverPath = server.serverPath;
     const worldsInDB = await prisma.world.findMany({
       where: { serverId },
     });
 
-    // Also scan filesystem for worlds not in DB
-    const worldsInFS = await this.scanWorldFolders(serverPath);
+    // Scan for worlds in multiple locations for Hytale compatibility
+    let worldsInFS: Array<{ name: string; path: string; size: number }> = [];
+
+    // Determine possible root directories (serverPath itself, or Server subdirectory)
+    const possibleRoots: string[] = [serverPath];
+    const serverSubdir = path.join(serverPath, 'Server');
+    if (await fs.pathExists(serverSubdir)) {
+      possibleRoots.push(serverSubdir);
+    }
+
+    for (const rootPath of possibleRoots) {
+      // 1. Check for universe folder (Hytale structure: universe/worlds/)
+      const universeDir = path.join(rootPath, 'universe');
+      const universeWorldsDir = path.join(universeDir, 'worlds');
+      if (await fs.pathExists(universeWorldsDir)) {
+        const universeWorlds = await this.scanWorldFolders(universeWorldsDir);
+        worldsInFS.push(...universeWorlds);
+      }
+
+      // 2. Also check for universes (plural) folder structure
+      const universesDir = path.join(rootPath, 'universes');
+      if (await fs.pathExists(universesDir)) {
+        const universes = await fs.readdir(universesDir);
+        for (const universe of universes) {
+          const uWorldsDir = path.join(universesDir, universe, 'worlds');
+          if (await fs.pathExists(uWorldsDir)) {
+            const uWorlds = await this.scanWorldFolders(uWorldsDir);
+            worldsInFS.push(...uWorlds);
+          }
+        }
+      }
+    }
+
+    // 3. Check if worldPath points to a universe folder with worlds subdirectory
+    if (server.worldPath) {
+      const worldsDir = path.join(server.worldPath, 'worlds');
+      if (await fs.pathExists(worldsDir)) {
+        const universeWorlds = await this.scanWorldFolders(worldsDir);
+        worldsInFS.push(...universeWorlds);
+      }
+      // Also check if worldPath itself is a world
+      if (await this.isWorldFolder(server.worldPath)) {
+        const size = await this.getDirectorySize(server.worldPath);
+        worldsInFS.push({
+          name: path.basename(server.worldPath),
+          path: server.worldPath,
+          size,
+        });
+      }
+    }
+
+    // 4. Fall back to scanning server root for world folders (Minecraft style)
+    if (worldsInFS.length === 0) {
+      worldsInFS = await this.scanWorldFolders(serverPath);
+    }
+
+    // Deduplicate by path
+    const uniqueWorlds = new Map<string, { name: string; path: string; size: number }>();
+    for (const w of worldsInFS) {
+      uniqueWorlds.set(w.path, w);
+    }
+    const deduplicatedWorlds = Array.from(uniqueWorlds.values());
 
     // Merge and update database
     const allWorlds: WorldInfo[] = [];
 
-    for (const worldFolder of worldsInFS) {
+    for (const worldFolder of deduplicatedWorlds) {
       let world = worldsInDB.find(w => w.folderPath === worldFolder.path);
 
       if (!world) {
@@ -126,10 +258,24 @@ export class WorldsService {
    * Check if a directory is a world folder
    */
   private async isWorldFolder(dirPath: string): Promise<boolean> {
-    // Common world file indicators
-    const indicators = ['level.dat', 'world.dat', 'region', 'data'];
+    // Hytale world indicator - config.json with world-specific fields
+    const hytaleConfigPath = path.join(dirPath, 'config.json');
+    if (await fs.pathExists(hytaleConfigPath)) {
+      try {
+        const content = await fs.readFile(hytaleConfigPath, 'utf-8');
+        const config = JSON.parse(content);
+        // Check for Hytale world-specific fields (UUID, Seed, WorldGen, IsTicking)
+        if (config.UUID !== undefined || config.Seed !== undefined || config.WorldGen !== undefined || config.IsTicking !== undefined) {
+          return true;
+        }
+      } catch {
+        // Not a valid Hytale world config
+      }
+    }
 
-    for (const indicator of indicators) {
+    // Minecraft-style world file indicators (fallback)
+    const minecraftIndicators = ['level.dat', 'world.dat', 'region', 'data'];
+    for (const indicator of minecraftIndicators) {
       if (await fs.pathExists(path.join(dirPath, indicator))) {
         return true;
       }
@@ -400,5 +546,107 @@ export class WorldsService {
       createdAt: updated.createdAt,
       lastPlayed: updated.lastPlayed || undefined,
     };
+  }
+
+  /**
+   * Get world config.json
+   */
+  async getWorldConfig(worldId: string): Promise<HytaleWorldConfig> {
+    const world = await prisma.world.findUnique({
+      where: { id: worldId },
+    });
+
+    if (!world) {
+      throw new Error('World not found');
+    }
+
+    const configPath = path.join(world.folderPath, 'config.json');
+
+    if (!await fs.pathExists(configPath)) {
+      throw new Error('World config.json not found');
+    }
+
+    try {
+      const configContent = await fs.readFile(configPath, 'utf-8');
+      return JSON.parse(configContent) as HytaleWorldConfig;
+    } catch (error: any) {
+      logger.error('Error reading world config:', error);
+      throw new Error('Failed to parse world config.json');
+    }
+  }
+
+  /**
+   * Update world config.json
+   * Only allows editing whitelisted fields when server is stopped
+   */
+  async updateWorldConfig(worldId: string, updates: Partial<HytaleWorldConfig>): Promise<HytaleWorldConfig> {
+    const world = await prisma.world.findUnique({
+      where: { id: worldId },
+      include: {
+        server: true,
+      },
+    });
+
+    if (!world) {
+      throw new Error('World not found');
+    }
+
+    // Check if server is running
+    if (world.server.status === 'running') {
+      throw new Error('Cannot edit world config while server is running');
+    }
+
+    const configPath = path.join(world.folderPath, 'config.json');
+
+    if (!await fs.pathExists(configPath)) {
+      throw new Error('World config.json not found');
+    }
+
+    // Read existing config
+    let existingConfig: HytaleWorldConfig;
+    try {
+      const configContent = await fs.readFile(configPath, 'utf-8');
+      existingConfig = JSON.parse(configContent);
+    } catch (error: any) {
+      logger.error('Error reading world config:', error);
+      throw new Error('Failed to parse world config.json');
+    }
+
+    // Filter out immutable fields from updates
+    const filteredUpdates: Partial<HytaleWorldConfig> = {};
+    for (const key of Object.keys(updates)) {
+      if (IMMUTABLE_FIELDS.includes(key)) {
+        logger.warn(`Attempted to modify immutable field: ${key}`);
+        continue;
+      }
+      if (EDITABLE_FIELDS.includes(key)) {
+        filteredUpdates[key] = updates[key];
+      }
+    }
+
+    // Merge updates with existing config
+    const updatedConfig: HytaleWorldConfig = {
+      ...existingConfig,
+      ...filteredUpdates,
+    };
+
+    // Handle nested ClientEffects separately
+    if (updates.ClientEffects && existingConfig.ClientEffects) {
+      updatedConfig.ClientEffects = {
+        ...existingConfig.ClientEffects,
+        ...updates.ClientEffects,
+      };
+    }
+
+    // Write updated config
+    try {
+      await fs.writeFile(configPath, JSON.stringify(updatedConfig, null, 2), 'utf-8');
+      logger.info(`Updated world config for ${world.name}`);
+    } catch (error: any) {
+      logger.error('Error writing world config:', error);
+      throw new Error('Failed to write world config.json');
+    }
+
+    return updatedConfig;
   }
 }

@@ -1460,6 +1460,35 @@ export function createServerRoutes(
     }
   });
 
+  /**
+   * GET /api/servers/:id/worlds/:worldId/config
+   * Get world config.json
+   */
+  router.get('/:id/worlds/:worldId/config', async (req: Request, res: Response) => {
+    try {
+      const config = await worldsService.getWorldConfig(req.params.worldId);
+      return res.json(config);
+    } catch (error: any) {
+      logger.error('Error getting world config:', error);
+      return res.status(500).json({ error: error.message || 'Failed to get world config' });
+    }
+  });
+
+  /**
+   * PUT /api/servers/:id/worlds/:worldId/config
+   * Update world config.json
+   */
+  router.put('/:id/worlds/:worldId/config', async (req: Request, res: Response) => {
+    try {
+      const config = await worldsService.updateWorldConfig(req.params.worldId, req.body);
+      return res.json(config);
+    } catch (error: any) {
+      logger.error('Error updating world config:', error);
+      const statusCode = error.message?.includes('running') ? 400 : 500;
+      return res.status(statusCode).json({ error: error.message || 'Failed to update world config' });
+    }
+  });
+
   // ============================================
   // Alerts & Notifications
   // ============================================

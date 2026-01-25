@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge } from '../../components/ui';
-import { Globe, Trash2, Check, RefreshCw, ArrowLeft, Settings } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button } from '../../components/ui';
+import { Globe, Trash2, RefreshCw, ArrowLeft, Settings } from 'lucide-react';
 import { api } from '../../services/api';
 import { useToast } from '../../stores/toastStore';
+import { HytaleWorldConfigModal } from '../../components/modals/HytaleWorldConfigModal';
 
 interface Server {
   id: string;
@@ -31,6 +32,7 @@ export const ServerWorldsPage = () => {
   const [worlds, setWorlds] = useState<World[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [configModalWorld, setConfigModalWorld] = useState<World | null>(null);
 
   useEffect(() => {
     if (serverId) {
@@ -64,18 +66,6 @@ export const ServerWorldsPage = () => {
     }
   };
 
-  const handleActivateWorld = async (worldId: string) => {
-    if (!serverId) return;
-
-    try {
-      await api.activateWorld(serverId, worldId);
-      toast.success('World activated', 'The world has been set as active');
-      loadWorlds();
-    } catch (err: any) {
-      toast.error('Failed to activate world', err.message || 'An error occurred');
-    }
-  };
-
   const handleDeleteWorld = async (worldId: string, worldName: string) => {
     if (!serverId) return;
 
@@ -93,11 +83,18 @@ export const ServerWorldsPage = () => {
   };
 
   const formatSize = (bytes: number): string => {
-    const mb = bytes / 1024 / 1024;
-    if (mb >= 1024) {
-      return (mb / 1024).toFixed(2) + ' GB';
+    if (bytes < 1024) {
+      return bytes + ' B';
     }
-    return mb.toFixed(2) + ' MB';
+    const kb = bytes / 1024;
+    if (kb < 1024) {
+      return kb.toFixed(1) + ' KB';
+    }
+    const mb = kb / 1024;
+    if (mb < 1024) {
+      return mb.toFixed(2) + ' MB';
+    }
+    return (mb / 1024).toFixed(2) + ' GB';
   };
 
   const formatDate = (date: Date | string | undefined): string => {
@@ -184,20 +181,12 @@ export const ServerWorldsPage = () => {
                   <div className="flex items-start sm:items-center gap-4 flex-1">
                     <Globe
                       size={24}
-                      className={`flex-shrink-0 mt-1 sm:mt-0 ${world.isActive ? 'text-accent-primary' : 'text-text-light-muted dark:text-text-muted'}`}
+                      className="flex-shrink-0 mt-1 sm:mt-0 text-text-light-muted dark:text-text-muted"
                     />
                     <div className="flex-1 min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-medium text-text-light-primary dark:text-text-primary">
-                          {world.name}
-                        </h3>
-                        {world.isActive && (
-                          <Badge variant="success" size="sm">
-                            <Check size={12} className="mr-1" />
-                            Active
-                          </Badge>
-                        )}
-                      </div>
+                      <h3 className="font-medium text-text-light-primary dark:text-text-primary">
+                        {world.name}
+                      </h3>
                       <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-text-light-muted dark:text-text-muted mt-1">
                         <span>Size: {formatSize(world.sizeBytes)}</span>
                         {world.lastPlayed && (
@@ -213,20 +202,12 @@ export const ServerWorldsPage = () => {
                   </div>
 
                   <div className="flex gap-2 sm:flex-shrink-0">
-                    {!world.isActive && (
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => handleActivateWorld(world.id)}
-                      >
-                        Activate
-                      </Button>
-                    )}
                     <Button
                       variant="ghost"
                       size="sm"
                       icon={<Settings size={16} />}
                       title="World settings"
+                      onClick={() => setConfigModalWorld(world)}
                     >
                       <span className="hidden sm:inline">Config</span>
                     </Button>
@@ -258,10 +239,20 @@ export const ServerWorldsPage = () => {
           </p>
           <p>
             Each world can have different settings for PvP, fall damage, NPC spawning, game time, and more.
-            Only one world can be active at a time per server.
           </p>
         </CardContent>
       </Card>
+
+      {/* World Config Modal */}
+      {configModalWorld && (
+        <HytaleWorldConfigModal
+          world={configModalWorld}
+          serverStatus={server?.status || 'stopped'}
+          isOpen={!!configModalWorld}
+          onClose={() => setConfigModalWorld(null)}
+          onSaved={loadWorlds}
+        />
+      )}
     </div>
   );
 };
