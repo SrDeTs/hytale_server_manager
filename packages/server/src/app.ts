@@ -490,6 +490,7 @@ export class App {
       this.taskGroupService.cleanup();
       this.metricsService.stopCollection();
       this.alertsService.stopMonitoring();
+      await this.consoleService.cleanup();
       this.automationRulesService.cleanup();
       await this.serverService.cleanup();
       await this.consoleEvents.cleanup();
