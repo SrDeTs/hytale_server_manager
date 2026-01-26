@@ -24,7 +24,7 @@ IMPORTANT: You must configure the JWT secrets before first use. Generate random 
   <Category>GameServers: Tools:</Category>
   <WebUI>http://[IP]:[PORT:3001]</WebUI>
   <TemplateURL>https://raw.githubusercontent.com/nebula-codes/hytale_server_manager/main/unraid/hytale-server-manager.xml</TemplateURL>
-  <Icon>https://static.wikia.nocookie.net/logopedia/images/7/7c/Hytale_%28Icon%29.png/revision/latest?cb=20220924001013</Icon>
+  <Icon>https://raw.githubusercontent.com/nebula-codes/hytale_server_manager/refs/heads/main/unraid/Hytale_Icon.png</Icon>
   <ExtraParams/>
   <PostArgs/>
   <CPUset/>
