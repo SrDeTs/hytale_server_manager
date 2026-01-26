@@ -62,6 +62,7 @@ interface InstalledMod {
   files: ModFile[];
   enabled: boolean;
   installedAt: string;
+  providerId: string;
 }
 
 const getModDisplaySize = (mod: InstalledMod): number => {
@@ -557,11 +558,22 @@ export const ServerDetailPage = () => {
                         size="sm"
                         icon={<ExternalLink size={14} />}
                         onClick={() => {
-                          const slug = mod.projectTitle.toLowerCase().replace(/\s+/g, '-');
-                          const classification = mod.classification.toLowerCase();
-                          window.open(`https://modtale.net/${classification}/${slug}-${mod.projectId}`, '_blank');
+                          if (mod.providerId === 'curseforge') {
+                            // CurseForge slugs: lowercase, spaces to hyphens, remove non-alphanumeric (except hyphens)
+                            const slug = mod.projectTitle
+                              .toLowerCase()
+                              .replace(/[^a-z0-9\s-]/g, '')
+                              .replace(/\s+/g, '-')
+                              .replace(/-+/g, '-');
+                            window.open(`https://www.curseforge.com/hytale/mods/${slug}`, '_blank');
+                          } else {
+                            // Default to Modtale
+                            const slug = mod.projectTitle.toLowerCase().replace(/\s+/g, '-');
+                            const type = mod.classification === 'MODPACK' ? 'modpack' : 'mod';
+                            window.open(`https://modtale.net/${type}/${slug}-${mod.projectId}`, '_blank');
+                          }
                         }}
-                        title="View on Modtale"
+                        title={`View on ${mod.providerId === 'curseforge' ? 'CurseForge' : 'Modtale'}`}
                       />
                       <Button
                         variant="danger"
