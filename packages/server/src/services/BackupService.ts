@@ -4,6 +4,7 @@ import fs from 'fs-extra';
 import * as fsNative from 'fs';
 import path from 'path';
 import micromatch from 'micromatch';
+import yauzl from 'yauzl';
 import { DiscordNotificationService } from './DiscordNotificationService';
 import { FtpStorageService } from './FtpStorageService';
 import config from '../config';
@@ -457,8 +458,7 @@ export class BackupService {
 
   /**
    * Add a file to the archive with retry logic for locked files
-   * Uses streaming for large files (>1.5GB) to avoid Node.js memory limits
-   * Reads smaller files into buffer first to avoid archiver stream errors on locked files
+   * Always uses streaming to avoid Node.js 2GB buffer limit
    */
   private async addFileToArchiveWithRetry(
     archive: archiver.Archiver,
@@ -466,40 +466,24 @@ export class BackupService {
     relativePath: string
   ): Promise<boolean> {
     const { retryAttempts, retryDelayMs } = config.backup;
-    // Node.js fs.readFile() limit is ~2GB, use streaming above 1.5GB to be safe
-    const LARGE_FILE_THRESHOLD = 1.5 * 1024 * 1024 * 1024; // 1.5GB
 
     for (let attempt = 1; attempt <= retryAttempts; attempt++) {
       try {
         // Get file metadata first
         const fileStat = await fs.stat(absolutePath);
 
-        // For large files, use streaming to avoid memory limits
-        if (fileStat.size > LARGE_FILE_THRESHOLD) {
-          logger.info(`Using stream for large file (${(fileStat.size / 1024 / 1024 / 1024).toFixed(2)} GB): ${relativePath}`);
+        // Test file accessibility
+        await fs.access(absolutePath, fs.constants.R_OK);
 
-          // Test file accessibility by opening and closing it first
-          await fs.access(absolutePath, fs.constants.R_OK);
+        // Always use streaming - avoids Node.js 2GB buffer limit entirely
+        const readStream = fsNative.createReadStream(absolutePath);
 
-          // Create read stream using native fs (better for large files) and append to archive
-          const readStream = fsNative.createReadStream(absolutePath);
-          archive.append(readStream, {
-            name: relativePath,
-            date: fileStat.mtime,
-            mode: fileStat.mode,
-          });
-          return true;
-        }
-
-        // For smaller files, read into memory for better error handling
-        const fileBuffer = await fs.readFile(absolutePath);
-
-        // Add buffer to archive (not file path) to avoid stream errors
-        archive.append(fileBuffer, {
+        archive.append(readStream, {
           name: relativePath,
           date: fileStat.mtime,
           mode: fileStat.mode,
         });
+
         return true;
       } catch (error: any) {
         const isLockedFile = LOCKED_FILE_ERRORS.includes(error.code);
@@ -515,15 +499,9 @@ export class BackupService {
           );
           return false;
         } else if (error.code === 'ENOENT') {
-          // File was deleted during backup
           logger.warn(`File no longer exists, skipping: ${relativePath}`);
           return false;
-        } else if (error.code === 'ERR_FS_FILE_TOO_LARGE') {
-          // File too large for buffer - should not happen with streaming, but handle it
-          logger.error(`File too large for backup: ${relativePath}`);
-          return false;
         } else {
-          // Unexpected error
           logger.error(`Error accessing file ${relativePath}:`, error);
           return false;
         }
@@ -645,12 +623,76 @@ export class BackupService {
   }
 
   /**
-   * Extract a zip archive
+   * Extract a zip archive using yauzl (handles files of any size)
+   * Cross-platform: works on Windows, Linux, and Docker
    */
   private async extractZipArchive(archivePath: string, destinationPath: string): Promise<void> {
-    const AdmZip = require('adm-zip');
-    const zip = new AdmZip(archivePath);
-    zip.extractAllTo(destinationPath, true);
+    return new Promise((resolve, reject) => {
+      yauzl.open(archivePath, { lazyEntries: true }, (err, zipfile) => {
+        if (err || !zipfile) {
+          reject(err || new Error('Failed to open zip file'));
+          return;
+        }
+
+        let pending = 0;
+        let finished = false;
+
+        const checkDone = () => {
+          if (finished && pending === 0) {
+            resolve();
+          }
+        };
+
+        zipfile.on('entry', (entry: yauzl.Entry) => {
+          const entryPath = path.join(destinationPath, entry.fileName);
+
+          // Handle directory entries
+          if (entry.fileName.endsWith('/')) {
+            fs.ensureDir(entryPath)
+              .then(() => zipfile.readEntry())
+              .catch(reject);
+            return;
+          }
+
+          // Handle file entries
+          pending++;
+          fs.ensureDir(path.dirname(entryPath))
+            .then(() => {
+              zipfile.openReadStream(entry, (streamErr, readStream) => {
+                if (streamErr || !readStream) {
+                  reject(streamErr || new Error('Failed to open read stream'));
+                  return;
+                }
+
+                const writeStream = fsNative.createWriteStream(entryPath);
+                readStream.pipe(writeStream);
+
+                writeStream.on('close', () => {
+                  pending--;
+                  checkDone();
+                });
+
+                writeStream.on('error', reject);
+                readStream.on('error', reject);
+
+                // Continue to next entry
+                zipfile.readEntry();
+              });
+            })
+            .catch(reject);
+        });
+
+        zipfile.on('end', () => {
+          finished = true;
+          checkDone();
+        });
+
+        zipfile.on('error', reject);
+
+        // Start reading entries
+        zipfile.readEntry();
+      });
+    });
   }
 
   /**
