@@ -134,7 +134,7 @@ model ModFile {
   // File Info
   fileName        String   // e.g., "MyMod.jar"
   filePath        String   // Relative path: "mods/MyMod.jar"
-  fileSize        Int
+  fileSize        BigInt   // BigInt to support files > 2GB
   fileType        String   // "jar", "yml", "json", "toml"
 
   // Metadata
@@ -187,7 +187,7 @@ model Backup {
   name            String
   description     String?
   filePath        String
-  fileSize        Int
+  fileSize        BigInt   // BigInt to support backups > 2GB
 
   // File Statistics
   totalFiles      Int?

@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import archiver from 'archiver';
 import fs from 'fs-extra';
+import * as fsNative from 'fs';
 import path from 'path';
 import micromatch from 'micromatch';
 import { DiscordNotificationService } from './DiscordNotificationService';
@@ -456,7 +457,8 @@ export class BackupService {
 
   /**
    * Add a file to the archive with retry logic for locked files
-   * Reads file into buffer first to avoid archiver stream errors on locked files
+   * Uses streaming for large files (>1.5GB) to avoid Node.js memory limits
+   * Reads smaller files into buffer first to avoid archiver stream errors on locked files
    */
   private async addFileToArchiveWithRetry(
     archive: archiver.Archiver,
@@ -464,12 +466,32 @@ export class BackupService {
     relativePath: string
   ): Promise<boolean> {
     const { retryAttempts, retryDelayMs } = config.backup;
+    // Node.js fs.readFile() limit is ~2GB, use streaming above 1.5GB to be safe
+    const LARGE_FILE_THRESHOLD = 1.5 * 1024 * 1024 * 1024; // 1.5GB
 
     for (let attempt = 1; attempt <= retryAttempts; attempt++) {
       try {
-        // Get file metadata first, then read into memory
-        // This ensures we catch any lock errors before passing to archiver
+        // Get file metadata first
         const fileStat = await fs.stat(absolutePath);
+
+        // For large files, use streaming to avoid memory limits
+        if (fileStat.size > LARGE_FILE_THRESHOLD) {
+          logger.info(`Using stream for large file (${(fileStat.size / 1024 / 1024 / 1024).toFixed(2)} GB): ${relativePath}`);
+
+          // Test file accessibility by opening and closing it first
+          await fs.access(absolutePath, fs.constants.R_OK);
+
+          // Create read stream using native fs (better for large files) and append to archive
+          const readStream = fsNative.createReadStream(absolutePath);
+          archive.append(readStream, {
+            name: relativePath,
+            date: fileStat.mtime,
+            mode: fileStat.mode,
+          });
+          return true;
+        }
+
+        // For smaller files, read into memory for better error handling
         const fileBuffer = await fs.readFile(absolutePath);
 
         // Add buffer to archive (not file path) to avoid stream errors
@@ -495,6 +517,10 @@ export class BackupService {
         } else if (error.code === 'ENOENT') {
           // File was deleted during backup
           logger.warn(`File no longer exists, skipping: ${relativePath}`);
+          return false;
+        } else if (error.code === 'ERR_FS_FILE_TOO_LARGE') {
+          // File too large for buffer - should not happen with streaming, but handle it
+          logger.error(`File too large for backup: ${relativePath}`);
           return false;
         } else {
           // Unexpected error
@@ -711,7 +737,8 @@ export class BackupService {
     });
 
     const totalBackups = backups.length;
-    const totalSize = backups.reduce((sum, b) => sum + b.fileSize, 0);
+    // Handle BigInt fileSize - convert to Number for arithmetic (safe for files up to ~9 petabytes)
+    const totalSize = backups.reduce((sum, b) => sum + Number(b.fileSize), 0);
     const completedBackups = backups.filter((b) => b.status === 'completed').length;
     const failedBackups = backups.filter((b) => b.status === 'failed').length;
 

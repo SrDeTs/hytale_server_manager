@@ -663,7 +663,7 @@ export class JavaServerAdapter implements IServerAdapter {
         modId: f.modId,
         fileName: f.fileName,
         filePath: f.filePath,
-        fileSize: f.fileSize,
+        fileSize: Number(f.fileSize),  // Convert BigInt to number
         fileType: f.fileType,
         createdAt: f.createdAt,
       })),
