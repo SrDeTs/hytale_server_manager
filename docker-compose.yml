@@ -39,7 +39,7 @@ services:
       # Backup storage
       - hsm-backups:/app/data/backups
       # Application logs
-      - hsm-logs:/app/data/logs
+      - hsm-logs:/app/logs
       # SSL certificates (if using HTTPS)
       - hsm-certs:/app/data/certs
       # Hytale downloader tool
