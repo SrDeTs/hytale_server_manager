@@ -404,8 +404,35 @@ export class ServerService {
     const server = await this.getServer(serverId);
     if (!server) throw new Error(`Server ${serverId} not found`);
 
+    // Update status to 'stopping'
+    await this.prisma.server.update({
+      where: { id: serverId },
+      data: { status: 'stopping' },
+    });
+
     const adapter = await this.getAdapter(serverId);
-    await adapter.restart();
+
+    // Stop the server
+    await adapter.stop();
+
+    // Update status to 'starting'
+    await this.prisma.server.update({
+      where: { id: serverId },
+      data: { status: 'starting' },
+    });
+
+    // Wait before starting (same as adapter.restart())
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Start the server
+    await adapter.start();
+
+    // Update status to 'running'
+    await this.prisma.server.update({
+      where: { id: serverId },
+      data: { status: 'running' },
+    });
+
     logger.info(`Restarted server: ${serverId}`);
 
     // Send Discord notification
