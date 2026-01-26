@@ -59,29 +59,13 @@ export interface HytaleWorldConfig {
 const IMMUTABLE_FIELDS = ['Version', 'UUID', 'Seed', 'WorldGen', 'GameplayConfig', 'WorldMap', 'ChunkStorage', 'ChunkConfig', 'ResourceStorage', 'Plugin', 'RequiredPlugins'];
 
 /**
- * Known editable fields (for documentation/reference only).
- * Filtering uses IMMUTABLE_FIELDS blacklist - all other fields are allowed.
+ * Note: All fields not in IMMUTABLE_FIELDS are editable.
+ * This allows custom fields from the JSON editor to be saved.
+ * Known editable fields include: IsPvpEnabled, IsFallDamageEnabled, IsSpawningNPC,
+ * IsAllNPCFrozen, IsSpawnMarkersEnabled, IsObjectiveMarkersEnabled, IsCompassUpdating,
+ * IsGameTimePaused, GameTime, ClientEffects, IsTicking, IsBlockTicking, IsSavingPlayers,
+ * IsSavingChunks, SaveNewChunks, IsUnloadingChunks, DeleteOnUniverseStart, DeleteOnRemove.
  */
-const _EDITABLE_FIELDS = [
-  'IsPvpEnabled',
-  'IsFallDamageEnabled',
-  'IsSpawningNPC',
-  'IsAllNPCFrozen',
-  'IsSpawnMarkersEnabled',
-  'IsObjectiveMarkersEnabled',
-  'IsCompassUpdating',
-  'IsGameTimePaused',
-  'GameTime',
-  'ClientEffects',
-  'IsTicking',
-  'IsBlockTicking',
-  'IsSavingPlayers',
-  'IsSavingChunks',
-  'SaveNewChunks',
-  'IsUnloadingChunks',
-  'DeleteOnUniverseStart',
-  'DeleteOnRemove',
-];
 
 export interface WorldInfo {
   id: string;
