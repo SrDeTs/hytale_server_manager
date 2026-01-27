@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Modal, ModalFooter, Button, Input } from '../ui';
-import { Server as ServerIcon } from 'lucide-react';
+import { ChevronDown, Server as ServerIcon } from 'lucide-react';
 import { HytaleServerDownloadSection } from '../features/HytaleServerDownloadSection';
 
 interface CreateServerModalProps {
@@ -48,8 +48,13 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
   });
 
   const [loading, setLoading] = useState(false);
+  const [jvmArgsExpanded, setJvmArgsExpanded] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof ServerFormData, string>>>({});
   const updatingFromRef = useRef<'fields' | 'jvmArgs' | null>(null);
+
+  const toggleJvmArgsExpanded = () => {
+    setJvmArgsExpanded(!jvmArgsExpanded);
+  };
 
   // Build JVM args from memory and CPU settings
   const buildJvmArgs = (config: ServerFormData['adapterConfig']): string => {
@@ -102,8 +107,8 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
       minMemory: '1',
       maxMemory: '2',
       cpuCores: undefined,
-      useContainerSupport: false,
-      useG1GC: false,
+      useContainerSupport: true,
+      useG1GC: true,
       maxGcPauseMillis: '200',
       parallelGCThreads: '',
       concGCThreads: '',
@@ -611,106 +616,122 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
 
               {/* JVM Optimization Flags */}
               <div className="border-t border-gray-300 dark:border-gray-700 pt-4 mt-4">
-                <h5 className="text-sm font-medium text-text-light-primary dark:text-text-primary mb-3">JVM Optimization Flags</h5>
-
-                <div className="space-y-3">
-                  {/* Container Support */}
-                  <div className="flex items-start gap-2">
-                    <input
-                      type="checkbox"
-                      checked={formData.adapterConfig?.useContainerSupport || false}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        adapterConfig: { ...prev.adapterConfig, useContainerSupport: e.target.checked },
-                      }))}
-                      className="mt-0.5"
-                    />
-                    <div className="flex-1">
-                      <label className="block text-xs text-text-light-primary dark:text-text-primary font-medium">
-                        Container Support
-                      </label>
-                      <p className="text-xs text-text-light-muted dark:text-text-muted">
-                        JVM container awareness for Docker/Kubernetes
-                      </p>
-                    </div>
+                <div className="flex flex-row items-center justify-between mb-3">
+                  <div className="flex flex-col">
+                    <h5 className="text-sm font-medium text-text-light-primary dark:text-text-primary">JVM Optimization Flags</h5>
+                    <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
+                      Additional JVM tuning options for better performance
+                    </p>
                   </div>
+                  <Button variant="secondary" size="sm" onClick={toggleJvmArgsExpanded}>
+                    <ChevronDown className={`w-4 h-4 transform transition-transform duration-300 ${
+                      jvmArgsExpanded ? 'rotate-180' : 'rotate-0'
+                    }`}/>
+                  </Button>
+                </div>
+                  
+                <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                  jvmArgsExpanded ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+                }`}>
+                  <div className="space-y-3">
+                    {/* Container Support */}
+                    <div className="flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        checked={formData.adapterConfig?.useContainerSupport || false}
+                        onChange={(e) => setFormData(prev => ({
+                          ...prev,
+                          adapterConfig: { ...prev.adapterConfig, useContainerSupport: e.target.checked },
+                        }))}
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1">
+                        <label className="block text-xs text-text-light-primary dark:text-text-primary font-medium">
+                          Container Support
+                        </label>
+                        <p className="text-xs text-text-light-muted dark:text-text-muted">
+                          JVM container awareness for Docker/Kubernetes
+                        </p>
+                      </div>
+                    </div>
 
-                  {/* G1GC */}
-                  <div className="flex items-start gap-2">
-                    <input
-                      type="checkbox"
-                      checked={formData.adapterConfig?.useG1GC || false}
-                      onChange={(e) => setFormData(prev => ({
-                        ...prev,
-                        adapterConfig: { ...prev.adapterConfig, useG1GC: e.target.checked },
-                      }))}
-                      className="mt-0.5"
-                    />
-                    <div className="flex-1">
-                      <label className="block text-xs text-text-light-primary dark:text-text-primary font-medium">
-                        G1 Garbage Collector
-                      </label>
-                      <p className="text-xs text-text-light-muted dark:text-text-muted">
-                        Better performance for 4GB+ heaps, reduces lag
-                      </p>
+                    {/* G1GC */}
+                    <div className="flex items-start gap-2">
+                      <input
+                        type="checkbox"
+                        checked={formData.adapterConfig?.useG1GC || false}
+                        onChange={(e) => setFormData(prev => ({
+                          ...prev,
+                          adapterConfig: { ...prev.adapterConfig, useG1GC: e.target.checked },
+                        }))}
+                        className="mt-0.5"
+                      />
+                      <div className="flex-1">
+                        <label className="block text-xs text-text-light-primary dark:text-text-primary font-medium">
+                          G1 Garbage Collector
+                        </label>
+                        <p className="text-xs text-text-light-muted dark:text-text-muted">
+                          Better performance for 4GB+ heaps, reduces lag
+                        </p>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* GC Thread Inputs */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <Input
-                        type="number"
-                        min="1"
-                        placeholder="Parallel GC Threads (Leave blank for auto)"
-                        value={formData.adapterConfig?.parallelGCThreads || ''}
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          adapterConfig: { ...prev.adapterConfig, parallelGCThreads: e.target.value },
-                        }))}
-                        className="text-xs"
-                      />
+                    {/* GC Thread Inputs */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Input
+                          type="number"
+                          min="1"
+                          placeholder="Parallel GC Threads (Leave blank for auto)"
+                          value={formData.adapterConfig?.parallelGCThreads || ''}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            adapterConfig: { ...prev.adapterConfig, parallelGCThreads: e.target.value },
+                          }))}
+                          className="text-xs"
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          type="number"
+                          min="1"
+                          placeholder="Concurrent GC Threads (Leave blank for auto)"
+                          value={formData.adapterConfig?.concGCThreads || ''}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            adapterConfig: { ...prev.adapterConfig, concGCThreads: e.target.value },
+                          }))}
+                          className="text-xs"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <Input
-                        type="number"
-                        min="1"
-                        placeholder="Concurrent GC Threads (Leave blank for auto)"
-                        value={formData.adapterConfig?.concGCThreads || ''}
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          adapterConfig: { ...prev.adapterConfig, concGCThreads: e.target.value },
-                        }))}
-                        className="text-xs"
-                      />
-                    </div>
-                  </div>
 
-                  {/* Max GC Pause & AOT Cache */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <Input
-                        type="number"
-                        min="50"
-                        placeholder="Max GC Pause (ms)"
-                        value={formData.adapterConfig?.maxGcPauseMillis || '200'}
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          adapterConfig: { ...prev.adapterConfig, maxGcPauseMillis: e.target.value },
-                        }))}
-                        className="text-xs"
-                      />
-                    </div>
-                    <div>
-                      <Input
-                        placeholder="AOT Cache File"
-                        value={formData.adapterConfig?.aotCache || 'HytaleServer.aot'}
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          adapterConfig: { ...prev.adapterConfig, aotCache: e.target.value },
-                        }))}
-                        className="text-xs font-mono"
-                      />
+                    {/* Max GC Pause & AOT Cache */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Input
+                          type="number"
+                          min="50"
+                          placeholder="Max GC Pause (ms)"
+                          value={formData.adapterConfig?.maxGcPauseMillis || '200'}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            adapterConfig: { ...prev.adapterConfig, maxGcPauseMillis: e.target.value },
+                          }))}
+                          className="text-xs"
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          placeholder="AOT Cache File"
+                          value={formData.adapterConfig?.aotCache || 'HytaleServer.aot'}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            adapterConfig: { ...prev.adapterConfig, aotCache: e.target.value },
+                          }))}
+                          className="text-xs font-mono"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
