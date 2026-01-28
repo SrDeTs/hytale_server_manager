@@ -8,6 +8,7 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../stores/authStore';
@@ -26,6 +27,7 @@ import { authService, AuthError } from '../../services/auth';
  * - Error display
  */
 export const LoginPage = () => {
+  const { t } = useTranslation();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -41,8 +43,8 @@ export const LoginPage = () => {
   const navigate = useNavigate();
   const isSetupMode = setupRequired === true || forceSetup;
   const subtitle = isSetupMode
-    ? 'Create your first admin account to continue'
-    : 'Server Management Dashboard';
+    ? t('auth.setup.subtitle')
+    : t('auth.login.subtitle');
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -88,7 +90,7 @@ export const LoginPage = () => {
     setSetupError(null);
 
     if (setupPassword !== setupConfirm) {
-      setSetupError('Passwords do not match');
+      setSetupError(t('auth.setup.password_mismatch'));
       return;
     }
 
@@ -114,7 +116,7 @@ export const LoginPage = () => {
     } catch (err) {
       const message = err instanceof AuthError
         ? err.message
-        : 'Failed to create admin account';
+        : t('auth.setup.create_error');
       setSetupError(message);
     } finally {
       setIsSettingUp(false);
@@ -126,7 +128,7 @@ export const LoginPage = () => {
       <div className="min-h-screen flex items-center justify-center bg-primary-light-bg dark:bg-primary-bg">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary" />
-          <p className="text-text-light-muted dark:text-text-muted">Checking setup...</p>
+          <p className="text-text-light-muted dark:text-text-muted">{t('auth.login.checking_setup')}</p>
         </div>
       </div>
     );
@@ -151,7 +153,7 @@ export const LoginPage = () => {
                 <Gamepad2 size={32} className="text-black" />
               </div>
             </motion.div>
-            <h1 className="text-3xl font-heading font-bold text-gradient">HytalePanel</h1>
+            <h1 className="text-3xl font-heading font-bold text-gradient">{t('auth.login.title')}</h1>
             <p className="text-text-light-muted dark:text-text-muted mt-2">{subtitle}</p>
           </div>
 
@@ -159,8 +161,8 @@ export const LoginPage = () => {
             <form onSubmit={handleSetupSubmit} className="space-y-4">
               <Input
                 type="email"
-                label="Admin Email"
-                placeholder="Enter your email address"
+                label={t('auth.setup.email')}
+                placeholder={t('auth.form.setup_email_placeholder')}
                 value={setupEmail}
                 onChange={(e) => setSetupEmail(e.target.value)}
                 icon={<User size={18} />}
@@ -171,8 +173,8 @@ export const LoginPage = () => {
 
               <Input
                 type="text"
-                label="Admin Username"
-                placeholder="Choose a username"
+                label={t('auth.setup.username')}
+                placeholder={t('auth.form.setup_username_placeholder')}
                 value={setupUsername}
                 onChange={(e) => setSetupUsername(e.target.value)}
                 icon={<User size={18} />}
@@ -183,8 +185,8 @@ export const LoginPage = () => {
 
               <Input
                 type="password"
-                label="Admin Password"
-                placeholder="Create a strong password"
+                label={t('auth.setup.password')}
+                placeholder={t('auth.form.setup_password_placeholder')}
                 value={setupPassword}
                 onChange={(e) => setSetupPassword(e.target.value)}
                 icon={<Lock size={18} />}
@@ -195,8 +197,8 @@ export const LoginPage = () => {
 
               <Input
                 type="password"
-                label="Confirm Password"
-                placeholder="Re-enter your password"
+                label={t('auth.setup.confirm_password')}
+                placeholder={t('auth.form.setup_confirm_placeholder')}
                 value={setupConfirm}
                 onChange={(e) => setSetupConfirm(e.target.value)}
                 icon={<Lock size={18} />}
@@ -206,7 +208,7 @@ export const LoginPage = () => {
               />
 
               <div className="text-xs text-text-light-muted dark:text-text-muted">
-                Password must be 12+ characters with uppercase, lowercase, number, and special character.
+                {t('auth.setup.requirements')}
               </div>
 
               <AnimatePresence mode="wait">
@@ -231,15 +233,15 @@ export const LoginPage = () => {
                 loading={isSettingUp}
                 icon={<LogIn size={20} />}
               >
-                {isSettingUp ? 'Creating admin...' : 'Create Admin Account'}
+                {isSettingUp ? t('auth.action.creating') : t('auth.action.create_account')}
               </Button>
             </form>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 type="text"
-                label="Username or Email"
-                placeholder="Enter your username or email"
+                label={t('auth.form.identifier')}
+                placeholder={t('auth.form.identifier_placeholder')}
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 icon={<User size={18} />}
@@ -250,8 +252,8 @@ export const LoginPage = () => {
 
               <Input
                 type="password"
-                label="Password"
-                placeholder="Enter your password"
+                label={t('auth.form.password')}
+                placeholder={t('auth.form.password_placeholder')}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 icon={<Lock size={18} />}
@@ -274,16 +276,16 @@ export const LoginPage = () => {
                     htmlFor="remember"
                     className="ml-2 text-sm text-text-light-muted dark:text-text-muted cursor-pointer"
                   >
-                    Remember me
+                    {t('auth.form.remember_me')}
                   </label>
                 </div>
 
                 <button
                   type="button"
                   className="text-sm text-accent-primary hover:text-accent-primary/80 transition-colors"
-                  onClick={() => {/* TODO: Implement forgot password */}}
+                  onClick={() => {/* TODO: Implement forgot password */ }}
                 >
-                  Forgot password?
+                  {t('auth.form.forgot_password')}
                 </button>
               </div>
 
@@ -310,7 +312,7 @@ export const LoginPage = () => {
                 loading={isLoading}
                 icon={<LogIn size={20} />}
               >
-                {isLoading ? 'Signing in...' : 'Sign In'}
+                {isLoading ? t('auth.action.signing_in') : t('auth.action.sign_in')}
               </Button>
             </form>
           )}
@@ -319,7 +321,7 @@ export const LoginPage = () => {
         {/* Footer */}
         <div className="mt-6 text-center text-xs text-text-light-muted dark:text-text-muted">
           <p>{env.app.name} &copy; {new Date().getFullYear()}</p>
-         
+
         </div>
       </motion.div>
     </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Input } from '../../components/ui';
 import { ArrowLeft, Save, RotateCw, HardDrive, FolderOpen, Server, Plus, X, FileX } from 'lucide-react';
 import api from '../../services/api';
@@ -62,6 +63,7 @@ interface FtpStatus {
 export const ServerSettingsPage = () => {
   const { id } = useParams<{ id: string }>();
   const toast = useToast();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<SettingsTab>('general');
   const [hasChanges, setHasChanges] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -197,10 +199,10 @@ export const ServerSettingsPage = () => {
         backupType: storageSettings.backupType,
         backupExclusions: storageSettings.backupExclusions.length > 0 ? storageSettings.backupExclusions : null,
       });
-      toast.success('Storage settings saved', 'Server storage configuration updated successfully');
+      toast.success(t('servers.settings.storage.toast.saved.title'), t('servers.settings.storage.toast.saved.description'));
       setHasChanges(false);
     } catch (err: any) {
-      toast.error('Failed to save storage settings', err.message);
+      toast.error(t('servers.settings.storage.toast.error.title'), err.message);
     } finally {
       setStorageSaving(false);
     }
@@ -233,7 +235,9 @@ export const ServerSettingsPage = () => {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <h2 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">Loading...</h2>
+          <h2 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+            {t('common.loading')}
+          </h2>
         </div>
       </div>
     );
@@ -244,10 +248,10 @@ export const ServerSettingsPage = () => {
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
           <h2 className="text-2xl font-heading font-bold text-text-light-primary dark:text-text-primary">
-            {error || 'Server Not Found'}
+            {error || t('servers.detail.errors.not_found')}
           </h2>
           <Link to="/servers" className="text-accent-primary hover:underline mt-4 inline-block">
-            ← Back to Servers
+            ← {t('servers.detail.back_to_servers')}
           </Link>
         </div>
       </div>
@@ -255,10 +259,10 @@ export const ServerSettingsPage = () => {
   }
 
   const tabs: { id: SettingsTab; label: string; description: string }[] = [
-    { id: 'general', label: 'General', description: 'Basic server settings' },
-    { id: 'storage', label: 'Storage', description: 'Server directories and backup location' },
-    { id: 'network', label: 'Network', description: 'Network and connection settings' },
-    { id: 'advanced', label: 'Advanced', description: 'JVM and advanced configuration' },
+    { id: 'general', label: t('servers.settings.tabs.general'), description: t('servers.settings.tabs.general_desc') },
+    { id: 'storage', label: t('servers.settings.tabs.storage'), description: t('servers.settings.tabs.storage_desc') },
+    { id: 'network', label: t('servers.settings.tabs.network'), description: t('servers.settings.tabs.network_desc') },
+    { id: 'advanced', label: t('servers.settings.tabs.advanced'), description: t('servers.settings.tabs.advanced_desc') },
   ];
 
   const handleSave = async () => {
@@ -302,10 +306,10 @@ export const ServerSettingsPage = () => {
         setServer({ ...server, ...updateData } as ServerData);
       }
 
-      toast.success('Settings saved', 'Server configuration updated successfully');
+      toast.success(t('servers.settings.toast.saved.title'), t('servers.settings.toast.saved.description'));
       setHasChanges(false);
     } catch (err: any) {
-      toast.error('Failed to save settings', err.message || 'An error occurred');
+      toast.error(t('servers.settings.toast.error.title'), err.message || t('servers.settings.toast.error.fallback'));
     } finally {
       setSaving(false);
     }
@@ -372,22 +376,24 @@ export const ServerSettingsPage = () => {
         <div className="flex items-center gap-3 sm:gap-4">
           <Link to={`/servers/${id}`}>
             <Button variant="ghost" icon={<ArrowLeft size={18} />}>
-              <span className="hidden sm:inline">Back to Server</span>
+              <span className="hidden sm:inline">{t('servers.settings.back')}</span>
             </Button>
           </Link>
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">Server Settings</h1>
+            <h1 className="text-2xl sm:text-3xl font-heading font-bold text-text-light-primary dark:text-text-primary">
+              {t('servers.settings.title')}
+            </h1>
             <p className="text-sm sm:text-base text-text-light-muted dark:text-text-muted mt-1 truncate">{server.name}</p>
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-2">
           {hasChanges && (
             <Button variant="ghost" icon={<RotateCw size={18} />} onClick={handleReset} disabled={saving} className="w-full sm:w-auto">
-              Reset
+              {t('servers.settings.reset')}
             </Button>
           )}
           <Button variant="primary" icon={<Save size={18} />} onClick={handleSave} disabled={saving || !hasChanges} className="w-full sm:w-auto">
-            {saving ? 'Saving...' : 'Save Changes'}
+            {saving ? t('common.saving') : t('common.save_changes')}
           </Button>
         </div>
       </div>
@@ -413,40 +419,46 @@ export const ServerSettingsPage = () => {
       {activeTab === 'general' && (
         <Card variant="glass">
           <CardHeader>
-            <CardTitle>General Settings</CardTitle>
-            <CardDescription>Configure basic server information and behavior</CardDescription>
+            <CardTitle>{t('servers.settings.general.title')}</CardTitle>
+            <CardDescription>{t('servers.settings.general.subtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="md:col-span-2">
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">Server Name</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.general.name')}
+                </label>
                 <Input
                   value={generalSettings.name}
                   onChange={(e) => {
                     setGeneralSettings(prev => ({ ...prev, name: e.target.value }));
                     setHasChanges(true);
                   }}
-                  placeholder="My Hytale Server"
+                  placeholder={t('servers.settings.general.name_placeholder')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">Server Version</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.general.version')}
+                </label>
                 <Input
                   value={generalSettings.version}
                   onChange={(e) => {
                     setGeneralSettings(prev => ({ ...prev, version: e.target.value }));
                     setHasChanges(true);
                   }}
-                  placeholder="e.g., 2025.01.15"
+                  placeholder={t('servers.settings.general.version_placeholder')}
                 />
                 <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                  The game server version (updated automatically when using the Update feature)
+                  {t('servers.settings.general.version_helper')}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">Max Players</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.general.max_players')}
+                </label>
                 <Input
                   type="number"
                   min={1}
@@ -460,7 +472,9 @@ export const ServerSettingsPage = () => {
               </div>
 
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">Game Mode</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.general.game_mode')}
+                </label>
                 <select
                   value={generalSettings.gameMode}
                   onChange={(e) => {
@@ -469,9 +483,9 @@ export const ServerSettingsPage = () => {
                   }}
                   className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-none focus:border-accent-primary"
                 >
-                  <option value="exploration">Exploration</option>
-                  <option value="creative">Creative</option>
-                  <option value="custom">Custom</option>
+                  <option value="exploration">{t('servers.settings.general.modes.exploration')}</option>
+                  <option value="creative">{t('servers.settings.general.modes.creative')}</option>
+                  <option value="custom">{t('servers.settings.general.modes.custom')}</option>
                 </select>
               </div>
             </div>
@@ -487,9 +501,9 @@ export const ServerSettingsPage = () => {
               <div>
                 <CardTitle className="flex items-center gap-2">
                   <HardDrive size={20} />
-                  Storage Settings
+                  {t('servers.settings.storage.title')}
                 </CardTitle>
-                <CardDescription>Configure server directories and backup storage location</CardDescription>
+                <CardDescription>{t('servers.settings.storage.subtitle')}</CardDescription>
               </div>
               {ftpStatus && storageSettings.backupType === 'ftp' && (
                 <div className={`flex items-center gap-2 px-3 py-1 rounded-full text-sm ${
@@ -500,7 +514,7 @@ export const ServerSettingsPage = () => {
                   <div className={`w-2 h-2 rounded-full ${
                     ftpStatus.connected ? 'bg-green-500' : 'bg-yellow-500'
                   }`} />
-                  {ftpStatus.connected ? 'FTP Connected' : 'FTP Disconnected'}
+                  {ftpStatus.connected ? t('servers.settings.storage.ftp.connected') : t('servers.settings.storage.ftp.disconnected')}
                 </div>
               )}
             </div>
@@ -511,7 +525,7 @@ export const ServerSettingsPage = () => {
                 <div>
                   <label className="block text-sm font-medium text-text-light-muted dark:text-text-muted mb-2">
                     <FolderOpen size={16} className="inline mr-2" />
-                    Server Directory
+                    {t('servers.settings.storage.server_dir')}
                   </label>
                   <Input
                     value={storageSettings.serverPath}
@@ -519,10 +533,10 @@ export const ServerSettingsPage = () => {
                       setStorageSettings(prev => ({ ...prev, serverPath: e.target.value }));
                       setHasChanges(true);
                     }}
-                    placeholder="/path/to/server"
+                    placeholder={t('servers.settings.storage.server_dir_placeholder')}
                   />
                   <p className="text-xs text-text-secondary mt-1">
-                    The directory where server files are stored
+                    {t('servers.settings.storage.server_dir_helper')}
                   </p>
                 </div>
 
@@ -530,7 +544,7 @@ export const ServerSettingsPage = () => {
                 <div>
                   <label className="block text-sm font-medium text-text-light-muted dark:text-text-muted mb-2">
                     <Server size={16} className="inline mr-2" />
-                    Backup Storage Type
+                    {t('servers.settings.storage.type')}
                   </label>
                   <select
                     value={storageSettings.backupType}
@@ -544,9 +558,9 @@ export const ServerSettingsPage = () => {
                     }}
                     className="w-full bg-white dark:bg-primary-bg border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 text-text-light-primary dark:text-text-primary focus:outline-none focus:border-accent-primary"
                   >
-                    <option value="local">Local Directory</option>
+                    <option value="local">{t('servers.settings.storage.type_local')}</option>
                     <option value="ftp" disabled={!ftpStatus?.enabled}>
-                      FTP Server {!ftpStatus?.enabled && '(Not Configured)'}
+                      {t('servers.settings.storage.type_ftp')} {!ftpStatus?.enabled && `(${t('servers.settings.storage.ftp.not_configured')})`}
                     </option>
                   </select>
                 </div>
@@ -554,7 +568,9 @@ export const ServerSettingsPage = () => {
                 {/* Backup Path */}
                 <div>
                   <label className="block text-sm font-medium text-text-light-muted dark:text-text-muted mb-2">
-                    {storageSettings.backupType === 'ftp' ? 'FTP Remote Path' : 'Local Backup Directory'}
+                    {storageSettings.backupType === 'ftp'
+                      ? t('servers.settings.storage.backup_path_ftp')
+                      : t('servers.settings.storage.backup_path_local')}
                   </label>
                   <Input
                     value={storageSettings.backupPath}
@@ -564,14 +580,14 @@ export const ServerSettingsPage = () => {
                     }}
                     placeholder={
                       storageSettings.backupType === 'ftp'
-                        ? '/backups/my-server/'
-                        : '/path/to/backups'
+                        ? t('servers.settings.storage.backup_path_ftp_placeholder')
+                        : t('servers.settings.storage.backup_path_local_placeholder')
                     }
                   />
                   <p className="text-xs text-text-secondary mt-1">
                     {storageSettings.backupType === 'ftp'
-                      ? 'Path on the FTP server where backups will be stored. Leave empty to use default.'
-                      : 'Local directory for storing backups. Leave empty to use default location.'}
+                      ? t('servers.settings.storage.backup_path_ftp_helper')
+                      : t('servers.settings.storage.backup_path_local_helper')}
                   </p>
                 </div>
 
@@ -579,13 +595,10 @@ export const ServerSettingsPage = () => {
                 <div>
                   <label className="block text-sm font-medium text-text-light-muted dark:text-text-muted mb-2">
                     <FileX size={16} className="inline mr-2" />
-                    Backup Exclusions
+                    {t('servers.settings.storage.exclusions')}
                   </label>
                   <p className="text-xs text-text-secondary mb-3">
-                    Files and folders matching these patterns will be excluded from backups. Examples:
-                    <code className="bg-gray-200 dark:bg-gray-800 px-1 mx-1 rounded">*.log</code> (all .log files),
-                    <code className="bg-gray-200 dark:bg-gray-800 px-1 mx-1 rounded">logs/*</code> (logs folder contents),
-                    <code className="bg-gray-200 dark:bg-gray-800 px-1 mx-1 rounded">*.log.gz</code> (compressed logs)
+                    {t('servers.settings.storage.exclusions_helper')}
                   </p>
 
                   {/* Add new exclusion */}
@@ -599,7 +612,7 @@ export const ServerSettingsPage = () => {
                           handleAddExclusion();
                         }
                       }}
-                      placeholder="e.g., *.log, logs/*, crash-reports/**"
+                      placeholder={t('servers.settings.storage.exclusions_placeholder')}
                       className="flex-1"
                     />
                     <Button
@@ -608,7 +621,7 @@ export const ServerSettingsPage = () => {
                       onClick={handleAddExclusion}
                       disabled={!newExclusion.trim()}
                     >
-                      Add
+                      {t('servers.settings.storage.exclusions_add')}
                     </Button>
                   </div>
 
@@ -626,7 +639,7 @@ export const ServerSettingsPage = () => {
                           <button
                             onClick={() => handleRemoveExclusion(pattern)}
                             className="text-gray-500 hover:text-danger transition-colors p-1"
-                            title="Remove exclusion"
+                            title={t('servers.settings.storage.exclusions_remove')}
                           >
                             <X size={16} />
                           </button>
@@ -635,7 +648,7 @@ export const ServerSettingsPage = () => {
                     </div>
                   ) : (
                     <div className="text-center py-4 text-text-light-muted dark:text-text-muted text-sm border border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
-                      No exclusions configured. All files will be included in backups.
+                      {t('servers.settings.storage.exclusions_empty')}
                     </div>
                   )}
                 </div>
@@ -643,9 +656,7 @@ export const ServerSettingsPage = () => {
                 {/* FTP Warning */}
                 {storageSettings.backupType === 'ftp' && (
                   <div className="bg-blue-500/10 text-blue-400 p-3 rounded text-sm">
-                    <strong>Note:</strong> When using FTP storage, backups will be uploaded to the FTP server
-                    and deleted from local storage after successful upload. Make sure your FTP server has
-                    sufficient storage space.
+                    <strong>{t('servers.settings.storage.ftp.note_label')}</strong> {t('servers.settings.storage.ftp.note')}
                   </div>
                 )}
 
@@ -657,7 +668,7 @@ export const ServerSettingsPage = () => {
                     onClick={handleStorageSave}
                     disabled={storageSaving}
                   >
-                    {storageSaving ? 'Saving...' : 'Save Storage Settings'}
+                    {storageSaving ? t('common.saving') : t('servers.settings.storage.save')}
                   </Button>
                 </div>
             </div>
@@ -669,13 +680,15 @@ export const ServerSettingsPage = () => {
       {activeTab === 'network' && (
         <Card variant="glass">
           <CardHeader>
-            <CardTitle>Network Settings</CardTitle>
-            <CardDescription>Configure network address and port settings</CardDescription>
+            <CardTitle>{t('servers.settings.network.title')}</CardTitle>
+            <CardDescription>{t('servers.settings.network.subtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">Server IP / Address</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.network.address')}
+                </label>
                 <Input
                   value={networkSettings.address}
                   onChange={(e) => {
@@ -685,12 +698,14 @@ export const ServerSettingsPage = () => {
                   placeholder="0.0.0.0"
                 />
                 <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                  The IP address the server will bind to. Use 0.0.0.0 to listen on all interfaces.
+                  {t('servers.settings.network.address_helper')}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">Server Port</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.network.port')}
+                </label>
                 <Input
                   type="number"
                   min={1}
@@ -702,7 +717,7 @@ export const ServerSettingsPage = () => {
                   }}
                 />
                 <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                  The port the server will listen on (default: 5520).
+                  {t('servers.settings.network.port_helper')}
                 </p>
               </div>
             </div>
@@ -714,14 +729,16 @@ export const ServerSettingsPage = () => {
       {activeTab === 'advanced' && (
         <Card variant="glass">
           <CardHeader>
-            <CardTitle>Advanced Settings</CardTitle>
-            <CardDescription>Java configuration and JVM arguments</CardDescription>
+            <CardTitle>{t('servers.settings.advanced.title')}</CardTitle>
+            <CardDescription>{t('servers.settings.advanced.subtitle')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               {/* Java Executable Path */}
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">Java Executable Path</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.advanced.java_path')}
+                </label>
                 <Input
                   value={advancedSettings.javaPath}
                   onChange={(e) => {
@@ -732,13 +749,15 @@ export const ServerSettingsPage = () => {
                   className="font-mono"
                 />
                 <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                  Path to the Java executable. Use "java" to use system Java, or specify a full path (e.g., /usr/lib/jvm/java-17/bin/java).
+                  {t('servers.settings.advanced.java_path_helper')}
                 </p>
               </div>
 
               {/* JAR File Name */}
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">JAR File Path</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.advanced.jar_path')}
+                </label>
                 <Input
                   value={advancedSettings.jarFile}
                   onChange={(e) => {
@@ -749,13 +768,15 @@ export const ServerSettingsPage = () => {
                   className="font-mono"
                 />
                 <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                  Path to the server JAR file relative to the server directory.
+                  {t('servers.settings.advanced.jar_path_helper')}
                 </p>
               </div>
 
               {/* Assets Path */}
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">Assets Path</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.advanced.assets_path')}
+                </label>
                 <Input
                   value={advancedSettings.assetsPath}
                   onChange={(e) => {
@@ -766,13 +787,15 @@ export const ServerSettingsPage = () => {
                   className="font-mono"
                 />
                 <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                  Path to the Assets.zip file relative to the JAR file location. Used with --assets argument.
+                  {t('servers.settings.advanced.assets_path_helper')}
                 </p>
               </div>
 
               {/* JVM Arguments */}
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">JVM Arguments</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.advanced.jvm_args')}
+                </label>
                 <textarea
                   value={advancedSettings.jvmArgs}
                   onChange={(e) => {
@@ -784,15 +807,17 @@ export const ServerSettingsPage = () => {
                   placeholder="-Xms1G -Xmx2G -XX:AOTCache=HytaleServer.aot"
                 />
                 <p className="text-xs text-text-light-muted dark:text-text-muted mt-1">
-                  JVM arguments passed to the Java process. AOT cache enables faster startup if HytaleServer.aot exists.
+                  {t('servers.settings.advanced.jvm_args_helper')}
                 </p>
               </div>
 
               {/* Server Arguments */}
               <div>
-                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">Server Arguments</label>
+                <label className="block text-sm text-text-light-muted dark:text-text-muted mb-2">
+                  {t('servers.settings.advanced.server_args')}
+                </label>
                 <p className="text-xs text-text-light-muted dark:text-text-muted mb-2">
-                  Arguments passed to the server after the jar file (e.g., --accept-early-plugins)
+                  {t('servers.settings.advanced.server_args_helper')}
                 </p>
                 <Input
                   value={advancedSettings.serverArgs}
@@ -808,10 +833,10 @@ export const ServerSettingsPage = () => {
               {/* Command Preview */}
               <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
                 <label className="block text-sm font-medium text-text-light-muted dark:text-text-muted mb-2">
-                  Command Preview
+                  {t('servers.settings.advanced.preview')}
                 </label>
                 <p className="text-xs text-text-light-muted dark:text-text-muted mb-3">
-                  This is how the server start command will look with your current settings:
+                  {t('servers.settings.advanced.preview_helper')}
                 </p>
                 <div className="font-mono text-xs bg-gray-200 dark:bg-gray-900 rounded p-3 overflow-x-auto">
                   <span className="text-blue-600 dark:text-blue-400">{advancedSettings.javaPath || 'java'}</span>
@@ -831,15 +856,15 @@ export const ServerSettingsPage = () => {
                 <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 text-xs">
                   <span className="flex items-center gap-1">
                     <span className="w-3 h-3 rounded bg-green-600 dark:bg-green-400"></span>
-                    <span className="text-text-light-muted dark:text-text-muted">JVM Arguments</span>
+                    <span className="text-text-light-muted dark:text-text-muted">{t('servers.settings.advanced.legend.jvm')}</span>
                   </span>
                   <span className="flex items-center gap-1">
                     <span className="w-3 h-3 rounded bg-purple-600 dark:bg-purple-400"></span>
-                    <span className="text-text-light-muted dark:text-text-muted">Default Server Args</span>
+                    <span className="text-text-light-muted dark:text-text-muted">{t('servers.settings.advanced.legend.default_args')}</span>
                   </span>
                   <span className="flex items-center gap-1">
                     <span className="w-3 h-3 rounded bg-orange-600 dark:bg-orange-400"></span>
-                    <span className="text-text-light-muted dark:text-text-muted">Custom Server Args</span>
+                    <span className="text-text-light-muted dark:text-text-muted">{t('servers.settings.advanced.legend.custom_args')}</span>
                   </span>
                 </div>
               </div>
