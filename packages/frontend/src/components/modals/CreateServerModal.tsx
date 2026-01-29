@@ -389,7 +389,7 @@ export const CreateServerModal = ({ isOpen, onClose, onSubmit }: CreateServerMod
           {/* Hytale Server Download */}
           <HytaleServerDownloadSection
             serverPath={formData.serverPath}
-            onVersionSet={useCallback((version) => updateField('version', version), [updateField])}
+            onVersionSet={useCallback((version: string) => updateField('version', version), [updateField])}
           />
           {errors.version && (
             <p className="text-danger text-sm mt-1">{errors.version}</p>
