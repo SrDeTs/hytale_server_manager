@@ -599,7 +599,12 @@ export const ServersPage = () => {
     {
       key: 'status',
       label: 'Status',
-      render: (server) => <StatusIndicator status={server.status as any} showLabel />,
+      render: (server) => {
+        // Use status from local servers state if available for immediate updates
+        const fullServer = servers.find(s => s.id === server.id);
+        const currentStatus = fullServer?.status || server.status;
+        return <StatusIndicator status={currentStatus as any} showLabel />;
+      },
     },
     {
       key: 'actions',
@@ -756,6 +761,7 @@ export const ServersPage = () => {
                   network={network}
                   status={networkStatuses[network.id]}
                   metrics={networkMetrics[network.id]}
+                  servers={servers}
                   expanded={expandedNetworks.has(network.id)}
                   onToggleExpand={() => toggleNetworkExpand(network.id)}
                   onStartNetwork={handleStartNetwork}
