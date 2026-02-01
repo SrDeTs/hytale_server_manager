@@ -51,24 +51,12 @@ export const LoginPage = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  // Clear errors when form changes
-  useEffect(() => {
-    if (!isSetupMode && error) {
-      clearError();
-    }
-  }, [identifier, password, isSetupMode, error, clearError]);
-
+  // Check for setup requirement from error message
   useEffect(() => {
     if (error && error.toLowerCase().includes('initial setup')) {
       setForceSetup(true);
     }
   }, [error]);
-
-  useEffect(() => {
-    if (setupError) {
-      setSetupError(null);
-    }
-  }, [setupEmail, setupUsername, setupPassword, setupConfirm]);
 
   /**
    * Handles form submission
@@ -162,7 +150,10 @@ export const LoginPage = () => {
                 label="Admin Email"
                 placeholder="Enter your email address"
                 value={setupEmail}
-                onChange={(e) => setSetupEmail(e.target.value)}
+                onChange={(e) => {
+                  setSetupEmail(e.target.value);
+                  if (setupError) setSetupError(null);
+                }}
                 icon={<User size={18} />}
                 required
                 autoComplete="email"
@@ -174,7 +165,10 @@ export const LoginPage = () => {
                 label="Admin Username"
                 placeholder="Choose a username"
                 value={setupUsername}
-                onChange={(e) => setSetupUsername(e.target.value)}
+                onChange={(e) => {
+                  setSetupUsername(e.target.value);
+                  if (setupError) setSetupError(null);
+                }}
                 icon={<User size={18} />}
                 required
                 autoComplete="username"
@@ -186,7 +180,10 @@ export const LoginPage = () => {
                 label="Admin Password"
                 placeholder="Create a strong password"
                 value={setupPassword}
-                onChange={(e) => setSetupPassword(e.target.value)}
+                onChange={(e) => {
+                  setSetupPassword(e.target.value);
+                  if (setupError) setSetupError(null);
+                }}
                 icon={<Lock size={18} />}
                 required
                 autoComplete="new-password"
@@ -198,7 +195,10 @@ export const LoginPage = () => {
                 label="Confirm Password"
                 placeholder="Re-enter your password"
                 value={setupConfirm}
-                onChange={(e) => setSetupConfirm(e.target.value)}
+                onChange={(e) => {
+                  setSetupConfirm(e.target.value);
+                  if (setupError) setSetupError(null);
+                }}
                 icon={<Lock size={18} />}
                 required
                 autoComplete="new-password"
@@ -255,7 +255,10 @@ export const LoginPage = () => {
                 label="Username or Email"
                 placeholder="Enter your username or email"
                 value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
+                onChange={(e) => {
+                  setIdentifier(e.target.value);
+                  if (error) clearError();
+                }}
                 icon={<User size={18} />}
                 required
                 autoComplete="username"
@@ -268,7 +271,10 @@ export const LoginPage = () => {
                 label="Password"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (error) clearError();
+                }}
                 icon={<Lock size={18} />}
                 required
                 autoComplete="current-password"
