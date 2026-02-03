@@ -21,10 +21,18 @@ import type {
   AggregatedMetrics,
 } from '../../types';
 
+interface Server {
+  id: string;
+  name: string;
+  status: string;
+  [key: string]: any;
+}
+
 interface NetworkCardProps {
   network: NetworkWithMembers;
   status?: NetworkStatus;
   metrics?: AggregatedMetrics;
+  servers: Server[];
   expanded: boolean;
   onToggleExpand: () => void;
   onStartNetwork: (networkId: string) => void;
@@ -40,6 +48,7 @@ export const NetworkCard = ({
   network,
   status,
   metrics,
+  servers,
   expanded,
   onToggleExpand,
   onStartNetwork,
@@ -270,6 +279,7 @@ export const NetworkCard = ({
                   key={member.id}
                   member={member}
                   memberStatus={status?.memberStatuses?.find(s => s.serverId === member.serverId)}
+                  localServer={servers.find(s => s.id === member.serverId)}
                   isLast={index === network.members.length - 1}
                   onAction={onServerAction}
                 />

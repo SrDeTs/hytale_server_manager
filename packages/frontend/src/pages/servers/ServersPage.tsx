@@ -602,7 +602,12 @@ export const ServersPage = () => {
     {
       key: 'status',
       label: t('servers.columns.status'),
-      render: (server) => <StatusIndicator status={server.status as any} showLabel />,
+      render: (server) => {
+        // Use status from local servers state if available for immediate updates
+        const fullServer = servers.find(s => s.id === server.id);
+        const currentStatus = fullServer?.status || server.status;
+        return <StatusIndicator status={currentStatus as any} showLabel />;
+      },
     },
     {
       key: 'actions',
@@ -610,9 +615,10 @@ export const ServersPage = () => {
       sortable: false,
       render: (server) => {
         const fullServer = servers.find(s => s.id === server.id);
+        const currentStatus = fullServer?.status || server.status;
         return (
           <div className="flex gap-2">
-            {server.status === 'running' ? (
+            {currentStatus === 'running' ? (
               <>
                 <Button
                   variant="ghost"
@@ -631,7 +637,7 @@ export const ServersPage = () => {
                   {t('servers.actions.restart')}
                 </Button>
               </>
-            ) : server.status === 'stopped' || server.status === 'crashed' ? (
+            ) : currentStatus === 'stopped' || currentStatus === 'crashed' ? (
               <Button
                 variant="ghost"
                 size="sm"
@@ -640,7 +646,7 @@ export const ServersPage = () => {
               >
                 {t('servers.actions.start')}
               </Button>
-            ) : server.status === 'stopping' ? (
+            ) : currentStatus === 'stopping' ? (
               <Button
                 variant="ghost"
                 size="sm"
@@ -653,7 +659,7 @@ export const ServersPage = () => {
               </Button>
             ) : (
               <Button variant="ghost" size="sm" disabled>
-                {server.status}...
+                {currentStatus}...
               </Button>
             )}
             <Button
@@ -669,10 +675,8 @@ export const ServersPage = () => {
               size="sm"
               icon={<Trash2 size={14} />}
               onClick={() => fullServer && setServerToDelete(fullServer)}
-              disabled={server.status !== 'stopped' && server.status !== 'crashed'}
-              title={server.status !== 'stopped' && server.status !== 'crashed'
-                ? t('servers.tooltips.stop_before_delete')
-                : t('servers.tooltips.delete_server')}
+              disabled={currentStatus !== 'stopped' && currentStatus !== 'crashed'}
+              title={currentStatus !== 'stopped' && currentStatus !== 'crashed' ? 'Stop the server before deleting' : 'Delete server'}
             >
               {t('servers.actions.delete')}
             </Button>
@@ -759,6 +763,7 @@ export const ServersPage = () => {
                   network={network}
                   status={networkStatuses[network.id]}
                   metrics={networkMetrics[network.id]}
+                  servers={servers}
                   expanded={expandedNetworks.has(network.id)}
                   onToggleExpand={() => toggleNetworkExpand(network.id)}
                   onStartNetwork={handleStartNetwork}
