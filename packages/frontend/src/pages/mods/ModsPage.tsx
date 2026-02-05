@@ -632,7 +632,7 @@ export const ModsPage = () => {
                           </div>
 
                           <div className="flex items-center justify-between text-xs text-text-light-muted dark:text-text-muted">
-                            <span>{t('mods.downloads', { count: mod.downloads })}</span>
+                            <span>{t('mods.downloads', { downloads: mod.downloads.toLocaleString() })}</span>
                             <span>{mod.rating?.toFixed(1) || '-'}</span>
                           </div>
 
