@@ -110,6 +110,7 @@
         "files": "Files",
         "alerts": "Alerts",
         "activity_log": "Activity Log",
+        "hsm_logs": "HSM Logs",
         "permissions": "Permissions",
         "users": "Users",
         "settings": "Settings",
@@ -1480,7 +1481,8 @@
             "by_author": "by {author}",
             "downloads": "{count} downloads",
             "version_label": "Select Version",
-            "version_option": "{version}{date, select, ''{} other{ - {date}}}",
+            "version_option": "v{version}",
+            "version_option_with_date": "v{version} - {date}",
             "latest": "Latest",
             "deps_checking": "Checking dependencies...",
             "deps_error": "Failed to fetch dependencies",
@@ -2174,6 +2176,29 @@
             "settings_update": "Updated settings",
             "user_create": "Created user",
             "user_delete": "Deleted user"
+        }
+    },
+    "hsm_logs": {
+        "title": "HSM Logs",
+        "subtitle": "View application logs and diagnostics",
+        "waiting_for_logs": "No logs available",
+        "log_source": "HSM",
+        "actions": {
+            "download_logs": "Download Logs",
+            "clear_display": "Clear Display",
+            "refresh": "Refresh"
+        },
+        "toast": {
+            "logs_downloaded": "Logs downloaded",
+            "display_cleared": "Display cleared",
+            "load_failed": "Failed to load logs"
+        },
+        "filters": {
+            "all": "All Levels",
+            "error": "Errors",
+            "warn": "Warnings",
+            "info": "Info",
+            "debug": "Debug"
         }
     },
     "networks": {

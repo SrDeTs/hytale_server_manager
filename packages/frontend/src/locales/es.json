@@ -110,6 +110,7 @@
         "files": "Archivos",
         "alerts": "Alertas",
         "activity_log": "Registro de Actividad",
+        "hsm_logs": "Registros HSM",
         "permissions": "Permisos",
         "users": "Usuarios",
         "settings": "Ajustes",
@@ -1480,7 +1481,8 @@
             "by_author": "por {author}",
             "downloads": "{count} descargas",
             "version_label": "Selecciona versión",
-            "version_option": "{version}{date, select, ''{} other{ - {date}}}",
+            "version_option": "v{version}",
+            "version_option_with_date": "v{version} - {date}",
             "latest": "Última",
             "deps_checking": "Comprobando dependencias...",
             "deps_error": "No se pudieron obtener las dependencias",
@@ -2174,6 +2176,29 @@
             "settings_update": "Actualizó la configuración",
             "user_create": "Creó un usuario",
             "user_delete": "Eliminó un usuario"
+        }
+    },
+    "hsm_logs": {
+        "title": "Registros HSM",
+        "subtitle": "Ver registros de la aplicación y diagnósticos",
+        "waiting_for_logs": "No hay registros disponibles",
+        "log_source": "HSM",
+        "actions": {
+            "download_logs": "Descargar Registros",
+            "clear_display": "Limpiar Pantalla",
+            "refresh": "Actualizar"
+        },
+        "toast": {
+            "logs_downloaded": "Registros descargados",
+            "display_cleared": "Pantalla limpiada",
+            "load_failed": "Error al cargar registros"
+        },
+        "filters": {
+            "all": "Todos los Niveles",
+            "error": "Errores",
+            "warn": "Advertencias",
+            "info": "Info",
+            "debug": "Debug"
         }
     },
     "networks": {

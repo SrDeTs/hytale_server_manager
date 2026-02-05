@@ -21,6 +21,7 @@ import {
   Bell,
   History,
   Construction,
+  ScrollText,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAppStore } from '../../stores/appStore';
@@ -48,6 +49,7 @@ const navigationItems: NavigationItem[] = [
   { path: '/files', icon: FileText, labelKey: 'nav.files', permission: 'servers:files' },
   { path: '/alerts', icon: Bell, labelKey: 'nav.alerts', permission: 'alerts:view' },
   { path: '/activity', icon: History, labelKey: 'nav.activity_log', permission: 'activity:view' },
+  { path: '/hsm-logs', icon: ScrollText, labelKey: 'nav.hsm_logs', permission: 'settings:view' },
   { path: '/permissions', icon: Shield, labelKey: 'nav.permissions', permission: 'permissions:view' },
   { path: '/users', icon: UserCog, labelKey: 'nav.users', permission: 'users:view' },
   { path: '/settings', icon: Settings, labelKey: 'nav.settings', permission: 'settings:view' },

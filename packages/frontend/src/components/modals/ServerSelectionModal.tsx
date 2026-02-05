@@ -131,9 +131,12 @@ export const ServerSelectionModal = ({ isOpen, onClose, project, onInstall }: Se
             {project.versions?.map((version) => {
               const dateStr = version.releaseDate;
               const dateDisplay = dateStr ? new Date(dateStr).toLocaleDateString() : '';
+              const translationKey = dateDisplay
+                ? 'mods.server_select.version_option_with_date'
+                : 'mods.server_select.version_option';
               return (
                 <option key={version.id} value={version.id}>
-                  {t('mods.server_select.version_option', { version: version.version, date: dateDisplay })}
+                  {t(translationKey, { version: version.version, date: dateDisplay })}
                 </option>
               );
             }) || (

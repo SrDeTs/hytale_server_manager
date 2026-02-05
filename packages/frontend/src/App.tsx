@@ -44,6 +44,7 @@ const EconomyPage = lazy(() => import('./pages/economy/EconomyPage').then(m => (
 const AlertsPage = lazy(() => import('./pages/alerts/AlertsPage').then(m => ({ default: m.AlertsPage })));
 const UsersPage = lazy(() => import('./pages/users/UsersPage').then(m => ({ default: m.UsersPage })));
 const ActivityLogPage = lazy(() => import('./pages/activity/ActivityLogPage').then(m => ({ default: m.ActivityLogPage })));
+const HSMLogsPage = lazy(() => import('./pages/hsm-logs/HSMLogsPage').then(m => ({ default: m.HSMLogsPage })));
 
 /**
  * Page loading fallback component
@@ -433,6 +434,17 @@ function App() {
                   <ProtectedRoute pageName="Activity Log">
                     <RequirePermission permission={PERMISSIONS.ACTIVITY_VIEW}>
                       <ActivityLogPage />
+                    </RequirePermission>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="hsm-logs"
+                element={
+                  <ProtectedRoute pageName="HSM Logs">
+                    <RequirePermission permission={PERMISSIONS.SETTINGS_VIEW}>
+                      <HSMLogsPage />
                     </RequirePermission>
                   </ProtectedRoute>
                 }
