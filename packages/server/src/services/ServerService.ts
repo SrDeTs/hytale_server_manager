@@ -571,6 +571,47 @@ export class ServerService {
   }
 
   /**
+   * Gracefully stop all running servers.
+   * Used during container shutdown (SIGTERM) to let game servers save before exit.
+   */
+  async stopAllServers(): Promise<void> {
+    const runningServers = await this.prisma.server.findMany({
+      where: { status: { in: ['running', 'starting'] } },
+    });
+
+    if (runningServers.length === 0) {
+      logger.info('No running servers to stop');
+      return;
+    }
+
+    logger.info(`Stopping ${runningServers.length} running server(s)...`);
+
+    // Stop all servers concurrently for faster shutdown
+    const results = await Promise.allSettled(
+      runningServers.map(async (server) => {
+        try {
+          const adapter = this.adapters.get(server.id);
+          if (adapter) {
+            logger.info(`Stopping server ${server.name}...`);
+            await adapter.stop();
+            await this.prisma.server.update({
+              where: { id: server.id },
+              data: { status: 'stopped', pid: null, startedAt: null },
+            });
+            this.adapters.delete(server.id);
+            logger.info(`Server ${server.name} stopped gracefully`);
+          }
+        } catch (error) {
+          logger.error(`Failed to stop server ${server.name}:`, error);
+        }
+      })
+    );
+
+    const stopped = results.filter(r => r.status === 'fulfilled').length;
+    logger.info(`Stopped ${stopped}/${runningServers.length} server(s)`);
+  }
+
+  /**
    * Cleanup - disconnect from all servers without killing them
    * This allows servers to keep running during manager restart
    */

@@ -311,17 +311,17 @@ export class AlertsService {
     });
 
     for (const server of servers) {
-      // Check if server is down
-      if (server.status === 'stopped') {
+      // Only alert for crashed servers - 'stopped' means intentional/clean shutdown
+      if (server.status === 'crashed') {
         await this.checkAndCreateAlert(
           server.id,
           'server_down',
           'critical',
-          `Server ${server.name} is down`,
-          `The server ${server.name} is currently stopped.`
+          `Server ${server.name} has crashed`,
+          `The server ${server.name} has crashed unexpectedly.`
         );
-      } else if (server.status === 'running') {
-        // Auto-resolve server_down alerts when server is back online
+      } else if (server.status === 'running' || server.status === 'stopped') {
+        // Auto-resolve server_down alerts when server is back online or cleanly stopped
         await this.autoResolveAlerts(server.id, 'server_down');
       }
 

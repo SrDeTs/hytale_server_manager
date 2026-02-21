@@ -4,9 +4,8 @@ import { Modal, Button, Card, CardContent, Badge } from '../../components/ui';
 import { Upload, AlertCircle, CheckCircle, File, X, AlertTriangle } from 'lucide-react';
 import { api, ApiError } from '../../services/api';
 
-// Constants
-const MAX_FILE_SIZE = 52428800; // 50MB (from backend config)
-const MAX_FILE_SIZE_MB = MAX_FILE_SIZE / (1024 * 1024);
+// Default fallback if health endpoint fails
+const DEFAULT_MAX_FILE_SIZE = 52428800; // 50MB
 
 interface UploadFileModalProps {
   isOpen: boolean;
@@ -46,6 +45,22 @@ export const UploadFileModal = ({
   const [autoExtractZip, setAutoExtractZip] = useState(false);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
   const uploadAbortControllersRef = useRef<Map<string, AbortController>>(new Map());
+  const [maxFileSize, setMaxFileSize] = useState(DEFAULT_MAX_FILE_SIZE);
+  const maxFileSizeMB = maxFileSize / (1024 * 1024);
+
+  // Fetch the actual upload limit from the backend
+  useEffect(() => {
+    if (isOpen) {
+      fetch('/health')
+        .then(res => res.json())
+        .then(data => {
+          if (data.maxFileUploadSize) {
+            setMaxFileSize(data.maxFileUploadSize);
+          }
+        })
+        .catch(() => { /* use default */ });
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const controllers = uploadAbortControllersRef.current;
@@ -78,9 +93,9 @@ export const UploadFileModal = ({
       return t('files.upload.errors.empty');
     }
 
-    if (file.size > MAX_FILE_SIZE) {
+    if (file.size > maxFileSize) {
       return t('files.upload.errors.too_large', {
-        max: MAX_FILE_SIZE_MB,
+        max: maxFileSizeMB,
         size: (file.size / (1024 * 1024)).toFixed(2),
       });
     }
@@ -205,7 +220,7 @@ export const UploadFileModal = ({
   const getErrorMessage = (error: unknown): string => {
     if (error instanceof ApiError) {
       if (error.statusCode === 413) {
-      return t('files.upload.errors.too_large', { max: MAX_FILE_SIZE_MB, size: '' }).trim();
+      return t('files.upload.errors.too_large', { max: maxFileSizeMB, size: '' }).trim();
     }
     if (error.statusCode === 400) {
       return error.message || t('files.upload.errors.invalid');
@@ -401,7 +416,7 @@ export const UploadFileModal = ({
         {/* File Size Info */}
         <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
           <p className="text-xs text-blue-900 dark:text-blue-100">
-            <span className="font-medium">{t('files.upload.max_size_label')}</span> {MAX_FILE_SIZE_MB}MB
+            <span className="font-medium">{t('files.upload.max_size_label')}</span> {maxFileSizeMB}MB
           </p>
         </div>
 

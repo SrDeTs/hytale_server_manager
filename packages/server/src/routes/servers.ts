@@ -841,6 +841,42 @@ export function createServerRoutes(
   });
 
   /**
+   * GET /api/backups/:id/download
+   * Download a backup file
+   */
+  router.get('/backups/:id/download', requirePermission(PERMISSIONS.BACKUPS_VIEW), async (req: Request, res: Response): Promise<void> => {
+    try {
+      const backup = await backupService.getBackup(req.params.id);
+
+      if (backup.status !== 'completed') {
+        res.status(400).json({ error: 'Backup is not completed' });
+        return;
+      }
+
+      const fs = await import('fs-extra');
+      const filePath = backup.filePath;
+
+      if (!await fs.pathExists(filePath)) {
+        res.status(404).json({ error: 'Backup file not found on disk' });
+        return;
+      }
+
+      const stat = await fs.stat(filePath);
+      const filename = backup.name.endsWith('.zip') ? backup.name : `${backup.name}.zip`;
+
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Length', stat.size);
+
+      const stream = fs.createReadStream(filePath);
+      stream.pipe(res);
+    } catch (error: any) {
+      logger.error('Error downloading backup:', error);
+      res.status(500).json({ error: error.message || 'Failed to download backup' });
+    }
+  });
+
+  /**
    * POST /api/backups/:id/restore
    * Restore a server from a backup
    */

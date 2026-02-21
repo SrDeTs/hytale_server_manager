@@ -502,6 +502,10 @@ class ApiService {
     });
   }
 
+  getBackupDownloadUrl(backupId: string): string {
+    return `${this.baseUrl}/api/servers/backups/${backupId}/download`;
+  }
+
   async deleteBackups(backupIds: string[]): Promise<{ deleted: number; failed: number; errors?: string[] }> {
     return this.request<{ deleted: number; failed: number; errors?: string[] }>('/api/servers/bulk/delete-backups', {
       method: 'POST',

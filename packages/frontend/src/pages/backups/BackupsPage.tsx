@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge, DataTable, type Column } from '../../components/ui';
-import { Database, RotateCcw, Plus, Calendar, Trash2, AlertCircle, X } from 'lucide-react';
+import { Database, RotateCcw, Plus, Calendar, Trash2, AlertCircle, X, Download } from 'lucide-react';
 import { useToast } from '../../stores/toastStore';
 import api from '../../services/api';
 import { CreateBackupModal } from './CreateBackupModal';
@@ -314,6 +314,20 @@ export const BackupsPage = () => {
         <div className="flex gap-2">
           {backup.status === 'completed' && (
             <>
+              <Button
+                variant="ghost"
+                size="sm"
+                icon={<Download size={14} />}
+                onClick={() => {
+                  const url = api.getBackupDownloadUrl(backup.id);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = backup.name;
+                  a.click();
+                }}
+              >
+                {t('backups.actions.download')}
+              </Button>
               <Button
                 variant="ghost"
                 size="sm"

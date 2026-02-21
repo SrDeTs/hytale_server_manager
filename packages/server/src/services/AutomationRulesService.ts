@@ -3,6 +3,8 @@ import cron from 'node-cron';
 import logger from '../utils/logger';
 import { ServerService } from './ServerService';
 import { BackupService } from './BackupService';
+import { ActivityLogService } from './ActivityLogService';
+import { ACTIVITY_ACTIONS, RESOURCE_TYPES } from '../constants/ActivityLogActions';
 
 const prisma = new PrismaClient();
 
@@ -69,10 +71,12 @@ export class AutomationRulesService {
   private scheduledTasks: Map<string, cron.ScheduledTask> = new Map();
   private serverService: ServerService;
   private backupService: BackupService;
+  private activityLogService?: ActivityLogService;
 
-  constructor(serverService: ServerService, backupService: BackupService) {
+  constructor(serverService: ServerService, backupService: BackupService, activityLogService?: ActivityLogService) {
     this.serverService = serverService;
     this.backupService = backupService;
+    this.activityLogService = activityLogService;
   }
 
   /**
@@ -319,6 +323,23 @@ export class AutomationRulesService {
         },
       });
 
+      // Log to activity log
+      this.activityLogService?.logAsync({
+        userId: 'system',
+        username: 'Automation',
+        userRole: 'system',
+        action: ACTIVITY_ACTIONS.AUTOMATION_EXECUTE,
+        resourceType: RESOURCE_TYPES.AUTOMATION,
+        resourceId: rule.id,
+        resourceName: rule.name,
+        status: 'success',
+        details: {
+          serverId: rule.serverId,
+          triggerType: rule.triggerType,
+          actions: rule.actions.map(a => a.type),
+        },
+      });
+
       logger.info(`Successfully executed automation rule: ${rule.name}`);
     } catch (error: any) {
       logger.error(`Error executing automation rule ${rule.name}:`, error);
@@ -332,6 +353,24 @@ export class AutomationRulesService {
           executionCount: {
             increment: 1,
           },
+        },
+      });
+
+      // Log failure to activity log
+      this.activityLogService?.logAsync({
+        userId: 'system',
+        username: 'Automation',
+        userRole: 'system',
+        action: ACTIVITY_ACTIONS.AUTOMATION_EXECUTE,
+        resourceType: RESOURCE_TYPES.AUTOMATION,
+        resourceId: rule.id,
+        resourceName: rule.name,
+        status: 'failed',
+        errorMessage: error.message,
+        details: {
+          serverId: rule.serverId,
+          triggerType: rule.triggerType,
+          actions: rule.actions.map(a => a.type),
         },
       });
     }
