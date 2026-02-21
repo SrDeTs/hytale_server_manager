@@ -21,7 +21,7 @@ console.log(`[Config] JWT_REFRESH_SECRET loaded: ${process.env.JWT_REFRESH_SECRE
 console.log(`[Config] IS_DOCKER env: ${process.env.IS_DOCKER}`);
 
 // Version info - update this on each release
-export const VERSION = '0.3.26';
+export const VERSION = '0.3.30';
 export const VERSION_NAME = 'Beta';
 
 /**
@@ -150,8 +150,14 @@ const defaults: AppConfig = {
     username: 'Hytale Server Manager',
     avatarUrl: undefined,
     enabledEvents: [
+      'server_start',
+      'server_stop',
       'server_crash',
+      'server_update_started',
+      'server_update_completed',
+      'server_update_failed',
       'player_ban',
+      'backup_complete',
       'backup_failed',
       'alert_critical',
       'high_cpu',

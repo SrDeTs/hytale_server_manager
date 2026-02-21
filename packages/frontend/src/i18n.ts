@@ -5,6 +5,7 @@ import ICU from 'i18next-icu';
 
 import en from './locales/en.json';
 import es from './locales/es.json';
+import ptBR from './locales/pt-br.json';
 
 i18n
     .use(new ICU())
@@ -17,6 +18,9 @@ i18n
             },
             es: {
                 translation: es,
+            },
+            'pt-BR': {
+                translation: ptBR,
             },
         },
         fallbackLng: 'en',

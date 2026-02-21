@@ -437,6 +437,31 @@ class ApiService {
   }
 
   // ============================================
+  // Mod Updates
+  // ============================================
+
+  async checkModUpdates<T = unknown>(serverId: string): Promise<T[]> {
+    return this.request<T[]>(`/api/servers/${serverId}/mods/check-updates`);
+  }
+
+  async updateMod<T = unknown>(serverId: string, modId: string, versionId?: string): Promise<T> {
+    return this.request<T>(`/api/servers/${serverId}/mods/${modId}/update`, {
+      method: 'POST',
+      body: JSON.stringify(versionId ? { versionId } : {}),
+    });
+  }
+
+  async updateAllMods(serverId: string): Promise<{
+    updated: string[];
+    failed: { modId: string; name: string; error: string }[];
+    skipped: string[];
+  }> {
+    return this.request(`/api/servers/${serverId}/mods/update-all`, {
+      method: 'POST',
+    });
+  }
+
+  // ============================================
   // Players
   // ============================================
 
@@ -500,6 +525,10 @@ class ApiService {
     return this.request<void>(`/api/servers/backups/${backupId}`, {
       method: 'DELETE',
     });
+  }
+
+  getBackupDownloadUrl(backupId: string): string {
+    return `${this.baseUrl}/api/servers/backups/${backupId}/download`;
   }
 
   async deleteBackups(backupIds: string[]): Promise<{ deleted: number; failed: number; errors?: string[] }> {

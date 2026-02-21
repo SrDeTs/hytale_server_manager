@@ -718,4 +718,5 @@ export interface Language {
 export const SUPPORTED_LANGUAGES: Language[] = [
   { code: 'en', label: 'English' },
   { code: 'es', label: 'Español' },
+  { code: 'pt-BR', label: 'Português (Brasil)' },
 ];

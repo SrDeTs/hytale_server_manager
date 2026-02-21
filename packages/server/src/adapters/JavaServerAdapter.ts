@@ -42,6 +42,7 @@ export class JavaServerAdapter implements IServerAdapter {
   private serverArgs: string[];
   private workingDirectory: string;
   private maxMemory: string;
+  private hasCustomJvmArgs: boolean;
 
   private prisma: PrismaClient;
 
@@ -72,6 +73,7 @@ export class JavaServerAdapter implements IServerAdapter {
     this.assetsPath = adapterConfig?.assetsPath || '../Assets.zip';
     const minMemory = adapterConfig?.minMemory || '1G';
     this.maxMemory = adapterConfig?.maxMemory || '2G';
+    this.hasCustomJvmArgs = !!adapterConfig?.javaArgs;
     this.javaArgs = adapterConfig?.javaArgs || [
       `-Xms${minMemory}`,
       `-Xmx${this.maxMemory}`,
@@ -130,10 +132,11 @@ export class JavaServerAdapter implements IServerAdapter {
     }
 
     // Check for AOT cache file for faster startup
-    const aotPath = path.join(jarDir, 'HytaleServer.aot');
-    if (await fs.pathExists(aotPath)) {
-      const aotArg = '-XX:AOTCache=HytaleServer.aot';
-      if (!this.javaArgs.includes(aotArg)) {
+    // Only auto-inject if the user hasn't explicitly configured JVM args
+    const aotArg = '-XX:AOTCache=HytaleServer.aot';
+    if (!this.hasCustomJvmArgs) {
+      const aotPath = path.join(jarDir, 'HytaleServer.aot');
+      if (await fs.pathExists(aotPath) && !this.javaArgs.includes(aotArg)) {
         // Insert AOT flag before -jar
         const jarIndex = this.javaArgs.indexOf('-jar');
         if (jarIndex > 0) {
@@ -143,6 +146,8 @@ export class JavaServerAdapter implements IServerAdapter {
         }
         logger.info(`[JavaAdapter] Using AOT cache for faster startup`);
       }
+    } else if (!this.javaArgs.includes(aotArg)) {
+      logger.info(`[JavaAdapter] AOT cache not applied (user has custom JVM args)`);
     }
 
     logger.info(`[JavaAdapter] Starting server ${this.serverId}`);
@@ -401,6 +406,7 @@ export class JavaServerAdapter implements IServerAdapter {
 
     // Update javaArgs if jvmArgs is provided
     if (config.jvmArgs !== undefined) {
+      this.hasCustomJvmArgs = true;
       const jvmArgsList = config.jvmArgs.split(/\s+/).filter((arg) => arg.trim());
       this.javaArgs = [...jvmArgsList, '-jar'];
 

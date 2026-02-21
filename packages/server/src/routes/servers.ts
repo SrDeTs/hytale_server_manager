@@ -531,8 +531,11 @@ export function createServerRoutes(
         return;
       }
 
-      // Use versionName for download URL (API expects version number, not UUID)
-      const downloadVersion = versionName || versionId;
+      // For CurseForge, use numeric versionId (file ID) since the API requires it.
+      // For Modtale, prefer versionName (version number) since their API expects it.
+      const downloadVersion = providerId === 'curseforge'
+        ? versionId
+        : (versionName || versionId);
       logger.info(`Installing mod ${projectId} version ${downloadVersion} from ${providerId} to server ${req.params.id}`);
 
       // Ensure providerId is set in metadata
@@ -658,6 +661,307 @@ export function createServerRoutes(
     } catch (error) {
       logger.error('Error disabling mod:', error);
       res.status(500).json({ error: 'Failed to disable mod' });
+    }
+  });
+
+  // ============================================
+  // Mod Updates
+  // ============================================
+
+  /**
+   * GET /api/servers/:id/mods/check-updates
+   * Check all installed mods for available updates
+   */
+  router.get('/:id/mods/check-updates', requirePermission(PERMISSIONS.MODS_VIEW), async (req: Request, res: Response) => {
+    try {
+      const mods = await modService.getServerMods(req.params.id);
+
+      if (mods.length === 0) {
+        res.json([]);
+        return;
+      }
+
+      const results = await Promise.allSettled(
+        mods.map(async (mod) => {
+          const providerId = mod.providerId || 'modtale';
+
+          if (!modProviderService || !modProviderService.hasProvider(providerId)) {
+            return {
+              modId: mod.id,
+              projectTitle: mod.projectTitle,
+              currentVersion: mod.versionName,
+              currentVersionId: mod.versionId,
+              updateAvailable: false,
+              error: `Provider ${providerId} not available`,
+            };
+          }
+
+          const provider = modProviderService.getProvider(providerId);
+          if (!provider || !provider.isConfigured()) {
+            return {
+              modId: mod.id,
+              projectTitle: mod.projectTitle,
+              currentVersion: mod.versionName,
+              currentVersionId: mod.versionId,
+              updateAvailable: false,
+              error: `Provider ${providerId} not configured`,
+            };
+          }
+
+          const project = await provider.getProject(mod.projectId);
+          const latestVersion = project.latestVersion;
+
+          if (!latestVersion) {
+            return {
+              modId: mod.id,
+              projectTitle: mod.projectTitle,
+              currentVersion: mod.versionName,
+              currentVersionId: mod.versionId,
+              updateAvailable: false,
+            };
+          }
+
+          const updateAvailable = latestVersion.id !== mod.versionId && latestVersion.version !== mod.versionName;
+
+          return {
+            modId: mod.id,
+            projectTitle: mod.projectTitle,
+            currentVersion: mod.versionName,
+            currentVersionId: mod.versionId,
+            latestVersion: latestVersion.version,
+            latestVersionId: latestVersion.id,
+            updateAvailable,
+          };
+        })
+      );
+
+      const statuses = results.map((result, index) => {
+        if (result.status === 'fulfilled') {
+          return result.value;
+        }
+        return {
+          modId: mods[index].id,
+          projectTitle: mods[index].projectTitle,
+          currentVersion: mods[index].versionName,
+          currentVersionId: mods[index].versionId,
+          updateAvailable: false,
+          error: result.reason?.message || 'Failed to check for updates',
+        };
+      });
+
+      res.json(statuses);
+    } catch (error: any) {
+      logger.error('Error checking mod updates:', error);
+      res.status(500).json({ error: error.message || 'Failed to check for updates' });
+    }
+  });
+
+  /**
+   * POST /api/servers/:serverId/mods/:modId/update
+   * Update a single mod to latest (or specified) version
+   */
+  router.post('/:serverId/mods/:modId/update', requirePermission(PERMISSIONS.MODS_INSTALL), async (req: Request, res: Response): Promise<void> => {
+    const authReq = req as AuthenticatedRequest;
+    try {
+      const { serverId, modId } = req.params;
+      const { versionId: targetVersionId } = req.body;
+
+      const mod = await modService.getMod(modId);
+      if (!mod) {
+        res.status(404).json({ error: 'Mod not found' });
+        return;
+      }
+
+      const providerId = mod.providerId || 'modtale';
+
+      if (!modProviderService || !modProviderService.hasProvider(providerId)) {
+        res.status(500).json({ error: `Provider ${providerId} not available` });
+        return;
+      }
+
+      const provider = modProviderService.getProvider(providerId);
+      if (!provider || !provider.isConfigured()) {
+        res.status(500).json({ error: `${providerId} API key not configured. Set it in Settings.` });
+        return;
+      }
+
+      // Get project to find target version
+      const project = await provider.getProject(mod.projectId);
+      let targetVersion = targetVersionId
+        ? project.versions.find(v => v.id === targetVersionId)
+        : project.latestVersion;
+
+      if (!targetVersion) {
+        res.status(404).json({ error: 'Target version not found' });
+        return;
+      }
+
+      // Download the new version
+      const downloadVersion = providerId === 'curseforge'
+        ? targetVersion.id
+        : (targetVersion.version || targetVersion.id);
+
+      let downloadStream;
+      try {
+        downloadStream = await modProviderService.downloadVersion(providerId, mod.projectId, downloadVersion);
+      } catch (downloadError: any) {
+        // Fallback: try with version ID directly
+        if (downloadVersion !== targetVersion.id) {
+          downloadStream = await modProviderService.downloadVersion(providerId, mod.projectId, targetVersion.id);
+        } else {
+          throw downloadError;
+        }
+      }
+
+      // Collect stream into buffer
+      const chunks: Buffer[] = [];
+      for await (const chunk of downloadStream) {
+        chunks.push(Buffer.from(chunk));
+      }
+      const modFile = Buffer.concat(chunks);
+
+      const metadata = {
+        providerId,
+        projectId: mod.projectId,
+        projectTitle: project.title,
+        projectIconUrl: project.iconUrl,
+        versionId: targetVersion.id,
+        versionName: targetVersion.version,
+        classification: mod.classification,
+        fileSize: modFile.length,
+      };
+
+      const adapter = await serverService.getAdapterForServer(serverId);
+      const updatedMod = await modService.updateMod(adapter, modId, modFile, metadata);
+
+      // Log activity
+      const activityLogService: ActivityLogService = req.app.get('activityLogService');
+      const context = getActivityContext(req);
+      const user = authReq.user!;
+      activityLogService.logAsync({
+        userId: user.id,
+        username: user.username,
+        userRole: user.role,
+        action: ACTIVITY_ACTIONS.MOD_UPDATE,
+        resourceType: RESOURCE_TYPES.MOD,
+        resourceId: modId,
+        resourceName: mod.projectTitle,
+        status: 'success',
+        details: {
+          fromVersion: mod.versionName,
+          toVersion: targetVersion.version,
+        },
+        ipAddress: context.ipAddress,
+        userAgent: context.userAgent,
+      });
+
+      res.json(updatedMod);
+    } catch (error: any) {
+      logger.error('Error updating mod:', error);
+      res.status(500).json({ error: error.message || 'Failed to update mod' });
+    }
+  });
+
+  /**
+   * POST /api/servers/:id/mods/update-all
+   * Update all mods that have available updates
+   */
+  router.post('/:id/mods/update-all', requirePermission(PERMISSIONS.MODS_INSTALL), async (req: Request, res: Response): Promise<void> => {
+    const authReq = req as AuthenticatedRequest;
+    try {
+      const serverId = req.params.id;
+      const mods = await modService.getServerMods(serverId);
+
+      const updated: string[] = [];
+      const failed: { modId: string; name: string; error: string }[] = [];
+      const skipped: string[] = [];
+
+      for (const mod of mods) {
+        const providerId = mod.providerId || 'modtale';
+
+        if (!modProviderService || !modProviderService.hasProvider(providerId)) {
+          skipped.push(mod.projectTitle);
+          continue;
+        }
+
+        const provider = modProviderService.getProvider(providerId);
+        if (!provider || !provider.isConfigured()) {
+          skipped.push(mod.projectTitle);
+          continue;
+        }
+
+        try {
+          const project = await provider.getProject(mod.projectId);
+          const latestVersion = project.latestVersion;
+
+          if (!latestVersion || (latestVersion.id === mod.versionId || latestVersion.version === mod.versionName)) {
+            skipped.push(mod.projectTitle);
+            continue;
+          }
+
+          // Download
+          const downloadVersion = providerId === 'curseforge'
+            ? latestVersion.id
+            : (latestVersion.version || latestVersion.id);
+
+          let downloadStream;
+          try {
+            downloadStream = await modProviderService.downloadVersion(providerId, mod.projectId, downloadVersion);
+          } catch {
+            if (downloadVersion !== latestVersion.id) {
+              downloadStream = await modProviderService.downloadVersion(providerId, mod.projectId, latestVersion.id);
+            } else {
+              throw new Error('Download failed');
+            }
+          }
+
+          const chunks: Buffer[] = [];
+          for await (const chunk of downloadStream) {
+            chunks.push(Buffer.from(chunk));
+          }
+          const modFile = Buffer.concat(chunks);
+
+          const metadata = {
+            providerId,
+            projectId: mod.projectId,
+            projectTitle: project.title,
+            projectIconUrl: project.iconUrl,
+            versionId: latestVersion.id,
+            versionName: latestVersion.version,
+            classification: mod.classification,
+            fileSize: modFile.length,
+          };
+
+          const adapter = await serverService.getAdapterForServer(serverId);
+          await modService.updateMod(adapter, mod.id, modFile, metadata);
+          updated.push(mod.projectTitle);
+        } catch (err: any) {
+          failed.push({ modId: mod.id, name: mod.projectTitle, error: err.message || 'Update failed' });
+        }
+      }
+
+      // Log activity
+      const activityLogService: ActivityLogService = req.app.get('activityLogService');
+      const context = getActivityContext(req);
+      const user = authReq.user!;
+      activityLogService.logAsync({
+        userId: user.id,
+        username: user.username,
+        userRole: user.role,
+        action: ACTIVITY_ACTIONS.MOD_UPDATE,
+        resourceType: RESOURCE_TYPES.MOD,
+        resourceId: serverId,
+        resourceName: `Bulk update (${updated.length} updated)`,
+        status: failed.length === 0 ? 'success' : 'failed',
+        details: { updated, failed: failed.map(f => f.name), skipped },
+        ipAddress: context.ipAddress,
+        userAgent: context.userAgent,
+      });
+
+      res.json({ updated, failed, skipped });
+    } catch (error: any) {
+      logger.error('Error updating all mods:', error);
+      res.status(500).json({ error: error.message || 'Failed to update mods' });
     }
   });
 
@@ -834,6 +1138,42 @@ export function createServerRoutes(
     } catch (error: any) {
       logger.error('Error getting backup:', error);
       res.status(404).json({ error: error.message || 'Backup not found' });
+    }
+  });
+
+  /**
+   * GET /api/backups/:id/download
+   * Download a backup file
+   */
+  router.get('/backups/:id/download', requirePermission(PERMISSIONS.BACKUPS_VIEW), async (req: Request, res: Response): Promise<void> => {
+    try {
+      const backup = await backupService.getBackup(req.params.id);
+
+      if (backup.status !== 'completed') {
+        res.status(400).json({ error: 'Backup is not completed' });
+        return;
+      }
+
+      const fs = await import('fs-extra');
+      const filePath = backup.filePath;
+
+      if (!await fs.pathExists(filePath)) {
+        res.status(404).json({ error: 'Backup file not found on disk' });
+        return;
+      }
+
+      const stat = await fs.stat(filePath);
+      const filename = backup.name.endsWith('.zip') ? backup.name : `${backup.name}.zip`;
+
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Length', stat.size);
+
+      const stream = fs.createReadStream(filePath);
+      stream.pipe(res);
+    } catch (error: any) {
+      logger.error('Error downloading backup:', error);
+      res.status(500).json({ error: error.message || 'Failed to download backup' });
     }
   });
 

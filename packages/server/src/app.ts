@@ -165,7 +165,7 @@ export class App {
     this.metricsService = new MetricsService();
     this.worldsService = new WorldsService();
     this.alertsService = new AlertsService(this.discordService);
-    this.automationRulesService = new AutomationRulesService(this.serverService as any, this.backupService);
+    this.automationRulesService = new AutomationRulesService(this.serverService as any, this.backupService, this.activityLogService);
 
     // Initialize WebSocket handlers
     this.serverEvents = new ServerEvents(this.io, this.serverService, this.consoleService);
@@ -268,7 +268,11 @@ export class App {
   private initializeRoutes(): void {
     // Health check
     this.express.get('/health', (_req, res) => {
-      res.json({ status: 'ok', timestamp: new Date().toISOString() });
+      res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        maxFileUploadSize: config.maxFileUploadSize,
+      });
     });
 
     // API routes
@@ -515,6 +519,13 @@ export class App {
       this.io.close();
       logger.info('WebSocket server closed');
 
+      // In Docker, stop all running game servers before exiting
+      // (child processes won't survive container shutdown)
+      if (config.isDocker) {
+        logger.info('Docker environment detected - stopping all game servers...');
+        await this.serverService.stopAllServers();
+      }
+
       // Cleanup services
       this.schedulerService.cleanup();
       this.taskGroupService.cleanup();
@@ -539,11 +550,11 @@ export class App {
         process.exit(0);
       });
 
-      // Force exit after 10 seconds
+      // Force exit after 30 seconds (allows game servers time to save)
       setTimeout(() => {
         logger.warn('Forced shutdown after timeout');
         process.exit(1);
-      }, 10000);
+      }, 30000);
     } catch (error) {
       logger.error('Error during shutdown:', error);
       process.exit(1);

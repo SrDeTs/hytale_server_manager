@@ -243,12 +243,52 @@
             "restart_failed": {
                 "title": "No se pudo reiniciar el servidor"
             },
+            "mod_enabled": {
+                "title": "Mod habilitado",
+                "description": "{mod} ha sido habilitado"
+            },
+            "mod_disabled": {
+                "title": "Mod deshabilitado",
+                "description": "{mod} ha sido deshabilitado"
+            },
+            "mod_toggle_failed": {
+                "title": "No se pudo cambiar el estado del mod"
+            },
             "mod_uninstalled": {
                 "title": "Mod desinstalado",
                 "description": "{mod} ha sido eliminado"
             },
             "mod_uninstalled_failed": {
                 "title": "No se pudo desinstalar el mod"
+            },
+            "updates_found": {
+                "title": "Actualizaciones disponibles",
+                "description": "{count} mod(s) pueden actualizarse"
+            },
+            "no_updates": {
+                "title": "Todo actualizado",
+                "description": "Todos los mods están en su última versión"
+            },
+            "check_updates_failed": {
+                "title": "Error al buscar actualizaciones"
+            },
+            "mod_update_success": {
+                "title": "Mod actualizado",
+                "description": "{mod} actualizado a v{version}"
+            },
+            "mod_update_failed": {
+                "title": "Error al actualizar mod"
+            },
+            "update_all_success": {
+                "title": "Todos los mods actualizados",
+                "description": "{count} mod(s) actualizados correctamente"
+            },
+            "update_all_partial": {
+                "title": "Algunas actualizaciones fallaron",
+                "description": "{updated} actualizados, {failed} fallidos"
+            },
+            "update_all_failed": {
+                "title": "Error al actualizar mods"
             },
             "killed": {
                 "title": "Servidor forzado a detenerse",
@@ -312,12 +352,22 @@
                 "browse_install": "Explorar e instalar mods",
                 "empty": "No hay mods instalados en este servidor",
                 "disabled": "Deshabilitado",
+                "enable": "Habilitar",
+                "disable": "Deshabilitar",
                 "installed_on": "Instalado {date}",
                 "uninstall_title": "Desinstalar mod",
                 "remove": "Eliminar",
                 "removing": "Eliminando...",
                 "view_curseforge": "Ver en CurseForge",
-                "view_modtale": "Ver en Modtale"
+                "view_modtale": "Ver en Modtale",
+                "check_updates": "Buscar actualizaciones",
+                "checking_updates": "Buscando...",
+                "update": "Actualizar",
+                "updating": "Actualizando...",
+                "update_all": "Actualizar todo ({count})",
+                "updating_all": "Actualizando todo...",
+                "update_available": "Actualización disponible",
+                "update_to": "v{from} → v{to}"
             },
             "quick": {
                 "title": "Acciones rápidas",
@@ -1007,6 +1057,7 @@
         },
         "actions": {
             "create_backup": "Crear copia",
+            "download": "Descargar",
             "restore": "Restaurar",
             "delete": "Eliminar",
             "delete_selected": "Eliminar seleccionados"
