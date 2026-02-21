@@ -17,16 +17,16 @@
         "deleting": "Removendo...",
         "next": "Próximo",
         "back": "Voltar",
-        "view_all": "Ver Tudo",
-        "search_placeholder": "Buscar servidores, mods, jogadores... (Em breve)",
+        "view_all": "Ver Todos",
+        "search_placeholder": "Buscar servidores, mods, jogadores... (Em Breve)",
         "actions": "Ações",
         "confirm": "Confirmar",
-        "coming_soon": "Em breve",
+        "coming_soon": "Em Breve",
         "time_ago": {
             "just_now": "Agora mesmo",
-            "minutes_ago": "{count}m atrás",
-            "hours_ago": "{count}h atrás",
-            "days_ago": "{count}d atrás"
+            "minutes_ago": "há {count}min",
+            "hours_ago": "há {count}h",
+            "days_ago": "há {count}d"
         }
     },
     "ui": {
@@ -37,7 +37,7 @@
             "expired": "Expirado"
         },
         "searchable_select": {
-            "all": "Tudo",
+            "all": "Todos",
             "search": "Buscar...",
             "no_results": "Nenhum resultado encontrado",
             "selected_count": "{count} selecionado(s)"
@@ -66,16 +66,16 @@
                 "dashboard": "Visão geral e estatísticas",
                 "servers": "Gerenciar seus servidores",
                 "players": "Ver e gerenciar jogadores",
-                "mods": "Navegar e instalar mods",
+                "mods": "Explorar e instalar mods",
                 "modpacks": "Coleções de mods pré-configuradas",
                 "backups": "Gerenciar backups do servidor",
                 "console": "Console e logs do servidor",
                 "automation": "Tarefas agendadas",
                 "analytics": "Métricas de desempenho",
-                "files": "Navegar pelos arquivos do servidor",
+                "files": "Explorar arquivos do servidor",
                 "permissions": "Gerenciar permissões de usuário",
                 "economy": "Gerenciar economia do servidor",
-                "bridge": "Integração in-game",
+                "bridge": "Integração no jogo",
                 "settings": "Configuração do painel"
             }
         }
@@ -91,7 +91,7 @@
             "clear": "Limpar seleção"
         },
         "pagination": {
-            "showing": "Mostrando {start} a {end} de {total} resultados",
+            "showing": "Exibindo {start} a {end} de {total} resultados",
             "per_page": "Por página:",
             "previous": "Anterior",
             "next": "Próximo",
@@ -103,13 +103,13 @@
         "servers": "Servidores",
         "mods": "Mods",
         "console": "Console",
-        "marketplace": "Loja",
+        "marketplace": "Marketplace",
         "modpacks": "Modpacks",
         "backups": "Backups",
         "automation": "Automação",
         "files": "Arquivos",
         "alerts": "Alertas",
-        "activity_log": "Log de Atividade",
+        "activity_log": "Log de Atividades",
         "hsm_logs": "Logs HSM",
         "permissions": "Permissões",
         "users": "Usuários",
@@ -118,22 +118,22 @@
         "economy": "Economia",
         "bridge": "Hytale Bridge",
         "analytics": "Análises",
-        "coming_soon": "Em breve",
+        "coming_soon": "Em Breve",
         "collapse": "Recolher"
     },
     "servers": {
         "title": "Servidores",
-        "subtitle": "Gerencie suas instâncias de servidor Hytale",
+        "subtitle": "Gerenciar suas instâncias de servidor Hytale",
         "create_network": "Criar Rede",
         "create": {
             "title": "Criar Novo Servidor",
             "header": "Configure Seu Servidor",
-            "subtitle": "Configure uma nova instância de servidor Hytale",
+            "subtitle": "Configurar uma nova instância de servidor Hytale",
             "name_label": "Nome do Servidor",
             "name_placeholder": "Meu Servidor Incrível",
             "path_label": "Diretório do Servidor",
             "path_placeholder": "C:\\Servidores\\MeuServidor",
-            "path_help": "Caminho completo para o diretório do servidor. Este diretório será criado se não existir.",
+            "path_help": "Caminho completo para o diretório do servidor. O diretório será criado se não existir.",
             "address_label": "Endereço",
             "port_label": "Porta",
             "gamemode_label": "Modo de Jogo",
@@ -144,8 +144,8 @@
             "adapter": {
                 "label": "Tipo de Adaptador",
                 "java": "Java JAR (Hytale, Minecraft, etc.)",
-                "hytale": "Hytale (Em breve)",
-                "java_help": "Executa um arquivo JAR Java (ex: servidor de Minecraft)."
+                "hytale": "Hytale (Em Breve)",
+                "java_help": "Executar um arquivo Java JAR (ex.: servidor Minecraft)."
             },
             "java": {
                 "title": "Configuração Java",
@@ -160,23 +160,23 @@
             },
             "submit": "Criar Servidor",
             "errors": {
-                "name": "Nome do servidor é obrigatório",
-                "server_path": "Diretório do servidor é obrigatório",
-                "address": "Endereço é obrigatório",
+                "name": "O nome do servidor é obrigatório",
+                "server_path": "O caminho do diretório do servidor é obrigatório",
+                "address": "O endereço é obrigatório",
                 "port": "A porta deve estar entre 1 e 65535",
-                "version": "Versão do servidor é obrigatória. Baixe os arquivos primeiro.",
-                "game_mode": "Modo de jogo é obrigatório"
+                "version": "A versão do servidor é obrigatória. Baixe os arquivos do servidor primeiro.",
+                "game_mode": "O modo de jogo é obrigatório"
             }
         },
         "view_mode": {
             "grouped": "Agrupado",
-            "flat": "Lista"
+            "flat": "Simples"
         },
         "networks": "Redes",
-        "ungrouped": "Servidores Não Agrupados",
+        "ungrouped": "Servidores Sem Grupo",
         "empty": {
             "title": "Nenhum Servidor Ainda",
-            "description": "Crie seu primeiro servidor para começar, ou crie uma rede para organizar vários servidores.",
+            "description": "Crie seu primeiro servidor para começar, ou crie uma rede para organizar múltiplos servidores.",
             "submit": "Criar Servidor"
         },
         "columns": {
@@ -194,7 +194,7 @@
             "start": "Iniciar",
             "stop": "Parar",
             "restart": "Reiniciar",
-            "kill": "Matar",
+            "kill": "Forçar Encerramento",
             "details": "Detalhes",
             "delete": "Excluir"
         },
@@ -203,12 +203,12 @@
             "stopping": "Parando",
             "stopped": "Parado",
             "running": "Executando",
-            "crashed": "Travado",
+            "crashed": "Com Falha",
             "orphaned": "Órfão"
         },
         "all_servers": "Todos os Servidores",
         "tooltips": {
-            "force_kill": "Forçar parada do servidor",
+            "force_kill": "Forçar encerramento do servidor",
             "stop_before_delete": "Pare o servidor antes de excluir",
             "delete_server": "Excluir servidor"
         },
@@ -243,6 +243,17 @@
             "restart_failed": {
                 "title": "Falha ao reiniciar servidor"
             },
+            "mod_enabled": {
+                "title": "Mod ativado",
+                "description": "{mod} foi ativado"
+            },
+            "mod_disabled": {
+                "title": "Mod desativado",
+                "description": "{mod} foi desativado"
+            },
+            "mod_toggle_failed": {
+                "title": "Falha ao alternar mod"
+            },
             "mod_uninstalled": {
                 "title": "Mod desinstalado",
                 "description": "{mod} foi removido"
@@ -250,12 +261,41 @@
             "mod_uninstalled_failed": {
                 "title": "Falha ao desinstalar mod"
             },
+            "updates_found": {
+                "title": "Atualizações disponíveis",
+                "description": "{count} mod(s) podem ser atualizados"
+            },
+            "no_updates": {
+                "title": "Tudo atualizado",
+                "description": "Todos os mods estão nas versões mais recentes"
+            },
+            "check_updates_failed": {
+                "title": "Falha ao verificar atualizações"
+            },
+            "mod_update_success": {
+                "title": "Mod atualizado",
+                "description": "{mod} atualizado para v{version}"
+            },
+            "mod_update_failed": {
+                "title": "Falha ao atualizar mod"
+            },
+            "update_all_success": {
+                "title": "Todos os mods atualizados",
+                "description": "{count} mod(s) atualizados com sucesso"
+            },
+            "update_all_partial": {
+                "title": "Algumas atualizações falharam",
+                "description": "{updated} atualizados, {failed} falharam"
+            },
+            "update_all_failed": {
+                "title": "Falha ao atualizar mods"
+            },
             "killed": {
-                "title": "Servidor parado à força",
-                "description": "{name} foi encerrado abruptamente"
+                "title": "Servidor encerrado",
+                "description": "{name} foi forçadamente encerrado"
             },
             "kill_failed": {
-                "title": "Falha ao matar processo do servidor"
+                "title": "Falha ao encerrar servidor"
             },
             "created": {
                 "title": "Servidor criado",
@@ -266,14 +306,14 @@
             },
             "deleted": {
                 "title": "Servidor excluído",
-                "description": "{name} foi removido"
+                "description": "{name} foi excluído"
             },
             "delete_failed": {
                 "title": "Falha ao excluir servidor"
             }
         },
         "detail": {
-            "back_to_servers": "Voltar aos Servidores",
+            "back_to_servers": "Voltar para Servidores",
             "errors": {
                 "not_found": "Servidor Não Encontrado"
             },
@@ -308,20 +348,30 @@
             "mods": {
                 "title": "Mods Instalados",
                 "subtitle": "Mods e modpacks instalados neste servidor",
-                "browse": "Navegar Mods",
-                "browse_install": "Navegar e Instalar Mods",
+                "browse": "Explorar Mods",
+                "browse_install": "Explorar e Instalar Mods",
                 "empty": "Nenhum mod instalado neste servidor",
                 "disabled": "Desativado",
+                "enable": "Ativar",
+                "disable": "Desativar",
                 "installed_on": "Instalado em {date}",
                 "uninstall_title": "Desinstalar mod",
                 "remove": "Remover",
                 "removing": "Removendo...",
                 "view_curseforge": "Ver no CurseForge",
-                "view_modtale": "Ver no Modtale"
+                "view_modtale": "Ver no Modtale",
+                "check_updates": "Verificar Atualizações",
+                "checking_updates": "Verificando...",
+                "update": "Atualizar",
+                "updating": "Atualizando...",
+                "update_all": "Atualizar Todos ({count})",
+                "updating_all": "Atualizando Todos...",
+                "update_available": "Atualização disponível",
+                "update_to": "v{from} → v{to}"
             },
             "quick": {
                 "title": "Ações Rápidas",
-                "subtitle": "Tarefas comuns de gerenciamento",
+                "subtitle": "Tarefas comuns de gerenciamento do servidor",
                 "console": "Console",
                 "worlds": "Mundos",
                 "backups": "Backups",
@@ -333,7 +383,7 @@
         },
         "worlds": {
             "title": "Mundos",
-            "subtitle": "Gerencie mundos no universo deste servidor. Cada mundo tem sua própria configuração.",
+            "subtitle": "Gerenciar mundos no universo deste servidor. Cada mundo tem sua própria configuração e pode ser ativado independentemente.",
             "toast": {
                 "load_failed": "Falha ao carregar mundos",
                 "deleted": {
@@ -347,19 +397,19 @@
             "confirm_delete": "Tem certeza que deseja excluir o mundo \"{name}\"? Esta ação não pode ser desfeita.",
             "empty": {
                 "title": "Nenhum mundo encontrado",
-                "subtitle": "Os mundos aparecerão aqui quando o servidor os criar"
+                "subtitle": "Os mundos aparecerão aqui assim que o servidor os criar"
             },
             "size": "Tamanho: {size}",
-            "last_played": "Última vez jogado: {date}",
+            "last_played": "Último acesso: {date}",
             "actions": {
                 "settings": "Configurações do mundo",
-                "config": "Config",
+                "config": "Configurar",
                 "delete": "Excluir mundo"
             },
             "info": {
                 "title": "Sobre Universos e Mundos",
-                "body1": "No Hytale, um universo contém múltiplos mundos, cada um com seus próprios arquivos de configuração.",
-                "body2": "Cada mundo pode ter configurações diferentes para PvP, dano de queda, spawn de NPCs e mais."
+                "body1": "No Hytale, um universo contém múltiplos mundos, cada um com seus próprios arquivos de configuração e definições.",
+                "body2": "Cada mundo pode ter configurações diferentes para PvP, dano de queda, geração de NPCs, tempo de jogo e muito mais."
             },
             "world_settings": {
                 "title": "Configurações do Mundo - {name}",
@@ -385,18 +435,18 @@
                     "spawn_x": "Spawn X",
                     "spawn_y": "Spawn Y",
                     "spawn_z": "Spawn Z",
-                    "loaded": "Carregar mundo ao iniciar o servidor"
+                    "loaded": "Carregar mundo ao iniciar servidor"
                 },
                 "rules": {
-                    "helper": "Configure regras de jogo que afetam a mecânica neste mundo",
+                    "helper": "Configurar regras de jogo que afetam as mecânicas neste mundo",
                     "items": {
-                        "doDaylightCycle": "Ciclo de Luz Solar",
-                        "doWeatherCycle": "Ciclo de Clima",
-                        "doMobSpawning": "Spawn de Monstros",
+                        "doDaylightCycle": "Ciclo Diurno",
+                        "doWeatherCycle": "Ciclo Climático",
+                        "doMobSpawning": "Geração de Mobs",
                         "keepInventory": "Manter Inventário",
-                        "mobGriefing": "Destruição por Monstros",
+                        "mobGriefing": "Griefing de Mob",
                         "naturalRegeneration": "Regeneração Natural",
-                        "showDeathMessages": "Mostrar Mensagens de Morte",
+                        "showDeathMessages": "Exibir Mensagens de Morte",
                         "doFireTick": "Propagação de Fogo",
                         "randomTickSpeed": "Velocidade de Tick Aleatório",
                         "spawnRadius": "Raio de Spawn"
@@ -404,12 +454,12 @@
                     "additional": "Regras de Jogo Adicionais ({count} no total)"
                 },
                 "border": {
-                    "helper": "Configure a borda do mundo para limitar a área jogável",
+                    "helper": "Configurar a borda do mundo para limitar a área jogável",
                     "size": "Tamanho da Borda (blocos)",
                     "size_helper": "Diâmetro da borda do mundo (padrão: 60.000.000)",
                     "center_x": "Centro X",
                     "center_z": "Centro Z",
-                    "info_title": "Info da Borda",
+                    "info_title": "Informações da Borda",
                     "info_radius": "Raio da borda: {radius} blocos",
                     "info_area": "Área total: {area}M blocos²",
                     "info_center": "Ponto central: ({x}, {z})"
@@ -417,19 +467,19 @@
             }
         },
         "world_config": {
-            "title": "Configuração do Mundo - {name}",
+            "title": "Config do Mundo - {name}",
             "toast": {
-                "load_failed": "Falha ao carregar config do mundo",
+                "load_failed": "Falha ao carregar configuração do mundo",
                 "saved": {
-                    "title": "Config salva",
-                    "description": "A configuração do mundo foi atualizada"
+                    "title": "Configuração salva",
+                    "description": "Configuração do mundo atualizada"
                 },
                 "save_failed": {
-                    "title": "Falha ao salvar config"
+                    "title": "Falha ao salvar configuração"
                 }
             },
             "running": {
-                "title": "O servidor está em execução",
+                "title": "Servidor em execução",
                 "subtitle": "Pare o servidor para editar a configuração do mundo"
             },
             "view": {
@@ -437,57 +487,57 @@
                 "json": "JSON"
             },
             "json": {
-                "invalid": "JSON Inválido: {error}"
+                "invalid": "JSON inválido: {error}"
             },
             "sections": {
                 "gameplay": "Jogabilidade",
                 "time": "Tempo e Efeitos",
                 "management": "Gerenciamento do Mundo",
-                "info": "Info (Somente leitura)"
+                "info": "Informações (Somente leitura)"
             },
             "gameplay": {
-                "pvp": "PvP Habilitado",
+                "pvp": "PvP Ativado",
                 "pvp_desc": "Permitir que jogadores causem dano uns aos outros",
                 "fall_damage": "Dano de Queda",
                 "fall_damage_desc": "Jogadores recebem dano ao cair",
-                "npc_spawning": "Spawn de NPCs",
-                "npc_spawning_desc": "Permitir spawn de NPCs no mundo",
-                "freeze_npc": "Congelar todos os NPCs",
+                "npc_spawning": "Geração de NPCs",
+                "npc_spawning_desc": "Permitir que NPCs apareçam no mundo",
+                "freeze_npc": "Congelar Todos os NPCs",
                 "freeze_npc_desc": "Impedir que todos os NPCs se movam",
                 "spawn_markers": "Marcadores de Spawn",
-                "spawn_markers_desc": "Mostrar marcadores de pontos de spawn",
+                "spawn_markers_desc": "Exibir marcadores de ponto de spawn",
                 "objective_markers": "Marcadores de Objetivo",
-                "objective_markers_desc": "Mostrar marcadores de objetivo no HUD",
+                "objective_markers_desc": "Exibir marcadores de objetivo no HUD",
                 "compass": "Atualização da Bússola",
                 "compass_desc": "Permitir que a bússola atualize a direção"
             },
             "time": {
                 "paused": "Tempo de Jogo Pausado",
                 "paused_desc": "Congelar o ciclo dia/noite",
-                "sun_height": "% Altura do Sol",
+                "sun_height": "Altura do Sol %",
                 "sun_height_desc": "Posição vertical do sol (0-100%)",
                 "sun_angle": "Ângulo do Sol",
                 "sun_angle_desc": "Ângulo de rotação do sol em graus",
                 "sun_intensity": "Intensidade do Sol",
                 "sun_intensity_desc": "Brilho do sol",
-                "bloom_intensity": "Intensidade do Bloom",
-                "bloom_intensity_desc": "Efeito de pós-processamento bloom",
-                "bloom_power": "Poder do Bloom",
-                "bloom_power_desc": "Poder do efeito bloom"
+                "bloom_intensity": "Intensidade de Bloom",
+                "bloom_intensity_desc": "Efeito de bloom pós-processamento",
+                "bloom_power": "Potência de Bloom",
+                "bloom_power_desc": "Potência do efeito de bloom"
             },
             "management": {
                 "world_ticking": "Ticking do Mundo",
-                "world_ticking_desc": "Habilitar atualizações de simulação do mundo",
+                "world_ticking_desc": "Ativar atualizações de simulação do mundo",
                 "block_ticking": "Ticking de Blocos",
-                "block_ticking_desc": "Habilitar atualizações aleatórias de blocos",
+                "block_ticking_desc": "Ativar atualizações aleatórias de blocos",
                 "save_players": "Salvar Jogadores",
-                "save_players_desc": "Persistir dados dos jogadores no disco",
+                "save_players_desc": "Persistir dados de jogadores no disco",
                 "save_chunks": "Salvar Chunks",
                 "save_chunks_desc": "Persistir dados de chunks no disco",
                 "save_new_chunks": "Salvar Novos Chunks",
                 "save_new_chunks_desc": "Salvar chunks recém-gerados",
                 "unload_chunks": "Descarregar Chunks",
-                "unload_chunks_desc": "Remover chunks inativos da memória",
+                "unload_chunks_desc": "Descarregar chunks inativos da memória",
                 "delete_on_start": "Excluir ao Iniciar Universo",
                 "delete_on_start_desc": "Remover mundo quando o universo iniciar",
                 "delete_on_remove": "Excluir ao Remover",
@@ -503,7 +553,7 @@
         "settings": {
             "title": "Configurações do Servidor",
             "back": "Voltar ao Servidor",
-            "reset": "Resetar",
+            "reset": "Redefinir",
             "tabs": {
                 "general": "Geral",
                 "general_desc": "Configurações básicas do servidor",
@@ -512,7 +562,7 @@
                 "network": "Rede",
                 "network_desc": "Configurações de rede e conexão",
                 "advanced": "Avançado",
-                "advanced_desc": "JVM e configuração avançada"
+                "advanced_desc": "JVM e configurações avançadas"
             },
             "toast": {
                 "saved": {
@@ -526,11 +576,11 @@
             },
             "general": {
                 "title": "Configurações Gerais",
-                "subtitle": "Configure informações básicas e comportamento do servidor",
+                "subtitle": "Configurar informações básicas e comportamento do servidor",
                 "name": "Nome do Servidor",
-                "name_placeholder": "Meu Servidor de Hytale",
+                "name_placeholder": "Meu Servidor Hytale",
                 "version": "Versão do Servidor",
-                "version_placeholder": "ex: 2025.01.15",
+                "version_placeholder": "ex.: 2025.01.15",
                 "version_helper": "A versão do servidor de jogo (atualizada automaticamente ao usar o recurso de Atualização)",
                 "max_players": "Máximo de Jogadores",
                 "game_mode": "Modo de Jogo",
@@ -542,11 +592,11 @@
             },
             "storage": {
                 "title": "Configurações de Armazenamento",
-                "subtitle": "Configure diretórios do servidor e local de backups",
+                "subtitle": "Configurar diretórios do servidor e local de armazenamento de backup",
                 "toast": {
                     "saved": {
                         "title": "Configurações de armazenamento salvas",
-                        "description": "Configuração de armazenamento atualizada com sucesso"
+                        "description": "Configuração de armazenamento do servidor atualizada com sucesso"
                     },
                     "error": {
                         "title": "Falha ao salvar configurações de armazenamento"
@@ -558,55 +608,1824 @@
                 "type": "Tipo de Armazenamento de Backup",
                 "type_local": "Diretório Local",
                 "type_ftp": "Servidor FTP",
-                "backup_path_local": "Diretório de Backup Local",
+                "backup_path_local": "Diretório Local de Backup",
                 "backup_path_local_placeholder": "/caminho/para/backups",
-                "backup_path_local_helper": "Diretório local para armazenar backups. Deixe vazio para usar o padrão.",
+                "backup_path_local_helper": "Diretório local para armazenar backups. Deixe vazio para usar o local padrão.",
                 "backup_path_ftp": "Caminho Remoto FTP",
                 "backup_path_ftp_placeholder": "/backups/meu-servidor/",
-                "backup_path_ftp_helper": "Caminho no servidor FTP onde os backups serão salvos. Deixe vazio para o padrão.",
+                "backup_path_ftp_helper": "Caminho no servidor FTP onde os backups serão armazenados. Deixe vazio para usar o padrão.",
                 "exclusions": "Exclusões de Backup",
-                "exclusions_helper": "Arquivos e pastas que coincidam com estes padrões serão excluídos. Exemplos: *.log, logs/*, *.log.gz",
-                "exclusions_placeholder": "ex: *.log, logs/*, crash-reports/**",
+                "exclusions_helper": "Arquivos e pastas que correspondam a esses padrões serão excluídos dos backups. Exemplos: *.log (todos os arquivos .log), logs/* (conteúdo da pasta logs), *.log.gz (logs comprimidos)",
+                "exclusions_placeholder": "ex.: *.log, logs/*, crash-reports/**",
                 "exclusions_add": "Adicionar",
                 "exclusions_remove": "Remover exclusão",
-                "exclusions_empty": "Nenhuma exclusão configurada. Todos os arquivos serão incluídos.",
+                "exclusions_empty": "Nenhuma exclusão configurada. Todos os arquivos serão incluídos nos backups.",
                 "ftp": {
                     "connected": "FTP Conectado",
                     "disconnected": "FTP Desconectado",
                     "not_configured": "Não Configurado",
                     "note_label": "Nota:",
-                    "note": "Ao usar FTP, os backups serão enviados e removidos do local após o sucesso. Certifique-se que o FTP tenha espaço suficiente."
+                    "note": "Ao usar armazenamento FTP, os backups serão enviados ao servidor FTP e excluídos do armazenamento local após o envio bem-sucedido. Certifique-se de que seu servidor FTP tenha espaço suficiente."
                 },
                 "save": "Salvar Configurações de Armazenamento"
             },
             "network": {
                 "title": "Configurações de Rede",
-                "subtitle": "Configure endereço de rede e portas",
+                "subtitle": "Configurar endereço de rede e porta",
                 "address": "IP / Endereço do Servidor",
-                "address_helper": "O endereço IP ao qual o servidor se vinculará. Use 0.0.0.0 para todas as interfaces.",
+                "address_helper": "O endereço IP ao qual o servidor vai se vincular. Use 0.0.0.0 para escutar em todas as interfaces.",
                 "port": "Porta do Servidor",
-                "port_helper": "A porta que o servidor irá escutar (padrão: 5520)."
+                "port_helper": "A porta em que o servidor vai escutar (padrão: 5520)."
             },
             "advanced": {
                 "title": "Configurações Avançadas",
                 "subtitle": "Configuração Java e argumentos JVM",
                 "java_path": "Caminho do Executável Java",
-                "java_path_helper": "Caminho para o executável Java. Use \"java\" para o padrão do sistema ou o caminho completo.",
+                "java_path_helper": "Caminho para o executável Java. Use \"java\" para usar o Java do sistema, ou especifique um caminho completo (ex.: /usr/lib/jvm/java-17/bin/java).",
                 "jar_path": "Caminho do Arquivo JAR",
-                "jar_path_helper": "Caminho para o arquivo JAR relativo ao diretório do servidor.",
+                "jar_path_helper": "Caminho para o arquivo JAR do servidor relativo ao diretório do servidor.",
                 "assets_path": "Caminho dos Assets",
-                "assets_path_helper": "Caminho para o Assets.zip relativo ao JAR. Usado com o argumento --assets.",
+                "assets_path_helper": "Caminho para o arquivo Assets.zip relativo ao local do arquivo JAR. Usado com o argumento --assets.",
                 "jvm_args": "Argumentos JVM",
-                "jvm_args_helper": "Argumentos passados ao processo Java. O cache AOT permite carregamento mais rápido.",
+                "jvm_args_helper": "Argumentos JVM passados ao processo Java. O cache AOT permite inicialização mais rápida se HytaleServer.aot existir.",
                 "server_args": "Argumentos do Servidor",
-                "server_args_helper": "Argumentos passados ao servidor após o JAR (ex: --accept-early-plugins)",
+                "server_args_helper": "Argumentos passados ao servidor após o arquivo jar (ex.: --accept-early-plugins)",
                 "preview": "Prévia do Comando",
-                "preview_helper": "Assim ficará o comando de inicialização com suas configurações atuais:",
+                "preview_helper": "É assim que o comando de inicialização do servidor ficará com suas configurações atuais:",
                 "legend": {
                     "jvm": "Argumentos JVM",
                     "default_args": "Args Padrão do Servidor",
-                    "custom_args": "Args Personalizados"
+                    "custom_args": "Args Personalizados do Servidor"
                 }
+            }
+        }
+    },
+    "settings": {
+        "title": "Configurações",
+        "subtitle": "Configurar definições do aplicativo",
+        "loading": "Carregando configurações...",
+        "updates": {
+            "title": "Atualizações de Software",
+            "description": "Verificar e instalar atualizações do Hytale Server Manager",
+            "current_version": "Versão Atual",
+            "latest_version": "Versão Mais Recente",
+            "check": "Verificar Atualizações",
+            "checking": "Verificando...",
+            "update_available": "Atualização Disponível",
+            "update_now": "Atualizar Agora",
+            "updating": "Atualizando...",
+            "updating_message": "Baixando e aplicando atualização. O servidor será reiniciado automaticamente.",
+            "update_complete": "Atualização concluída! O servidor está reiniciando. Esta página será recarregada automaticamente...",
+            "apply_failed": "Falha ao aplicar atualização",
+            "download_manually": "Baixar Manualmente",
+            "view_github": "Ver no GitHub",
+            "up_to_date": "Você está usando a versão mais recente!",
+            "confirm_update": "Confirmar Atualização",
+            "confirm_message": "Isso vai baixar a atualização, parar o servidor, aplicar as mudanças e reiniciar.",
+            "confirm_yes": "Sim, Atualizar Agora",
+            "release_notes": "Notas de Versão:",
+            "version_name": "Versão {version}",
+            "released_on": "Lançado em {date}",
+            "released_recently": "Lançado recentemente",
+            "docker_mode": "Executando no Docker",
+            "last_checked": "Última verificação: {date}",
+            "show_update": "Ver Atualização",
+            "docker": {
+                "instructions_title": "Atualizando Implantações Docker",
+                "step_pull": "Puxar a imagem mais recente:",
+                "step_restart": "Reinicie seu contêiner com a nova imagem",
+                "step_data": "Seus dados são preservados nos volumes montados"
+            },
+            "info": {
+                "title": "Como Funcionam as Atualizações",
+                "steps": [
+                    "Clique em \"Atualizar Agora\" para baixar e instalar automaticamente",
+                    "O servidor será parado, atualizado e reiniciado automaticamente",
+                    "Suas configurações e dados são preservados",
+                    "Você será desconectado brevemente durante o reinício"
+                ]
+            }
+        },
+        "downloader": {
+            "title": "Downloader de Servidor Hytale",
+            "description": "Baixar arquivos oficiais do servidor Hytale usando sua conta Hytale",
+            "installed": "Instalado",
+            "not_installed": "A ferramenta Hytale Downloader não está instalada.",
+            "install": "Instalar Downloader",
+            "installing": "Instalando...",
+            "install_success": "Hytale Downloader instalado com sucesso!",
+            "install_failed": "Falha ao instalar",
+            "update": "Verificar Atualizações",
+            "updating": "Atualizando...",
+            "update_success": "Hytale Downloader atualizado com sucesso!",
+            "update_failed": "Falha ao atualizar",
+            "connect_account": "Conectar Conta Hytale",
+            "connect_message": "Conecte sua conta Hytale para baixar arquivos oficiais do servidor.",
+            "connect_success": "Conta Hytale conectada com sucesso!",
+            "connected": "Conectado",
+            "reconnect": "Reconectar",
+            "disconnect": "Desconectar",
+            "disconnecting": "Desconectando...",
+            "disconnect_confirm": "Tem certeza que deseja desconectar sua conta Hytale?",
+            "disconnect_success": "Conta Hytale desconectada.",
+            "disconnect_failed": "Falha ao limpar credenciais",
+            "token_status": "Status do Token",
+            "access_token": "Token de Acesso",
+            "refresh_token": "Token de Atualização",
+            "branch": "Branch",
+            "auto_refresh": "Atualização automática (30 min)",
+            "auto_refresh_enable": "Ativar Atualização Automática",
+            "auto_refresh_disable": "Desativar Atualização Automática",
+            "refresh_now": "Atualizar Agora",
+            "refresh_now_action": "Atualizar Agora",
+            "refreshing": "Atualizando...",
+            "refresh_success": "Token atualizado com sucesso!",
+            "refresh_failed": "Falha ao atualizar token",
+            "auto_refresh_enabled": "Atualização automática ativada!",
+            "auto_refresh_disabled": "Atualização automática desativada!",
+            "auto_refresh_failed": "Falha ao atualizar configurações de atualização automática",
+            "loading": "Carregando status...",
+            "tool": "Ferramenta Downloader",
+            "version": "Versão",
+            "unknown": "Desconhecido",
+            "refresh": "Atualizar Token",
+            "account_title": "Conta Hytale",
+            "account_label": "Conta: {email}",
+            "token_expires": "Token de acesso expira em {minutes} minutos",
+            "install_first": "Instale a ferramenta downloader primeiro para conectar sua conta.",
+            "help": "Precisa de ajuda? Leia o guia de configuração em nossa documentação.",
+            "info": "O Hytale Downloader usa OAuth para autenticar com sua conta Hytale. Suas credenciais são armazenadas localmente e nunca são enviadas a terceiros.",
+            "view_manual": "Ver Manual do Servidor Hytale"
+        },
+        "mods": {
+            "title": "Provedores de Mods",
+            "description": "Configurar chaves de API para provedores de mods",
+            "configured": "Configurado",
+            "key_required": "Chave de API necessária",
+            "no_key": "Nenhuma chave de API necessária",
+            "enter_key": "Inserir chave de API",
+            "save": "Salvar",
+            "saving": "Salvando...",
+            "saved": "Chave de API salva com sucesso!",
+            "save_error": "Falha ao salvar chave de API",
+            "loading": "Carregando provedores...",
+            "placeholder_configured": "(Configurado - insira nova chave para atualizar)",
+            "placeholder_key": "Inserir chave de API",
+            "get_key": "Obter uma chave de API em",
+            "curseforge_console": "Console do CurseForge",
+            "modtale_dashboard": "Dashboard do Modtale"
+        },
+        "providers": {
+            "loading": "Carregando provedores...",
+            "all": "Todos os Provedores",
+            "not_configured": "Não configurado",
+            "configured": "Configurado",
+            "api_key_required": "Chave de API necessária",
+            "ready": "Pronto",
+            "search_all": "Buscar em todos",
+            "warning": {
+                "none": "Nenhum provedor configurado. Vá para Configurações para adicionar chaves de API.",
+                "single": "{provider} requer uma chave de API. Vá para Configurações para configurar."
+            },
+            "this_provider": "Este provedor"
+        },
+        "security": {
+            "title": "Alterar Senha",
+            "description": "Atualizar a senha da sua conta",
+            "current": "Senha Atual",
+            "new": "Nova Senha",
+            "confirm": "Confirmar Nova Senha",
+            "mismatch": "As senhas não coincidem",
+            "min_length": "A senha deve ter pelo menos 8 caracteres",
+            "change": "Alterar Senha",
+            "changing": "Alterando..."
+        },
+        "discord": {
+            "title": "Notificações do Discord",
+            "description": "Configurar notificações via webhook do Discord",
+            "enable": "Ativar",
+            "webhook_url": "URL do Webhook",
+            "username": "Nome do Bot",
+            "avatar_url": "URL do Avatar",
+            "events": "Eventos Ativados",
+            "save": "Salvar Alterações",
+            "test": "Testar",
+            "sending": "Enviando...",
+            "errors": {
+                "load": "Falha ao carregar configurações do Discord",
+                "save": "Falha ao salvar configurações do Discord",
+                "test": "Falha ao enviar notificação de teste"
+            },
+            "success": {
+                "saved": "Configurações do Discord salvas com sucesso",
+                "test": "Notificação de teste enviada! Verifique seu canal do Discord."
+            },
+            "webhook_placeholder": "https://discord.com/api/webhooks/...",
+            "webhook_placeholder_configured": "(Configurado - insira nova URL para alterar)",
+            "webhook_configured_hint": "URL do Webhook está configurada. Insira uma nova URL para alterá-la.",
+            "webhook_hint": "Obtenha esta URL no Discord: Configurações do Servidor → Integrações → Webhooks"
+        },
+        "ftp": {
+            "title": "Armazenamento FTP",
+            "description": "Configurar servidor FTP para armazenamento remoto de backup",
+            "host": "Host FTP",
+            "port": "Porta",
+            "username": "Usuário",
+            "password": "Senha",
+            "secure": "Usar SFTP (FTP sobre TLS/SSL)",
+            "test": "Testar Conexão",
+            "testing": "Testando...",
+            "password_placeholder": "Inserir senha FTP",
+            "note_title": "Nota:",
+            "note": "As credenciais FTP são configuradas via variáveis de ambiente no servidor por segurança. Você pode usar este formulário para testar conexões com diferentes credenciais.",
+            "status": {
+                "connected": "Conectado",
+                "disconnected": "Desconectado",
+                "not_configured": "Não Configurado"
+            },
+            "errors": {
+                "load": "Falha ao carregar configurações FTP",
+                "test": "Falha ao testar conexão FTP"
+            }
+        }
+    },
+    "header": {
+        "notifications": "Notificações",
+        "mark_all_read": "Marcar todas como lidas",
+        "loading_alerts": "Carregando alertas...",
+        "no_alerts": "Sem alertas",
+        "view_all": "Ver todos os alertas",
+        "theme_toggle": {
+            "light": "Mudar para modo claro",
+            "dark": "Mudar para modo escuro"
+        },
+        "user_menu": {
+            "change_password": "Alterar Senha",
+            "logout": "Sair",
+            "language": "Idioma",
+            "toggle_menu": "Alternar menu",
+            "close_menu": "Fechar menu"
+        }
+    },
+    "app": {
+        "loading": "Carregando...",
+        "initializing": "Inicializando...",
+        "error": {
+            "title": "Erro no Aplicativo",
+            "unexpected": "Ocorreu um erro inesperado",
+            "try_again": "Tentar Novamente",
+            "reload": "Recarregar Aplicativo"
+        }
+    },
+    "console": {
+        "title": "Console",
+        "subtitle": "Monitorar e controlar seus servidores",
+        "live_console_title": "Console Ao Vivo - {server}",
+        "select_server_placeholder": "Selecione um servidor",
+        "waiting_for_logs": "Aguardando logs...",
+        "start_server_prompt": "Inicie o servidor para ver a saída do console",
+        "command_placeholder": "Inserir comando...",
+        "server_default": "Servidor",
+        "not_running_warning": "O servidor deve estar em execução ou iniciando para executar comandos",
+        "actions": {
+            "download_logs": "Baixar Logs",
+            "clear_console": "Limpar Console",
+            "send": "Enviar"
+        },
+        "toast": {
+            "command_executed": "Comando executado",
+            "command_failed": "Falha no comando",
+            "unknown_error": "Erro desconhecido",
+            "load_servers_failed": {
+                "title": "Falha ao carregar servidores",
+                "description": "Tente novamente mais tarde"
+            },
+            "console_cleared": "Console limpo",
+            "logs_downloaded": "Logs baixados"
+        }
+    },
+    "installation_queue": {
+        "title": "Fila de Instalação",
+        "active": "{count} ativo(s)",
+        "clear_completed": "Limpar Concluídos ({count})",
+        "status": {
+            "pending": "Pendente",
+            "downloading": "Baixando",
+            "installing": "Instalando",
+            "completed": "Concluído",
+            "failed": "Falhou"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "HytalePanel",
+            "subtitle": "Painel de Gerenciamento de Servidor",
+            "checking_setup": "Verificando configuração..."
+        },
+        "setup": {
+            "subtitle": "Crie sua primeira conta de administrador para continuar",
+            "email": "E-mail do Administrador",
+            "username": "Nome de Usuário do Administrador",
+            "password": "Senha do Administrador",
+            "confirm_password": "Confirmar Senha",
+            "requirements": "A senha deve ter 12+ caracteres com letras maiúsculas, minúsculas, números e caractere especial.",
+            "password_mismatch": "As senhas não coincidem",
+            "create_error": "Falha ao criar conta de administrador"
+        },
+        "form": {
+            "identifier": "Usuário ou E-mail",
+            "identifier_placeholder": "Insira seu usuário ou e-mail",
+            "password": "Senha",
+            "password_placeholder": "Insira sua senha",
+            "setup_email_placeholder": "Insira seu endereço de e-mail",
+            "setup_username_placeholder": "Escolha um nome de usuário",
+            "setup_password_placeholder": "Crie uma senha forte",
+            "setup_confirm_placeholder": "Repita sua senha",
+            "remember_me": "Lembrar-me",
+            "forgot_password": "Esqueceu a senha?"
+        },
+        "action": {
+            "sign_in": "Entrar",
+            "signing_in": "Entrando...",
+            "create_account": "Criar Conta de Administrador",
+            "creating": "Criando administrador..."
+        },
+        "permission": {
+            "denied_title": "Acesso Negado",
+            "denied_message": "Você não tem permissão para acessar esta página. Entre em contato com um administrador se acredita que isso é um erro.",
+            "go_back": "Voltar"
+        }
+    },
+    "dashboard": {
+        "title": "Painel",
+        "subtitle": "Visão geral da sua rede de servidores Hytale",
+        "loading": "Carregando painel...",
+        "stats": {
+            "total_servers": "Total de Servidores",
+            "running": "em execução",
+            "host_cpu": "CPU do Host",
+            "cores": "núcleos",
+            "host_memory": "Memória do Host",
+            "of": "de"
+        },
+        "charts": {
+            "cpu_memory_title": "Uso de CPU e Memória",
+            "loading": "Carregando dados do gráfico...",
+            "no_data": "Sem dados disponíveis para este período",
+            "cpu_legend": "Uso de CPU",
+            "memory_legend": "Uso de Memória",
+            "player_activity_title": "Atividade de Jogadores",
+            "player_activity_empty": "Sem dados de jogadores disponíveis",
+            "player_activity_series": "Jogadores",
+            "player_activity_tooltip_value": "{count} jogadores"
+        },
+        "activity": {
+            "title": "Atividade Recente",
+            "loading": "Carregando atividade...",
+            "empty": "Sem atividade recente",
+            "failed": "Falhou"
+        },
+        "alerts": {
+            "title": "Alertas",
+            "loading": "Carregando alertas...",
+            "new_badge": "{count} novo(s)",
+            "no_unresolved": "Sem alertas não resolvidos"
+        },
+        "quick_actions": {
+            "title": "Ações Rápidas",
+            "start_all": "Iniciar Todos os Servidores",
+            "stop_all": "Parar Todos os Servidores",
+            "restart_all": "Reiniciar Todos os Servidores",
+            "refresh": "Atualizar Painel",
+            "stopped_count": "({count} parado(s))",
+            "running_count": "({count} em execução)",
+            "toast": {
+                "success_start": "Iniciando {count} servidor(es)",
+                "success_stop": "Parando {count} servidor(es)",
+                "success_restart": "Reiniciando {count} servidor(es)",
+                "failed_title": "Ação falhou",
+                "failed_body": "{count} servidor(es) falharam",
+                "none_title": "Nenhum servidor afetado",
+                "none_body": "Nenhum servidor correspondeu aos critérios da ação"
+            }
+        },
+        "health": {
+            "title": "Saúde do Servidor",
+            "loading": "Carregando saúde do servidor...",
+            "empty": "Nenhum servidor encontrado",
+            "status": {
+                "healthy": "Saudável",
+                "warning": "Aviso",
+                "critical": "Crítico",
+                "offline": "Offline"
+            }
+        },
+        "status_chart": {
+            "title": "Status do Servidor",
+            "empty": "Nenhum servidor encontrado",
+            "total": "{count} servidor(es) no total",
+            "tooltip": {
+                "count": "{count} servidor(es)"
+            },
+            "status": {
+                "running": "Executando",
+                "stopped": "Parado",
+                "starting": "Iniciando",
+                "stopping": "Parando",
+                "restarting": "Reiniciando",
+                "error": "Erro"
+            }
+        }
+    },
+    "analytics": {
+        "title": "Análises e Relatórios",
+        "subtitle": "Insights de desempenho e análises de jogadores",
+        "coming_soon": "Em Breve",
+        "description": "Os recursos de análise e relatórios estarão disponíveis assim que soubermos mais sobre como as métricas do servidor Hytale e os dados de jogadores funcionarão."
+    },
+    "backups": {
+        "title": "Backups",
+        "subtitle": "Gerenciar backups e agendamentos do servidor",
+        "columns": {
+            "server": "Servidor",
+            "name": "Nome",
+            "size": "Tamanho",
+            "files": "Arquivos",
+            "created": "Criado em",
+            "status": "Status",
+            "actions": "Ações"
+        },
+        "actions": {
+            "create_backup": "Criar Backup",
+            "download": "Baixar",
+            "restore": "Restaurar",
+            "delete": "Excluir",
+            "delete_selected": "Excluir Selecionados"
+        },
+        "server_selector": {
+            "label": "Servidor:",
+            "all_servers": "Todos os Servidores"
+        },
+        "stats": {
+            "total": "Total de Backups",
+            "completed_failed": "{completed} concluídos, {failed} falharam",
+            "storage_used": "Armazenamento Usado",
+            "avg_size": "Tamanho Médio de Backup"
+        },
+        "cards": {
+            "all_backups": "Todos os Backups",
+            "server_backups": "Backups de {server}",
+            "description": "Todos os backups do servidor com filtragem e ordenação avançadas"
+        },
+        "empty": {
+            "title": "Nenhum backup encontrado",
+            "button": "Criar Seu Primeiro Backup"
+        },
+        "create": {
+            "title": "Criar Backup",
+            "server_label": "Servidor",
+            "server_placeholder": "Selecione um servidor...",
+            "description_label": "Descrição (Opcional)",
+            "description_placeholder": "ex.: Antes de atualização importante, Backup manual...",
+            "description_help": "Adicione uma nota para ajudar a identificar este backup depois",
+            "preview_title": "Prévia do Backup",
+            "preview_server": "Servidor: {server}",
+            "preview_note": "Nota: {note}",
+            "preview_info": "O backup incluirá todos os arquivos do servidor, mundos e configurações.",
+            "submit": "Criar Backup",
+            "errors": {
+                "server_required": "Selecione um servidor",
+                "create_failed": "Falha ao criar backup"
+            }
+        },
+        "tooltips": {
+            "files_skipped": "{count} arquivo(s) ignorado(s)"
+        },
+        "skipped": {
+            "title": "Arquivos Ignorados",
+            "summary": "{count} arquivo(s) foram ignorados durante o backup",
+            "excluded": "Excluído por Padrão ({count})",
+            "locked": "Bloqueado/Inacessível ({count})",
+            "other": "Outros ({count})",
+            "none": "Nenhum arquivo foi ignorado durante este backup.",
+            "close": "Fechar"
+        },
+        "confirm": {
+            "restore": "Tem certeza que deseja restaurar {server} a partir deste backup? Isso substituirá todos os arquivos atuais do servidor.",
+            "delete_backup": "Tem certeza que deseja excluir este backup? Esta ação não pode ser desfeita.",
+            "bulk_delete": "Tem certeza que deseja excluir {count} backup(s)? Esta ação não pode ser desfeita."
+        },
+        "toast": {
+            "generic_error": "Erro desconhecido",
+            "load_servers": {
+                "title": "Falha ao carregar servidores",
+                "description": "Tente novamente mais tarde"
+            },
+            "load_backups": {
+                "title": "Falha ao carregar backups",
+                "description": "Tente novamente mais tarde"
+            },
+            "backup_started": {
+                "title": "Backup iniciado",
+                "description": "O backup de {server} está sendo criado em segundo plano"
+            },
+            "create_failed": {
+                "title": "Falha ao criar backup"
+            },
+            "restored": {
+                "title": "Backup restaurado",
+                "description": "{server} foi restaurado a partir do backup"
+            },
+            "deleted": {
+                "title": "Backup excluído",
+                "description": "O backup foi removido"
+            },
+            "delete_failed": {
+                "title": "Falha ao excluir backup"
+            },
+            "bulk_deleted": {
+                "title": "{count} backup(s) excluídos",
+                "description": "{failed} backup(s) falharam ao excluir"
+            },
+            "bulk_failed": {
+                "title": "Alguns backups falharam ao excluir",
+                "description": "Erro desconhecido"
+            }
+        },
+        "statuses": {
+            "completed": "Concluído",
+            "creating": "Criando",
+            "failed": "Falhou",
+            "pending": "Pendente"
+        }
+    },
+    "bridge": {
+        "title": "Hytale Bridge",
+        "subtitle": "Integração no jogo e monitoramento em tempo real",
+        "connection": {
+            "title": "Status da Conexão",
+            "description": "Conectividade do plugin Bridge",
+            "connected": "Conectado",
+            "disconnected": "Desconectado"
+        },
+        "plugin_version": "Plugin v{version}",
+        "latency": "Latência",
+        "features": {
+            "title": "Recursos Disponíveis",
+            "description": "Funcionalidades e capacidades do Bridge",
+            "configure": "Configurar"
+        },
+        "feature_status": {
+            "enabled": "Ativado",
+            "disabled": "Desativado"
+        },
+        "events": {
+            "title": "Eventos em Tempo Real",
+            "description": "Eventos e atividades ao vivo do servidor",
+            "player_join_badge": "Jogador Entrou",
+            "player_leave_badge": "Jogador Saiu",
+            "alert_badge": "Alerta",
+            "info_badge": "Info",
+            "player_join": "{username} entrou no servidor",
+            "player_leave": "{username} saiu do servidor",
+            "chat": "{username}: {message}",
+            "achievement": "{username} conquistou {achievement}"
+        }
+    },
+    "economy": {
+        "title": "Gerenciamento de Economia",
+        "subtitle": "Gerenciar economia do servidor, lojas e transações",
+        "actions": {
+            "create_shop": "Criar Loja",
+            "edit": "Editar",
+            "delete": "Excluir"
+        },
+        "stats": {
+            "total_currency": "Total de Moeda",
+            "avg_balance": "Saldo Médio",
+            "daily_volume": "Volume Diário",
+            "active_shops": "Lojas Ativas",
+            "median_balance": "Saldo Mediano",
+            "recent_transactions": "Transações Recentes"
+        },
+        "charts": {
+            "volume": {
+                "title": "Volume de Transações (7 Dias)",
+                "description": "Volume diário de transações em moeda",
+                "series": "Volume ($)"
+            },
+            "count": {
+                "title": "Contagem de Transações (7 Dias)",
+                "description": "Número de transações por dia",
+                "series": "Transações"
+            }
+        },
+        "richest": {
+            "title": "Jogador Mais Rico",
+            "description": "Jogador com o maior saldo",
+            "current_balance": "Saldo atual"
+        },
+        "shops": {
+            "title": "Lojas do Servidor",
+            "description": "Gerenciar lojas e inventário no jogo",
+            "description_line": "Loja no jogo com {count} itens",
+            "labels": {
+                "items": "Itens",
+                "location": "Localização",
+                "owner": "Proprietário"
+            },
+            "sample_items": "Itens de Amostra:",
+            "more_items": "+{count} itens",
+            "badges": {
+                "buy": "Compra: ${price}",
+                "sell": "Venda: ${price}"
+            }
+        },
+        "modal": {
+            "title": "Criar Loja",
+            "labels": {
+                "name": "Nome da Loja",
+                "description": "Descrição",
+                "x": "Coordenada X",
+                "y": "Coordenada Y",
+                "z": "Coordenada Z",
+                "world": "Mundo"
+            },
+            "actions": {
+                "cancel": "Cancelar",
+                "submit": "Criar Loja"
+            }
+        },
+        "confirm": {
+            "delete_shop": "Tem certeza que deseja excluir esta loja?"
+        }
+    },
+    "files": {
+        "title": "Gerenciador de Arquivos",
+        "subtitle": "Explorar e gerenciar arquivos do servidor",
+        "actions": {
+            "new_file": "Novo Arquivo",
+            "new_folder": "Nova Pasta",
+            "upload": "Enviar",
+            "search": "Buscar",
+            "clear": "Limpar"
+        },
+        "server_selector": {
+            "placeholder": "Selecione um servidor..."
+        },
+        "disk_usage": "Uso de Disco",
+        "search": {
+            "placeholder": "Buscar arquivos..."
+        },
+        "table": {
+            "name": "Nome",
+            "size": "Tamanho",
+            "modified": "Modificado",
+            "actions": "Ações",
+            "files_and_folders": "Arquivos e Pastas",
+            "search_results": "Resultados de Busca para \"{query}\""
+        },
+        "empty": {
+            "search": "Nenhum arquivo encontrado",
+            "directory": "Este diretório está vazio"
+        },
+        "badge": {
+            "editable": "Editável"
+        },
+        "confirm": {
+            "delete_file": "Tem certeza que deseja excluir \"{name}\"?",
+            "delete_directory": "Tem certeza que deseja excluir o diretório \"{name}\" e todo seu conteúdo?"
+        },
+        "alert": {
+            "unexpected_error": "Ocorreu um erro inesperado",
+            "delete_error": "Erro ao excluir {type}: {message}"
+        },
+        "types": {
+            "file": "arquivo",
+            "directory": "diretório"
+        },
+        "create": {
+            "title_file": "Criar Novo Arquivo",
+            "title_folder": "Criar Nova Pasta",
+            "creating_file": "Criando um novo arquivo",
+            "creating_folder": "Criando uma nova pasta",
+            "location": "Local: /{path}",
+            "file_name": "Nome do Arquivo",
+            "folder_name": "Nome da Pasta",
+            "placeholder": {
+                "file": "ex.: config.yml, server.properties",
+                "folder": "ex.: configs, mods"
+            },
+            "no_separators": "Não inclua separadores de caminho (/ ou \\)",
+            "initial_content": "Conteúdo Inicial (Opcional)",
+            "initial_content_placeholder": "Deixe vazio para criar um arquivo vazio...",
+            "full_path": "Caminho completo:",
+            "create_file": "Criar Arquivo",
+            "create_folder": "Criar Pasta",
+            "errors": {
+                "required": "O nome é obrigatório",
+                "separators": "O nome não pode conter separadores de caminho (/ ou \\)"
+            },
+            "error_generic": "Falha ao criar {type}"
+        },
+        "editor": {
+            "title": "Editar Arquivo: {name}",
+            "load_error": "Falha ao carregar arquivo",
+            "save_error": "Falha ao salvar arquivo",
+            "meta": "{lang} • {size} KB",
+            "unsaved": "Alterações não salvas",
+            "loading": "Carregando arquivo...",
+            "placeholder": "Conteúdo do arquivo...",
+            "lines": "{count} linhas",
+            "characters": "{count} caracteres",
+            "save": "Salvar Alterações"
+        },
+        "upload": {
+            "title": "Enviar Arquivos",
+            "drag_drop": "Arraste e solte arquivos aqui",
+            "click_select": "ou clique para selecionar arquivos do seu computador",
+            "select_files": "Selecionar Arquivos",
+            "max_size_label": "Tamanho máximo de arquivo:",
+            "auto_extract": "Extrair arquivos ZIP automaticamente",
+            "list_title": "Envios ({count})",
+            "clear_completed": "Limpar concluídos",
+            "extracted": "Extraído",
+            "waiting": "Aguardando...",
+            "extracted_count": "{count} arquivo(s) extraído(s)",
+            "cancelled": "Cancelado",
+            "cancel_title": "Cancelar envio",
+            "remove_title": "Remover da lista",
+            "errors": {
+                "empty": "Arquivos vazios não podem ser enviados",
+                "too_large": "O arquivo excede o tamanho máximo de {max}MB (arquivo tem {size}MB)",
+                "duplicate": "Duplicado: \"{file}\" aparece {count} vezes na fila",
+                "cancelled": "O envio foi cancelado",
+                "network": "Erro de rede durante o envio",
+                "invalid": "Arquivo ou solicitação inválida",
+                "session": "Sessão expirada. Faça login novamente.",
+                "permission": "Você não tem permissão para enviar arquivos",
+                "conflict": "Conflito de arquivo ou arquivo já existe",
+                "network_generic": "Erro de rede. Verifique sua conexão.",
+                "failed": "Falha no envio"
+            },
+            "validation": {
+                "failed": "{count} arquivo(s) não puderam ser adicionados"
+            }
+        }
+    },
+    "inventory": {
+        "rarity": {
+            "legendary": "Lendário",
+            "epic": "Épico",
+            "rare": "Raro",
+            "uncommon": "Incomum",
+            "common": "Comum"
+        },
+        "durability": "Durabilidade: {current}/{max}"
+    },
+    "error": {
+        "title": "Algo deu errado",
+        "error": "Erro",
+        "time": "Hora",
+        "user_agent": "Agente do Usuário",
+        "stack_trace": "Rastreamento de Pilha",
+        "component_stack": "Pilha de Componentes",
+        "not_available": "Não disponível",
+        "details_title": "Detalhes do Erro (Desenvolvimento)",
+        "copy": "Copiar",
+        "copied": "Copiado!",
+        "actions": {
+            "try_again": "Tentar Novamente",
+            "refresh": "Recarregar Página",
+            "home": "Ir para Início"
+        }
+    },
+    "modpacks": {
+        "title": "Modpacks",
+        "subtitle": "Coleções de mods pré-configuradas para configuração rápida {available}",
+        "available": "disponível",
+        "no_providers": "Nenhum Provedor de Mods Configurado",
+        "provider_not_configured": "{provider} Não Configurado",
+        "provider": "Provedor",
+        "configure_hint": "Configure chaves de API para provedores de mods nas configurações para explorar e instalar modpacks.",
+        "search": {
+            "placeholder": "Buscar modpacks...",
+            "clear": "Limpar busca"
+        },
+        "filters": {
+            "categories": "Todas as Categorias",
+            "search_categories": "Buscar categorias...",
+            "all_categories": "Todas as Categorias",
+            "authors": "Todos os Autores",
+            "search_authors": "Buscar autores...",
+            "all_authors": "Todos os Autores"
+        },
+        "view_modes": {
+            "card": "Visualização em cards",
+            "table": "Visualização em tabela"
+        },
+        "sort": {
+            "downloads": "Mais Baixados",
+            "rating": "Melhor Avaliados",
+            "updated": "Atualizados Recentemente"
+        },
+        "columns": {
+            "modpack": "Modpack",
+            "author": "Autor",
+            "categories": "Categorias",
+            "downloads": "Downloads",
+            "rating": "Avaliação",
+            "actions": "Ações"
+        },
+        "actions": {
+            "install": "Instalar",
+            "view": "Ver",
+            "configure_providers": "Configurar Provedores",
+            "retry": "Tentar Novamente"
+        },
+        "downloads": "{downloads} downloads",
+        "installed": "Instalado",
+        "more_categories": "+{count}",
+        "empty": "Nenhum modpack encontrado com seus critérios",
+        "loading": "Carregando modpacks...",
+        "error": {
+            "title": "Falha ao Carregar Modpacks"
+        },
+        "toast": {
+            "installing": {
+                "title": "Instalando...",
+                "description": "{title} está sendo instalado em {server}"
+            },
+            "completed": {
+                "title": "Instalação concluída",
+                "description": "{title} foi instalado"
+            },
+            "failed": {
+                "title": "Falha na instalação",
+                "description": "Tente novamente"
+            }
+        }
+    },
+    "mods": {
+        "title": "Mods",
+        "subtitle": "Descubra mods para aprimorar seu servidor {available}",
+        "available_suffix": "({count} disponível)",
+        "no_providers": "Nenhum Provedor de Mods Configurado",
+        "provider_not_configured": "{provider} Não Configurado",
+        "provider": "Provedor",
+        "configure_hint": "Configure chaves de API para provedores de mods nas configurações para explorar e instalar mods.",
+        "search": {
+            "placeholder": "Buscar mods...",
+            "clear": "Limpar busca"
+        },
+        "filters": {
+            "categories": "Todas as Categorias",
+            "search_categories": "Buscar categorias...",
+            "all_categories": "Todas as Categorias",
+            "authors": "Todos os Autores",
+            "search_authors": "Buscar autores...",
+            "all_authors": "Todos os Autores"
+        },
+        "types": {
+            "all": "Todos os Tipos",
+            "plugin": "Plugins",
+            "data": "Assets de Dados",
+            "art": "Assets de Arte",
+            "save": "Saves de Mundo",
+            "modpack": "Modpack"
+        },
+        "view_modes": {
+            "card": "Visualização em cards",
+            "table": "Visualização em tabela"
+        },
+        "sort": {
+            "downloads": "Mais Baixados",
+            "rating": "Melhor Avaliados",
+            "updated": "Atualizados Recentemente"
+        },
+        "columns": {
+            "mod": "Mod",
+            "author": "Autor",
+            "type": "Tipo",
+            "categories": "Categorias",
+            "downloads": "Downloads",
+            "rating": "Avaliação",
+            "actions": "Ações"
+        },
+        "actions": {
+            "install": "Instalar",
+            "view": "Ver",
+            "configure_providers": "Configurar Provedores",
+            "retry": "Tentar Novamente"
+        },
+        "latest_version": "Mais recente",
+        "by_author": "por {author}",
+        "downloads": "{downloads} downloads",
+        "more_categories": "+{count}",
+        "empty": "Nenhum mod encontrado com seus critérios",
+        "loading": "Carregando mods...",
+        "error": {
+            "title": "Falha ao Carregar Mods"
+        },
+        "server_select": {
+            "title": "Instalar {name}",
+            "by_author": "por {author}",
+            "downloads": "{count} downloads",
+            "version_label": "Selecionar Versão",
+            "version_option": "v{version}",
+            "version_option_with_date": "v{version} - {date}",
+            "latest": "Mais recente",
+            "deps_checking": "Verificando dependências...",
+            "deps_error": "Falha ao buscar dependências",
+            "deps_label": "Dependências",
+            "deps_version": "Versão: {version}",
+            "any": "Qualquer",
+            "required": "Obrigatório",
+            "optional": "Opcional",
+            "deps_notice": "Dependências obrigatórias serão instaladas automaticamente",
+            "server_label": "Selecionar Servidor Alvo",
+            "server_meta": "{address}:{port} • v{version}",
+            "players": "{current}/{max} jogadores",
+            "summary": "✓ {project} será instalado em {server}",
+            "install": "Instalar"
+        },
+        "toast": {
+            "installing": {
+                "title": "Instalando...",
+                "description": "{title} está sendo instalado em {server}"
+            },
+            "completed": {
+                "title": "Instalação concluída",
+                "description": "{title} foi instalado"
+            },
+            "failed": {
+                "title": "Falha na instalação",
+                "description": "Tente novamente"
+            }
+        }
+    },
+    "providers": {
+        "loading": "Carregando provedores...",
+        "all": "Todos os Provedores",
+        "not_configured": "Não configurado",
+        "configured": "Configurado",
+        "api_key_required": "Chave de API necessária",
+        "ready": "Pronto",
+        "search_all": "Buscar em todos",
+        "warning": {
+            "none": "Nenhum provedor configurado. Vá para Configurações para adicionar chaves de API.",
+            "single": "{provider} requer uma chave de API. Vá para Configurações para configurar."
+        },
+        "this_provider": "Este provedor"
+    },
+    "players": {
+        "title": "Jogadores",
+        "subtitle": "Gerenciar e monitorar atividade de jogadores",
+        "coming_soon": {
+            "title": "Em Breve",
+            "description": "Os recursos de gerenciamento de jogadores estarão disponíveis assim que soubermos mais sobre como o Hytale lida com dados de jogadores, autenticação e moderação."
+        },
+        "detail": {
+            "title": "Detalhes do Jogador",
+            "subtitle": "Ver informações e histórico do jogador",
+            "description": "Detalhes do jogador estarão disponíveis assim que soubermos mais sobre como o Hytale lida com dados de jogadores.",
+            "back": "Voltar para Jogadores"
+        }
+    },
+    "hytale_downloader": {
+        "install": {
+            "title": "Hytale Downloader Necessário",
+            "description": "Instale o Hytale Downloader para baixar arquivos oficiais do servidor.",
+            "button": "Instalar Downloader",
+            "button_loading": "Instalando...",
+            "error": "Falha ao instalar"
+        },
+        "auth": {
+            "title": "Conta Hytale Necessária",
+            "description": "Conecte sua conta Hytale para baixar arquivos do servidor.",
+            "button": "Conectar Conta Hytale",
+            "connected": "Conectado"
+        },
+        "download": {
+            "title": "Baixar Arquivos do Servidor",
+            "patchline_label": "Linha de Patch",
+            "patchline_release": "Release (Estável)",
+            "patchline_prerelease": "Pré-release (Beta)",
+            "available_version": "Versão Disponível",
+            "actions": {
+                "refresh": "Atualizar Versão",
+                "checking": "Verificando...",
+                "download": "Baixar Servidor",
+                "starting": "Iniciando..."
+            },
+            "path_hint": "Insira um caminho de diretório de servidor acima para habilitar o download.",
+            "errors": {
+                "path_required": "Especifique um caminho de servidor primeiro",
+                "check_version": "Falha ao verificar versão",
+                "start": "Falha ao iniciar download"
+            }
+        },
+        "progress": {
+            "downloading": "Baixando",
+            "extracting": "Extraindo",
+            "validating": "Validando",
+            "complete": "Concluído",
+            "failed": "Falhou",
+            "processing": "Processando",
+            "success": "Arquivos do servidor baixados com sucesso para:",
+            "inline": {
+                "downloading": "Baixando {percent}%",
+                "extracting": "Extraindo...",
+                "validating": "Validando..."
+            }
+        },
+        "oauth": {
+            "title": "Conectar Conta Hytale",
+            "header_title": "Autenticação Hytale",
+            "header_subtitle": "Necessário para baixar arquivos oficiais do servidor",
+            "initiating": "Iniciando autenticação...",
+            "preparing": "Preparando autenticação...",
+            "error_title": "Falha na Autenticação",
+            "error_description": "Ocorreu um erro durante a autenticação.",
+            "retry": "Tentar Novamente",
+            "expired_title": "Código Expirado",
+            "expired_description": "O código do dispositivo expirou. Tente novamente.",
+            "get_new": "Obter Novo Código",
+            "success_title": "Autenticação Bem-sucedida",
+            "success_description": "Sua conta Hytale foi conectada.",
+            "instructions": "Para conectar sua conta Hytale, abra o link de verificação e insira o código abaixo.",
+            "code_label": "Seu código de dispositivo",
+            "expires_in": "Expira em",
+            "open_login": "Abrir Login Hytale",
+            "waiting": "Aguardando autenticação..."
+        }
+    },
+    "users": {
+        "title": "Gerenciamento de Usuários",
+        "subtitle": "Gerenciar contas de usuário e permissões",
+        "actions": {
+            "add": "Adicionar Usuário"
+        },
+        "access_denied": {
+            "title": "Acesso Negado",
+            "description": "Você precisa de privilégios de administrador para gerenciar usuários."
+        },
+        "list": {
+            "title": "Usuários ({count})",
+            "subtitle": "Todos os usuários registrados no sistema",
+            "loading": "Carregando usuários...",
+            "empty": "Nenhum usuário encontrado"
+        },
+        "table": {
+            "user": "Usuário",
+            "role": "Função",
+            "created": "Criado em",
+            "last_login": "Último Login",
+            "actions": "Ações"
+        },
+        "roles": {
+            "admin": "Administrador",
+            "moderator": "Moderador",
+            "viewer": "Visualizador",
+            "viewer_option": "Visualizador - Apenas leitura",
+            "moderator_option": "Moderador - Pode gerenciar servidores",
+            "admin_option": "Administrador - Acesso total"
+        },
+        "modal": {
+            "create_title": "Criar Usuário",
+            "edit_title": "Editar Usuário"
+        },
+        "form": {
+            "username": "Nome de Usuário",
+            "username_placeholder": "Inserir nome de usuário",
+            "email": "E-mail",
+            "email_placeholder": "Inserir e-mail",
+            "password": "Senha",
+            "password_optional": "deixe em branco para manter a atual",
+            "password_placeholder": "Inserir senha",
+            "password_new_placeholder": "Inserir nova senha",
+            "role": "Função",
+            "password_required": "Senha é obrigatória para novos usuários",
+            "saving": "Salvando...",
+            "create": "Criar Usuário",
+            "update": "Atualizar Usuário",
+            "cancel": "Cancelar"
+        },
+        "toast": {
+            "created": "Usuário criado com sucesso",
+            "updated": "Usuário atualizado com sucesso",
+            "deleted": "Usuário excluído com sucesso"
+        },
+        "errors": {
+            "load": "Falha ao carregar usuários",
+            "save": "Falha ao salvar usuário",
+            "delete": "Falha ao excluir usuário"
+        },
+        "never": "Nunca"
+    },
+    "worlds": {
+        "title": "Gerenciamento de Mundos",
+        "subtitle": "Gerenciar arquivos de mundo para seus servidores",
+        "select_server": "Selecionar Servidor",
+        "select_server_description": "Escolha um servidor para gerenciar seus mundos",
+        "list": {
+            "title": "Mundos",
+            "subtitle": "Gerenciar arquivos de mundo",
+            "loading": "Carregando mundos...",
+            "empty": "Nenhum mundo encontrado"
+        },
+        "status": {
+            "active": "Ativo"
+        },
+        "size": "Tamanho: {size}",
+        "actions": {
+            "activate": "Ativar"
+        },
+        "confirm_delete": "Tem certeza que deseja excluir o mundo {name}?",
+        "errors": {
+            "servers": "Falha ao carregar servidores",
+            "worlds": "Falha ao carregar mundos",
+            "activate": "Falha ao ativar mundo",
+            "delete": "Falha ao excluir mundo"
+        }
+    },
+    "permissions": {
+        "title": "Permissões de Função",
+        "subtitle": "Configurar o que cada função pode acessar e gerenciar",
+        "loading": "Carregando permissões...",
+        "actions": {
+            "save_all": "Salvar Todas as Alterações",
+            "save": "Salvar",
+            "reset": "Redefinir",
+            "retry": "Tentar Novamente"
+        },
+        "toast": {
+            "saved": "Permissões de {role} salvas com sucesso",
+            "reset": "Permissões de {role} redefinidas para os padrões"
+        },
+        "errors": {
+            "load": "Falha ao carregar dados de permissões",
+            "save": "Falha ao salvar permissões de {role}",
+            "reset": "Falha ao redefinir permissões de {role}"
+        },
+        "confirm_reset": "Redefinir permissões de {role} para os padrões? Isso não pode ser desfeito.",
+        "roles": {
+            "admin": {
+                "label": "Administrador",
+                "description": "Acesso total a todos os recursos"
+            },
+            "moderator": {
+                "label": "Moderador",
+                "description": "Gerenciar servidores e jogadores"
+            },
+            "viewer": {
+                "label": "Visualizador",
+                "description": "Acesso somente leitura"
+            },
+            "modified": "(modificado)",
+            "all": "Todos",
+            "count": "{count} permissões",
+            "admin_note": "Permissões de administrador não podem ser modificadas"
+        },
+        "categories": {
+            "servers": "Gerenciamento de Servidores",
+            "backups": "Gerenciamento de Backups",
+            "players": "Gerenciamento de Jogadores",
+            "mods": "Gerenciamento de Mods",
+            "worlds": "Gerenciamento de Mundos",
+            "automation": "Automação e Tarefas",
+            "alerts": "Alertas",
+            "networks": "Redes",
+            "users": "Gerenciamento de Usuários",
+            "settings": "Configurações e Permissões"
+        },
+        "table": {
+            "permission": "Permissão",
+            "count": "{count} permissões"
+        },
+        "tooltips": {
+            "admin_all": "Administrador tem todas as permissões",
+            "remove": "Clique para remover permissão",
+            "grant": "Clique para conceder permissão",
+            "cannot_modify": "Você não pode modificar permissões"
+        },
+        "help": {
+            "title": "Sobre Permissões de Função",
+            "admin": "Tem acesso total a todos os recursos. Essas permissões não podem ser modificadas.",
+            "moderator": "Pode gerenciar servidores, jogadores e a maioria das operações do dia a dia.",
+            "viewer": "Acesso somente leitura para visualizar informações sem fazer alterações."
+        }
+    },
+    "alerts": {
+        "title": "Alertas e Notificações",
+        "subtitle": "Monitorar alertas do servidor e notificações do sistema",
+        "stats": {
+            "total": "Total",
+            "unread": "Não Lidos",
+            "critical": "Crítico",
+            "warning": "Aviso",
+            "info": "Info"
+        },
+        "filter": {
+            "all": "Todos",
+            "unread": "Não Lidos",
+            "unresolved": "Não Resolvidos"
+        },
+        "list": {
+            "all_title": "Todos os Alertas",
+            "server_title": "Alertas de {serverName}",
+            "description": "Alertas do sistema com filtragem, busca e paginação",
+            "empty_title": "Nenhum alerta para exibir",
+            "empty_message": "Todos os sistemas estão funcionando normalmente"
+        },
+        "columns": {
+            "severity": "Severidade",
+            "alert": "Alerta",
+            "server": "Servidor",
+            "type": "Tipo",
+            "time": "Hora",
+            "actions": "Ações"
+        },
+        "badges": {
+            "new": "Novo",
+            "resolved": "Resolvido"
+        },
+        "actions": {
+            "mark_read": "Marcar como Lido",
+            "resolve": "Resolver",
+            "delete_selected": "Excluir Selecionados",
+            "mark_as_read_tooltip": "Marcar como lido",
+            "resolve_tooltip": "Resolver",
+            "delete_tooltip": "Excluir"
+        },
+        "messages": {
+            "marked_read": "Alerta marcado como lido",
+            "mark_read_error": "Falha ao marcar como lido",
+            "resolved": "Alerta resolvido",
+            "resolve_error": "Falha ao resolver alerta",
+            "deleted": "Alerta excluído",
+            "delete_error": "Falha ao excluir alerta",
+            "bulk_read_success": "{count} alerta(s) marcado(s) como lido(s)",
+            "bulk_read_error": "Falha ao marcar alertas como lidos",
+            "bulk_resolve_success": "{count} alerta(s) resolvido(s)",
+            "bulk_resolve_error": "Falha ao resolver alertas",
+            "bulk_delete_confirm": "Tem certeza que deseja excluir {count} alerta(s)?",
+            "bulk_delete_success": "{count} alerta(s) excluído(s)",
+            "bulk_delete_error": "Falha ao excluir alertas",
+            "delete_confirm": "Tem certeza que deseja excluir este alerta?",
+            "load_error": "Falha ao carregar alertas"
+        },
+        "server_selector": {
+            "label": "Servidor:",
+            "all_servers": "Todos os Servidores"
+        }
+    },
+    "automation": {
+        "title": "Automação de Tarefas",
+        "subtitle": "Agendar e automatizar tarefas do servidor",
+        "buttons": {
+            "create_task": "Criar Tarefa",
+            "create_group": "Criar Grupo"
+        },
+        "tabs": {
+            "tasks": "Tarefas ({count})",
+            "groups": "Grupos de Tarefas ({count})"
+        },
+        "server_selector": {
+            "label": "Servidor:",
+            "all_servers": "Todos os Servidores"
+        },
+        "stats": {
+            "total_tasks": "Total de Tarefas",
+            "active": "Ativas",
+            "successful": "Bem-sucedidas",
+            "failed": "Falharam"
+        },
+        "cards": {
+            "all_tasks": "Todas as Tarefas",
+            "server_tasks": "Tarefas de {server}",
+            "description": "Tarefas automatizadas e trabalhos recorrentes com filtragem avançada"
+        },
+        "empty": {
+            "title": "Nenhuma tarefa agendada encontrada",
+            "button": "Criar Sua Primeira Tarefa"
+        },
+        "table": {
+            "task": "Tarefa",
+            "type": "Tipo",
+            "schedule": "Agendamento",
+            "status": "Status",
+            "last_run": "Última Execução",
+            "result": "Resultado",
+            "actions": "Ações",
+            "group": "Grupo",
+            "tasks": "Tarefas",
+            "delay": "Atraso",
+            "on_failure": "Em Falha",
+            "task_count": "{count} tarefa(s)"
+        },
+        "status": {
+            "active": "Ativa",
+            "disabled": "Desativada",
+            "never": "Nunca",
+            "none": "Nenhum",
+            "never_run": "Nunca executada",
+            "success": "Sucesso",
+            "failed": "Falhou",
+            "partial": "Parcial",
+            "unknown": "Desconhecido"
+        },
+        "groups": {
+            "title": "Grupos de Tarefas",
+            "description": "Grupos de tarefas que executam em sequência com atrasos configuráveis",
+            "stats": {
+                "total": "Total de Grupos",
+                "active": "Grupos Ativos",
+                "tasks_in_groups": "Total de Tarefas em Grupos"
+            },
+            "empty": {
+                "title": "Nenhum grupo de tarefas encontrado",
+                "subtitle": "Crie um grupo para executar múltiplas tarefas em sequência",
+                "button": "Criar Seu Primeiro Grupo"
+            }
+        },
+        "failure": {
+            "stop": "Parar",
+            "continue": "Continuar"
+        },
+        "cron": {
+            "every_hour": "A cada hora",
+            "daily_midnight": "Diariamente à meia-noite",
+            "weekly_sunday": "Semanalmente aos domingos",
+            "every_5_minutes": "A cada 5 minutos",
+            "every_15_minutes": "A cada 15 minutos",
+            "every_30_minutes": "A cada 30 minutos",
+            "every_6_hours": "A cada 6 horas",
+            "daily_noon": "Diariamente ao meio-dia",
+            "weekly_monday": "Semanalmente às segundas-feiras",
+            "custom": "Personalizado"
+        },
+        "actions": {
+            "delete_selected": "Excluir Selecionados"
+        },
+        "confirm": {
+            "delete_task": "Tem certeza que deseja excluir esta tarefa?",
+            "bulk_delete_tasks": "Tem certeza que deseja excluir {count} tarefa(s)? Esta ação não pode ser desfeita.",
+            "delete_group": "Tem certeza que deseja excluir este grupo de tarefas?",
+            "bulk_delete_groups": "Tem certeza que deseja excluir {count} grupo(s) de tarefas? Esta ação não pode ser desfeita."
+        },
+        "toast": {
+            "generic_error": "Algo deu errado",
+            "load_servers": {
+                "title": "Falha ao carregar servidores",
+                "description": "Tente novamente mais tarde"
+            },
+            "load_tasks": {
+                "title": "Falha ao carregar tarefas",
+                "description": "Tente novamente mais tarde"
+            },
+            "load_groups": {
+                "title": "Falha ao carregar grupos de tarefas",
+                "description": "Tente novamente mais tarde"
+            },
+            "task_disabled": "Tarefa desativada",
+            "task_enabled": "Tarefa ativada",
+            "toggle_task_failed": {
+                "title": "Falha ao alternar tarefa"
+            },
+            "task_executed": {
+                "title": "Tarefa executada",
+                "description": "A tarefa foi executada manualmente"
+            },
+            "run_task_failed": {
+                "title": "Falha ao executar tarefa"
+            },
+            "task_deleted": {
+                "title": "Tarefa excluída",
+                "description": "A tarefa foi removida"
+            },
+            "delete_task_failed": {
+                "title": "Falha ao excluir tarefa"
+            },
+            "bulk_tasks_deleted": {
+                "title": "{count} tarefa(s) excluída(s)",
+                "description": "{failed} tarefa(s) falharam ao excluir"
+            },
+            "bulk_tasks_failed": {
+                "title": "Falha ao excluir tarefas",
+                "description": "{failed} tarefa(s) falharam ao excluir"
+            },
+            "task_created": {
+                "title": "Tarefa criada",
+                "description": "Tarefa agendada foi criada"
+            },
+            "task_updated": {
+                "title": "Tarefa atualizada",
+                "description": "Tarefa agendada foi atualizada"
+            },
+            "group_disabled": "Grupo de tarefas desativado",
+            "group_enabled": "Grupo de tarefas ativado",
+            "toggle_group_failed": {
+                "title": "Falha ao alternar grupo de tarefas"
+            },
+            "group_running": {
+                "title": "Executando grupo de tarefas...",
+                "description": "As tarefas serão executadas em sequência"
+            },
+            "group_executed": {
+                "title": "Grupo de tarefas executado",
+                "description": "Todas as tarefas foram executadas"
+            },
+            "run_group_failed": {
+                "title": "Falha ao executar grupo de tarefas"
+            },
+            "group_deleted": {
+                "title": "Grupo de tarefas excluído",
+                "description": "O grupo de tarefas foi removido"
+            },
+            "delete_group_failed": {
+                "title": "Falha ao excluir grupo de tarefas"
+            },
+            "bulk_groups_deleted": {
+                "title": "{count} grupo(s) de tarefas excluído(s)",
+                "description": "{failed} grupo(s) falharam ao excluir"
+            },
+            "bulk_groups_failed": {
+                "title": "Falha ao excluir grupos de tarefas",
+                "description": "{failed} grupo(s) falharam ao excluir"
+            },
+            "group_created": {
+                "title": "Grupo de tarefas criado",
+                "description": "O grupo de tarefas foi criado"
+            },
+            "group_updated": {
+                "title": "Grupo de tarefas atualizado",
+                "description": "O grupo de tarefas foi atualizado"
+            }
+        },
+        "modals": {
+            "create_task": {
+                "title_create": "Criar Tarefa Agendada",
+                "title_edit": "Editar Tarefa Agendada",
+                "server_label": "Servidor *",
+                "server_placeholder": "Selecione um servidor...",
+                "server_edit_helper": "O servidor não pode ser alterado ao editar uma tarefa",
+                "name_label": "Nome da Tarefa *",
+                "name_placeholder": "ex.: Backup Diário, Reiniciar Servidor...",
+                "type_label": "Tipo de Tarefa *",
+                "type_edit_helper": "O tipo de tarefa não pode ser alterado ao editar uma tarefa",
+                "type_options": {
+                    "backup": "Criar Backup",
+                    "restart": "Reiniciar Servidor",
+                    "start": "Iniciar Servidor",
+                    "stop": "Parar Servidor",
+                    "command": "Executar Comando"
+                },
+                "command_label": "Comando *",
+                "command_placeholder": "/say Reinício do servidor em 5 minutos",
+                "command_helper": "Insira o comando a ser executado no console do servidor",
+                "description_label": "Descrição do Backup (Opcional)",
+                "description_placeholder": "ex.: Backup automático diário",
+                "backup_limit_label": "Limite de Backups",
+                "backup_limit_helper": "Número máximo de backups a manter desta tarefa. Os backups mais antigos serão excluídos quando o limite for excedido. Defina como 0 para backups ilimitados.",
+                "schedule_label": "Agendamento *",
+                "custom_cron_label": "Expressão Cron Personalizada *",
+                "custom_cron_placeholder": "* * * * *",
+                "custom_cron_helper": "Formato: minuto hora dia mês dia_semana (ex.: \"0 2 * * *\" = 2h diariamente)",
+                "preview": {
+                    "title": "Prévia da Tarefa",
+                    "server": "Servidor: {server}",
+                    "name": "Nome: {name}",
+                    "type": "Tipo: {type}",
+                    "schedule": "Agendamento: {schedule}",
+                    "command": "Comando: {command}"
+                },
+                "errors": {
+                    "select_server": "Selecione um servidor",
+                    "name": "Insira um nome para a tarefa",
+                    "cron": "Insira uma expressão cron válida",
+                    "command": "Insira um comando",
+                    "update": "Falha ao atualizar tarefa",
+                    "create": "Falha ao criar tarefa"
+                },
+                "submit": "Criar Tarefa"
+            },
+            "task_group": {
+                "title_create": "Criar Grupo de Tarefas",
+                "title_edit": "Editar Grupo de Tarefas",
+                "name_label": "Nome do Grupo *",
+                "name_placeholder": "ex.: Manutenção Diária do Servidor",
+                "description_label": "Descrição (Opcional)",
+                "description_placeholder": "ex.: Backup, reiniciar e notificar",
+                "schedule_label": "Agendamento *",
+                "custom_cron_label": "Expressão Cron Personalizada *",
+                "custom_cron_placeholder": "* * * * *",
+                "custom_cron_helper": "Formato: minuto hora dia mês dia_semana (ex.: \"0 2 * * *\" = 2h diariamente)",
+                "failure_label": "Em Caso de Falha na Tarefa",
+                "failure_stop": "Parar tarefas restantes",
+                "failure_continue": "Continuar com tarefas restantes",
+                "delay_label": "Atraso Entre Tarefas (segundos)",
+                "delay_helper": "Tempo de espera entre cada execução de tarefa. Defina como 0 para sem atraso.",
+                "tasks_label": "Tarefas *",
+                "tasks_selected": "{count} selecionada(s)",
+                "tasks_empty": "Nenhuma tarefa disponível. Crie tarefas agendadas primeiro.",
+                "tasks_all_selected": "Todas as tarefas selecionadas",
+                "disabled": "Desativado",
+                "preview": {
+                    "title": "Prévia do Grupo",
+                    "name": "Nome: {name}",
+                    "schedule": "Agendamento: {schedule}",
+                    "tasks": "Tarefas: {count} tarefa(s) serão executadas em sequência",
+                    "delay": "com {seconds}s de atraso entre cada",
+                    "failure": "Em falha: {mode}"
+                },
+                "errors": {
+                    "name": "Insira um nome para o grupo",
+                    "cron": "Insira uma expressão cron válida",
+                    "tasks": "Selecione pelo menos uma tarefa",
+                    "update": "Falha ao atualizar grupo de tarefas",
+                    "create": "Falha ao criar grupo de tarefas"
+                },
+                "submit": "Criar Grupo"
+            }
+        }
+    },
+    "activity": {
+        "title": "Log de Atividades",
+        "subtitle": "Rastrear e auditar todas as ações de usuários no sistema",
+        "history": {
+            "title": "Histórico de Atividades",
+            "total": "{count} entradas no total"
+        },
+        "loading": "Carregando atividade...",
+        "filters": {
+            "search_placeholder": "Buscar por nome de usuário ou recurso...",
+            "search": "Buscar",
+            "all_categories": "Todas as Categorias",
+            "categories": {
+                "auth": "Autenticação",
+                "server": "Servidor",
+                "backup": "Backup",
+                "player": "Jogador",
+                "mod": "Mod",
+                "world": "Mundo",
+                "automation": "Automação",
+                "network": "Rede",
+                "user": "Usuário",
+                "settings": "Configurações"
+            },
+            "statuses": {
+                "all": "Todos os Status"
+            }
+        },
+        "table": {
+            "time": "Hora",
+            "user": "Usuário",
+            "action": "Ação",
+            "resource": "Recurso",
+            "status": "Status",
+            "ip_address": "Endereço IP"
+        },
+        "status": {
+            "success": "Sucesso",
+            "failed": "Falhou"
+        },
+        "empty": {
+            "title": "Nenhuma atividade encontrada",
+            "subtitle": "A atividade aparecerá aqui à medida que as ações forem realizadas"
+        },
+        "actions": {
+            "auth_login": "Login realizado",
+            "auth_logout": "Logout realizado",
+            "auth_password_change": "Senha alterada",
+            "auth_login_failed": "Falha no login",
+            "server_create": "Servidor criado",
+            "server_update": "Servidor atualizado",
+            "server_delete": "Servidor excluído",
+            "server_start": "Servidor iniciado",
+            "server_stop": "Servidor parado",
+            "server_restart": "Servidor reiniciado",
+            "server_kill": "Servidor forçadamente encerrado",
+            "server_command": "Comando executado",
+            "backup_create": "Backup criado",
+            "backup_restore": "Backup restaurado",
+            "backup_delete": "Backup excluído",
+            "player_kick": "Jogador expulso",
+            "player_ban": "Jogador banido",
+            "player_unban": "Ban do jogador removido",
+            "mod_install": "Mod instalado",
+            "mod_uninstall": "Mod desinstalado",
+            "mod_enable": "Mod ativado",
+            "mod_disable": "Mod desativado",
+            "world_activate": "Mundo ativado",
+            "world_delete": "Mundo excluído",
+            "automation_create": "Regra de automação criada",
+            "automation_delete": "Regra de automação excluída",
+            "automation_execute": "Regra de automação executada",
+            "network_create": "Rede criada",
+            "network_delete": "Rede excluída",
+            "settings_update": "Configurações atualizadas",
+            "user_create": "Usuário criado",
+            "user_delete": "Usuário excluído"
+        }
+    },
+    "hsm_logs": {
+        "title": "Logs HSM",
+        "subtitle": "Ver logs do aplicativo e diagnósticos",
+        "waiting_for_logs": "Nenhum log disponível",
+        "log_source": "HSM",
+        "actions": {
+            "download_logs": "Baixar Logs",
+            "clear_display": "Limpar Exibição",
+            "refresh": "Atualizar"
+        },
+        "toast": {
+            "logs_downloaded": "Logs baixados",
+            "display_cleared": "Exibição limpa",
+            "load_failed": "Falha ao carregar logs"
+        },
+        "filters": {
+            "all": "Todos os Níveis",
+            "error": "Erros",
+            "warn": "Avisos",
+            "info": "Info",
+            "debug": "Debug"
+        }
+    },
+    "networks": {
+        "create": {
+            "title": "Criar Rede",
+            "steps": {
+                "basics": "1. Básico",
+                "servers": "2. Servidores"
+            },
+            "header": "Configuração da Rede",
+            "subtitle": "Configurar propriedades básicas da rede",
+            "name_label": "Nome da Rede",
+            "name_placeholder": "Minha Rede de Servidores",
+            "description_label": "Descrição",
+            "description_placeholder": "Descrição opcional desta rede...",
+            "color_label": "Cor",
+            "servers_header": "Selecionar Servidores",
+            "servers_subtitle": "Escolha os servidores para incluir nesta rede",
+            "member_servers": "Servidores Membros",
+            "select_all": "Selecionar Todos",
+            "clear": "Limpar",
+            "loading_servers": "Carregando servidores...",
+            "no_servers": "Nenhum servidor disponível",
+            "selected_count": "{count, plural, =1 {# servidor selecionado} other {# servidores selecionados} ",
+            "submit": "Criar Rede",
+            "errors": {
+                "name": "O nome da rede é obrigatório",
+                "name_length": "O nome deve ter no máximo 50 caracteres",
+                "description_length": "A descrição deve ter no máximo 200 caracteres",
+                "servers": "Selecione pelo menos um servidor"
+            }
+        },
+        "card": {
+            "status": {
+                "running": "Executando",
+                "stopped": "Parado",
+                "starting": "Iniciando",
+                "stopping": "Parando",
+                "partial": "Parcial",
+                "unknown": "Desconhecido"
+            },
+            "member_count": "{count} {count, plural, =1 {servidor} other {servidores}}",
+            "stats": {
+                "players": "Jogadores",
+                "avg_cpu": "CPU Média",
+                "memory": "Memória",
+                "online": "Online",
+                "cpu": "CPU"
+            },
+            "actions": {
+                "start_all": "Iniciar Todos",
+                "stop_all": "Parar Todos",
+                "restart_all": "Reiniciar Todos",
+                "manage": "Gerenciar Servidores",
+                "delete": "Excluir Rede"
+            },
+            "empty": "Nenhum servidor nesta rede",
+            "confirm": {
+                "title": "Excluir Rede",
+                "message": "Tem certeza que deseja excluir \"{name}\"? Isso removerá apenas o agrupamento da rede, não os servidores em si.",
+                "confirm": "Excluir Rede"
+            }
+        },
+        "manage": {
+            "title": "Gerenciar Servidores - {name}",
+            "status": {
+                "running": "Executando",
+                "stopped": "Parado",
+                "starting": "Iniciando",
+                "stopping": "Parando"
+            },
+            "role": {
+                "proxy": "Proxy",
+                "backend": "Backend",
+                "member": "Membro"
+            },
+            "current_members": "Membros Atuais ({count})",
+            "available": "Servidores Disponíveis ({count})",
+            "empty": "Nenhum servidor nesta rede",
+            "empty_available": "Nenhum servidor sem grupo disponível"
+        },
+        "row": {
+            "status": {
+                "unknown": "Desconhecido"
+            },
+            "role": {
+                "proxy": "Proxy",
+                "backend": "Backend"
+            },
+            "actions": {
+                "force_kill": "Forçar Encerramento do Servidor",
+                "start": "Iniciar Servidor",
+                "starting": "Iniciando...",
+                "stop": "Parar Servidor",
+                "restart": "Reiniciar Servidor",
+                "console": "Console",
+                "settings": "Configurações do Servidor",
+                "delete": "Excluir Servidor",
+                "delete_blocked": "Pare o servidor antes de excluir"
+            }
+        }
+    },
+    "updates": {
+        "badge": {
+            "checking": "Verificando...",
+            "available_tooltip": "Atualização disponível: {version}",
+            "update": "Atualizar",
+            "update_to": "Atualizar para {version}"
+        },
+        "banner": {
+            "version": "Atualização v{version}",
+            "short": "Atualizar",
+            "dismiss_aria": "Dispensar notificação de atualização"
+        },
+        "modal": {
+            "title": "Atualização do Servidor",
+            "current_version": "Versão atual: {version}",
+            "available_version_label": "Versão disponível:",
+            "completed_message": "Atualização concluída com sucesso!",
+            "errors": {
+                "unknown": "Erro desconhecido",
+                "cancelled": "Atualização foi cancelada"
+            },
+            "before": {
+                "title": "Antes de atualizar:",
+                "items": {
+                    "backup": "Um backup completo será criado automaticamente",
+                    "preserve": "Seus configs, mods, universo e logs serão preservados",
+                    "stop": "O servidor será parado durante a atualização",
+                    "rollback": "Você pode reverter se algo der errado"
+                }
+            },
+            "status": {
+                "pending": "Preparando...",
+                "stopping": "Parando servidor...",
+                "backing_up": "Criando backup...",
+                "preserving": "Preservando arquivos do usuário...",
+                "downloading": "Baixando nova versão...",
+                "installing": "Instalando atualização...",
+                "restoring": "Restaurando arquivos do usuário...",
+                "starting": "Iniciando servidor...",
+                "completed": "Atualização concluída!",
+                "failed": "Atualização falhou",
+                "rolled_back": "Revertido"
+            },
+            "progress": "{percent}% concluído",
+            "checking": "Verificando atualizações...",
+            "up_to_date": {
+                "title": "Servidor está atualizado",
+                "description": "Você está usando a versão mais recente ({version})"
+            },
+            "start": "Iniciar Atualização",
+            "cancel": "Cancelar Atualização"
+        },
+        "history": {
+            "title": "Histórico de Atualizações",
+            "subtitle": "Histórico de versões para {server}",
+            "rollback_title": "Reversão Disponível",
+            "rollback_description": "Você pode restaurar o servidor ao estado anterior à última atualização.",
+            "rollback": "Reverter",
+            "rollback_confirm": "Tem certeza que deseja reverter para a versão anterior? Isso restaurará o backup criado antes da última atualização.",
+            "load_error": "Falha ao carregar histórico de atualizações: {error}",
+            "empty_title": "Sem histórico de atualizações",
+            "empty_description": "Este servidor ainda não foi atualizado.",
+            "status": {
+                "pending": "Pendente",
+                "stopping": "Parando",
+                "backing_up": "Fazendo Backup",
+                "preserving": "Preservando",
+                "downloading": "Baixando",
+                "installing": "Instalando",
+                "restoring": "Restaurando",
+                "starting": "Iniciando",
+                "completed": "Concluído",
+                "failed": "Falhou",
+                "rolled_back": "Revertido"
             }
         }
     }
