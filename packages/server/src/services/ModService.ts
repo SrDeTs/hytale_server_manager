@@ -168,6 +168,63 @@ export class ModService {
   }
 
   /**
+   * Update a mod to a new version.
+   * Deletes old files from disk, installs new version files, and atomically updates the DB record.
+   * Preserves mod id, installedAt, and enabled state.
+   */
+  async updateMod(
+    adapter: IServerAdapter,
+    modId: string,
+    modFile: Buffer,
+    metadata: ModMetadata
+  ): Promise<ModWithFiles> {
+    const mod = await this.getMod(modId);
+    if (!mod) {
+      throw new Error(`Mod ${modId} not found`);
+    }
+
+    logger.info(`Updating mod ${mod.projectTitle} (${modId}) from v${mod.versionName} to v${metadata.versionName}`);
+
+    // Delete old files from disk
+    if (mod.files.length > 0) {
+      const filePaths = mod.files.map(f => f.filePath);
+      await adapter.deleteModFiles(filePaths);
+      logger.info(`Deleted ${filePaths.length} old files from server filesystem`);
+    }
+
+    // Install new version files via adapter
+    const installedFiles = await adapter.installMod(modFile, metadata);
+    logger.info(`Adapter installed ${installedFiles.length} new files for ${metadata.projectTitle}`);
+
+    // Atomically update DB: replace version fields + file records, preserve id/installedAt/enabled
+    const updatedMod = await this.prisma.mod.update({
+      where: { id: modId },
+      data: {
+        versionId: metadata.versionId,
+        versionName: metadata.versionName,
+        archiveSize: metadata.fileSize,
+        fileHash: metadata.fileHash,
+        projectTitle: metadata.projectTitle,
+        projectIconUrl: metadata.projectIconUrl,
+        files: {
+          deleteMany: {},
+          create: installedFiles.map(f => ({
+            fileName: f.fileName,
+            filePath: f.filePath,
+            fileSize: f.fileSize,
+            fileType: f.fileType,
+          })),
+        },
+      },
+      include: { files: true },
+    });
+
+    logger.info(`Mod ${metadata.projectTitle} updated successfully to v${metadata.versionName} with ${updatedMod.files.length} files`);
+
+    return updatedMod;
+  }
+
+  /**
    * Check if a mod is already installed
    */
   async isModInstalled(serverId: string, projectId: string, versionId: string): Promise<boolean> {

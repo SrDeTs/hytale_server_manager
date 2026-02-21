@@ -261,6 +261,35 @@
             "mod_uninstalled_failed": {
                 "title": "No se pudo desinstalar el mod"
             },
+            "updates_found": {
+                "title": "Actualizaciones disponibles",
+                "description": "{count} mod(s) pueden actualizarse"
+            },
+            "no_updates": {
+                "title": "Todo actualizado",
+                "description": "Todos los mods están en su última versión"
+            },
+            "check_updates_failed": {
+                "title": "Error al buscar actualizaciones"
+            },
+            "mod_update_success": {
+                "title": "Mod actualizado",
+                "description": "{mod} actualizado a v{version}"
+            },
+            "mod_update_failed": {
+                "title": "Error al actualizar mod"
+            },
+            "update_all_success": {
+                "title": "Todos los mods actualizados",
+                "description": "{count} mod(s) actualizados correctamente"
+            },
+            "update_all_partial": {
+                "title": "Algunas actualizaciones fallaron",
+                "description": "{updated} actualizados, {failed} fallidos"
+            },
+            "update_all_failed": {
+                "title": "Error al actualizar mods"
+            },
             "killed": {
                 "title": "Servidor forzado a detenerse",
                 "description": "{name} ha sido detenido a la fuerza"
@@ -330,7 +359,15 @@
                 "remove": "Eliminar",
                 "removing": "Eliminando...",
                 "view_curseforge": "Ver en CurseForge",
-                "view_modtale": "Ver en Modtale"
+                "view_modtale": "Ver en Modtale",
+                "check_updates": "Buscar actualizaciones",
+                "checking_updates": "Buscando...",
+                "update": "Actualizar",
+                "updating": "Actualizando...",
+                "update_all": "Actualizar todo ({count})",
+                "updating_all": "Actualizando todo...",
+                "update_available": "Actualización disponible",
+                "update_to": "v{from} → v{to}"
             },
             "quick": {
                 "title": "Acciones rápidas",

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge, StatusIndicator } from '../../components/ui';
-import { ArrowLeft, Play, Square, RotateCw, Settings, Users, Activity, Terminal, Database, Package, Trash2, ExternalLink, Plus, RefreshCw, Globe, ArrowUp, History, Power } from 'lucide-react';
+import { ArrowLeft, Play, Square, RotateCw, Settings, Users, Activity, Terminal, Database, Package, Trash2, ExternalLink, Plus, RefreshCw, Globe, ArrowUp, ArrowUpCircle, History, Power } from 'lucide-react';
 import { useToast } from '../../stores/toastStore';
 import api from '../../services/api';
 import websocket from '../../services/websocket';
@@ -66,6 +66,17 @@ interface InstalledMod {
   providerId: string;
 }
 
+interface ModUpdateStatus {
+  modId: string;
+  projectTitle: string;
+  currentVersion: string;
+  currentVersionId: string;
+  latestVersion?: string;
+  latestVersionId?: string;
+  updateAvailable: boolean;
+  error?: string;
+}
+
 const getModDisplaySize = (mod: InstalledMod): number => {
   // If files exist (extracted from archive), sum their sizes
   if (mod.files && mod.files.length > 0) {
@@ -92,6 +103,10 @@ export const ServerDetailPage = () => {
   const [togglingMod, setTogglingMod] = useState<string | null>(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [updateStatuses, setUpdateStatuses] = useState<Record<string, ModUpdateStatus>>({});
+  const [checkingUpdates, setCheckingUpdates] = useState(false);
+  const [updatingMod, setUpdatingMod] = useState<string | null>(null);
+  const [updatingAll, setUpdatingAll] = useState(false);
 
   // Fetch server data on mount
   useEffect(() => {
@@ -211,6 +226,78 @@ export const ServerDetailPage = () => {
       setTogglingMod(null);
     }
   };
+
+  const checkForUpdates = async () => {
+    if (!id) return;
+
+    setCheckingUpdates(true);
+    try {
+      const statuses = await api.checkModUpdates<ModUpdateStatus>(id);
+      const statusMap: Record<string, ModUpdateStatus> = {};
+      for (const s of statuses) {
+        statusMap[s.modId] = s;
+      }
+      setUpdateStatuses(statusMap);
+
+      const updatesCount = statuses.filter(s => s.updateAvailable).length;
+      if (updatesCount > 0) {
+        toast.info(t('servers.toast.updates_found.title'), t('servers.toast.updates_found.description', { count: updatesCount }));
+      } else {
+        toast.success(t('servers.toast.no_updates.title'), t('servers.toast.no_updates.description'));
+      }
+    } catch (err: any) {
+      toast.error(t('servers.toast.check_updates_failed.title'), err.message);
+    } finally {
+      setCheckingUpdates(false);
+    }
+  };
+
+  const handleUpdateMod = async (mod: InstalledMod) => {
+    if (!id) return;
+    const status = updateStatuses[mod.id];
+    if (!status?.updateAvailable) return;
+
+    setUpdatingMod(mod.id);
+    try {
+      const updated = await api.updateMod<InstalledMod>(id, mod.id, status.latestVersionId);
+      setInstalledMods(prev => prev.map(m => m.id === mod.id ? updated : m));
+      setUpdateStatuses(prev => {
+        const next = { ...prev };
+        delete next[mod.id];
+        return next;
+      });
+      toast.success(t('servers.toast.mod_update_success.title'), t('servers.toast.mod_update_success.description', { mod: mod.projectTitle, version: status.latestVersion }));
+    } catch (err: any) {
+      toast.error(t('servers.toast.mod_update_failed.title'), err.message);
+    } finally {
+      setUpdatingMod(null);
+    }
+  };
+
+  const handleUpdateAll = async () => {
+    if (!id) return;
+
+    setUpdatingAll(true);
+    try {
+      const result = await api.updateAllMods(id);
+      if (result.failed.length === 0) {
+        toast.success(t('servers.toast.update_all_success.title'), t('servers.toast.update_all_success.description', { count: result.updated.length }));
+      } else if (result.updated.length > 0) {
+        toast.warning(t('servers.toast.update_all_partial.title'), t('servers.toast.update_all_partial.description', { updated: result.updated.length, failed: result.failed.length }));
+      } else {
+        toast.error(t('servers.toast.update_all_failed.title'));
+      }
+      // Refresh mods and clear update statuses
+      setUpdateStatuses({});
+      await fetchMods();
+    } catch (err: any) {
+      toast.error(t('servers.toast.update_all_failed.title'), err.message);
+    } finally {
+      setUpdatingAll(false);
+    }
+  };
+
+  const updatesAvailableCount = Object.values(updateStatuses).filter(s => s.updateAvailable).length;
 
   const handleStart = async () => {
     if (!id) return;
@@ -509,6 +596,30 @@ export const ServerDetailPage = () => {
               >
                 {t('common.refresh')}
               </Button>
+              {installedMods.length > 0 && (
+                <>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    icon={<RefreshCw size={16} className={checkingUpdates ? 'animate-spin' : ''} />}
+                    onClick={checkForUpdates}
+                    disabled={checkingUpdates}
+                  >
+                    {checkingUpdates ? t('servers.detail.mods.checking_updates') : t('servers.detail.mods.check_updates')}
+                  </Button>
+                  {updatesAvailableCount > 0 && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      icon={<ArrowUpCircle size={16} />}
+                      onClick={handleUpdateAll}
+                      disabled={updatingAll}
+                    >
+                      {updatingAll ? t('servers.detail.mods.updating_all') : t('servers.detail.mods.update_all', { count: updatesAvailableCount })}
+                    </Button>
+                  )}
+                </>
+              )}
               <Button
                 variant="primary"
                 size="sm"
@@ -564,12 +675,19 @@ export const ServerDetailPage = () => {
                         <Badge size="sm" variant={mod.classification === 'MODPACK' ? 'info' : 'default'}>
                           {mod.classification}
                         </Badge>
+                        {updateStatuses[mod.id]?.updateAvailable && (
+                          <Badge size="sm" variant="success">{t('servers.detail.mods.update_available')}</Badge>
+                        )}
                         {!mod.enabled && (
                           <Badge size="sm" variant="warning">{t('servers.detail.mods.disabled')}</Badge>
                         )}
                       </div>
                       <div className="flex items-center gap-3 text-sm text-text-light-muted dark:text-text-muted">
-                        <span>v{mod.versionName}</span>
+                        {updateStatuses[mod.id]?.updateAvailable ? (
+                          <span>{t('servers.detail.mods.update_to', { from: mod.versionName, to: updateStatuses[mod.id].latestVersion })}</span>
+                        ) : (
+                          <span>v{mod.versionName}</span>
+                        )}
                         <span>•</span>
                         <span>{(getModDisplaySize(mod) / 1024).toFixed(1)} KB</span>
                         <span>•</span>
@@ -579,6 +697,17 @@ export const ServerDetailPage = () => {
 
                     {/* Actions */}
                     <div className="flex gap-2 flex-shrink-0">
+                      {updateStatuses[mod.id]?.updateAvailable && (
+                        <Button
+                          variant="success"
+                          size="sm"
+                          icon={<ArrowUpCircle size={14} />}
+                          onClick={() => handleUpdateMod(mod)}
+                          disabled={updatingMod === mod.id}
+                        >
+                          {updatingMod === mod.id ? t('servers.detail.mods.updating') : t('servers.detail.mods.update')}
+                        </Button>
+                      )}
                       <Button
                         variant={mod.enabled ? 'secondary' : 'ghost'}
                         size="sm"

@@ -261,6 +261,35 @@
             "mod_uninstalled_failed": {
                 "title": "Failed to uninstall mod"
             },
+            "updates_found": {
+                "title": "Updates available",
+                "description": "{count} mod(s) can be updated"
+            },
+            "no_updates": {
+                "title": "All up to date",
+                "description": "All mods are running their latest versions"
+            },
+            "check_updates_failed": {
+                "title": "Failed to check for updates"
+            },
+            "mod_update_success": {
+                "title": "Mod updated",
+                "description": "{mod} updated to v{version}"
+            },
+            "mod_update_failed": {
+                "title": "Failed to update mod"
+            },
+            "update_all_success": {
+                "title": "All mods updated",
+                "description": "{count} mod(s) updated successfully"
+            },
+            "update_all_partial": {
+                "title": "Some updates failed",
+                "description": "{updated} updated, {failed} failed"
+            },
+            "update_all_failed": {
+                "title": "Failed to update mods"
+            },
             "killed": {
                 "title": "Server killed",
                 "description": "{name} has been force killed"
@@ -330,7 +359,15 @@
                 "remove": "Remove",
                 "removing": "Removing...",
                 "view_curseforge": "View on CurseForge",
-                "view_modtale": "View on Modtale"
+                "view_modtale": "View on Modtale",
+                "check_updates": "Check Updates",
+                "checking_updates": "Checking...",
+                "update": "Update",
+                "updating": "Updating...",
+                "update_all": "Update All ({count})",
+                "updating_all": "Updating All...",
+                "update_available": "Update available",
+                "update_to": "v{from} → v{to}"
             },
             "quick": {
                 "title": "Quick Actions",
