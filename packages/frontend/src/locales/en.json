@@ -243,6 +243,17 @@
             "restart_failed": {
                 "title": "Failed to restart server"
             },
+            "mod_enabled": {
+                "title": "Mod enabled",
+                "description": "{mod} has been enabled"
+            },
+            "mod_disabled": {
+                "title": "Mod disabled",
+                "description": "{mod} has been disabled"
+            },
+            "mod_toggle_failed": {
+                "title": "Failed to toggle mod"
+            },
             "mod_uninstalled": {
                 "title": "Mod uninstalled",
                 "description": "{mod} has been removed"
@@ -312,6 +323,8 @@
                 "browse_install": "Browse & Install Mods",
                 "empty": "No mods installed on this server",
                 "disabled": "Disabled",
+                "enable": "Enable",
+                "disable": "Disable",
                 "installed_on": "Installed {date}",
                 "uninstall_title": "Uninstall mod",
                 "remove": "Remove",

@@ -1,0 +1,613 @@
+{
+    "common": {
+        "loading": "Carregando...",
+        "refresh": "Atualizar",
+        "delete": "Excluir",
+        "save": "Salvar",
+        "cancel": "Cancelar",
+        "close": "Fechar",
+        "saving": "Salvando...",
+        "creating": "Criando...",
+        "retry": "Tentar novamente",
+        "error": "Ocorreu um erro",
+        "save_changes": "Salvar Alterações",
+        "remove": "Remover",
+        "done": "Concluído",
+        "add": "Adicionar",
+        "deleting": "Removendo...",
+        "next": "Próximo",
+        "back": "Voltar",
+        "view_all": "Ver Tudo",
+        "search_placeholder": "Buscar servidores, mods, jogadores... (Em breve)",
+        "actions": "Ações",
+        "confirm": "Confirmar",
+        "coming_soon": "Em breve",
+        "time_ago": {
+            "just_now": "Agora mesmo",
+            "minutes_ago": "{count}m atrás",
+            "hours_ago": "{count}h atrás",
+            "days_ago": "{count}d atrás"
+        }
+    },
+    "ui": {
+        "toast": {
+            "close_aria": "Fechar notificação"
+        },
+        "token_expiry": {
+            "expired": "Expirado"
+        },
+        "searchable_select": {
+            "all": "Tudo",
+            "search": "Buscar...",
+            "no_results": "Nenhum resultado encontrado",
+            "selected_count": "{count} selecionado(s)"
+        },
+        "status": {
+            "online": "Online",
+            "offline": "Offline"
+        },
+        "command": {
+            "placeholder": "Buscar servidores, jogadores, páginas...",
+            "no_results": "Nenhum resultado encontrado",
+            "categories": {
+                "page": "Página",
+                "server": "Servidor",
+                "player": "Jogador"
+            },
+            "server_desc": "{version} • {current}/{max} jogadores",
+            "player_desc": "{role} • {status}",
+            "hints": {
+                "navigate": "↑↓ Navegar",
+                "select": "↵ Selecionar",
+                "close": "Esc Fechar",
+                "toggle": "para alternar"
+            },
+            "pages": {
+                "dashboard": "Visão geral e estatísticas",
+                "servers": "Gerenciar seus servidores",
+                "players": "Ver e gerenciar jogadores",
+                "mods": "Navegar e instalar mods",
+                "modpacks": "Coleções de mods pré-configuradas",
+                "backups": "Gerenciar backups do servidor",
+                "console": "Console e logs do servidor",
+                "automation": "Tarefas agendadas",
+                "analytics": "Métricas de desempenho",
+                "files": "Navegar pelos arquivos do servidor",
+                "permissions": "Gerenciar permissões de usuário",
+                "economy": "Gerenciar economia do servidor",
+                "bridge": "Integração in-game",
+                "settings": "Configuração do painel"
+            }
+        }
+    },
+    "table": {
+        "search": "Buscar...",
+        "columns": "Colunas",
+        "export": "Exportar CSV",
+        "no_data": "Nenhum dado encontrado",
+        "selection": {
+            "count_one": "{count} item selecionado",
+            "count_other": "{count} itens selecionados",
+            "clear": "Limpar seleção"
+        },
+        "pagination": {
+            "showing": "Mostrando {start} a {end} de {total} resultados",
+            "per_page": "Por página:",
+            "previous": "Anterior",
+            "next": "Próximo",
+            "page_of": "Página {page} de {total}"
+        }
+    },
+    "nav": {
+        "dashboard": "Painel",
+        "servers": "Servidores",
+        "mods": "Mods",
+        "console": "Console",
+        "marketplace": "Loja",
+        "modpacks": "Modpacks",
+        "backups": "Backups",
+        "automation": "Automação",
+        "files": "Arquivos",
+        "alerts": "Alertas",
+        "activity_log": "Log de Atividade",
+        "hsm_logs": "Logs HSM",
+        "permissions": "Permissões",
+        "users": "Usuários",
+        "settings": "Configurações",
+        "players": "Jogadores",
+        "economy": "Economia",
+        "bridge": "Hytale Bridge",
+        "analytics": "Análises",
+        "coming_soon": "Em breve",
+        "collapse": "Recolher"
+    },
+    "servers": {
+        "title": "Servidores",
+        "subtitle": "Gerencie suas instâncias de servidor Hytale",
+        "create_network": "Criar Rede",
+        "create": {
+            "title": "Criar Novo Servidor",
+            "header": "Configure Seu Servidor",
+            "subtitle": "Configure uma nova instância de servidor Hytale",
+            "name_label": "Nome do Servidor",
+            "name_placeholder": "Meu Servidor Incrível",
+            "path_label": "Diretório do Servidor",
+            "path_placeholder": "C:\\Servidores\\MeuServidor",
+            "path_help": "Caminho completo para o diretório do servidor. Este diretório será criado se não existir.",
+            "address_label": "Endereço",
+            "port_label": "Porta",
+            "gamemode_label": "Modo de Jogo",
+            "gamemodes": {
+                "expedition": "Expedição",
+                "creative": "Criativo"
+            },
+            "adapter": {
+                "label": "Tipo de Adaptador",
+                "java": "Java JAR (Hytale, Minecraft, etc.)",
+                "hytale": "Hytale (Em breve)",
+                "java_help": "Executa um arquivo JAR Java (ex: servidor de Minecraft)."
+            },
+            "java": {
+                "title": "Configuração Java",
+                "jar_label": "Caminho do Arquivo JAR",
+                "jar_help": "Caminho para o arquivo JAR relativo ao diretório do servidor",
+                "assets_label": "Caminho dos Assets",
+                "assets_help": "Caminho para Assets.zip relativo ao arquivo JAR",
+                "java_label": "Caminho do Java",
+                "java_help": "Caminho para o executável Java (ou apenas \"java\" se estiver no PATH)",
+                "jvm_label": "Argumentos JVM",
+                "jvm_help": "Argumentos JVM para o processo Java. O cache AOT permite inicialização mais rápida se HytaleServer.aot existir."
+            },
+            "submit": "Criar Servidor",
+            "errors": {
+                "name": "Nome do servidor é obrigatório",
+                "server_path": "Diretório do servidor é obrigatório",
+                "address": "Endereço é obrigatório",
+                "port": "A porta deve estar entre 1 e 65535",
+                "version": "Versão do servidor é obrigatória. Baixe os arquivos primeiro.",
+                "game_mode": "Modo de jogo é obrigatório"
+            }
+        },
+        "view_mode": {
+            "grouped": "Agrupado",
+            "flat": "Lista"
+        },
+        "networks": "Redes",
+        "ungrouped": "Servidores Não Agrupados",
+        "empty": {
+            "title": "Nenhum Servidor Ainda",
+            "description": "Crie seu primeiro servidor para começar, ou crie uma rede para organizar vários servidores.",
+            "submit": "Criar Servidor"
+        },
+        "columns": {
+            "server": "Servidor",
+            "status": "Status",
+            "players": "Jogadores",
+            "version": "Versão",
+            "tps": "TPS",
+            "cpu": "CPU",
+            "memory": "Memória",
+            "uptime": "Tempo Online",
+            "actions": "Ações"
+        },
+        "actions": {
+            "start": "Iniciar",
+            "stop": "Parar",
+            "restart": "Reiniciar",
+            "kill": "Matar",
+            "details": "Detalhes",
+            "delete": "Excluir"
+        },
+        "status": {
+            "starting": "Iniciando",
+            "stopping": "Parando",
+            "stopped": "Parado",
+            "running": "Executando",
+            "crashed": "Travado",
+            "orphaned": "Órfão"
+        },
+        "all_servers": "Todos os Servidores",
+        "tooltips": {
+            "force_kill": "Forçar parada do servidor",
+            "stop_before_delete": "Pare o servidor antes de excluir",
+            "delete_server": "Excluir servidor"
+        },
+        "delete_dialog": {
+            "title": "Excluir Servidor",
+            "message": "Tem certeza que deseja excluir \"{name}\"? Esta ação não pode ser desfeita."
+        },
+        "toast": {
+            "generic_error": "Algo deu errado",
+            "load_failed": {
+                "title": "Falha ao carregar servidores",
+                "description": "Tente novamente mais tarde"
+            },
+            "starting": {
+                "title": "Servidor iniciando",
+                "description": "{name} está iniciando..."
+            },
+            "start_failed": {
+                "title": "Falha ao iniciar servidor"
+            },
+            "stopping": {
+                "title": "Servidor parando",
+                "description": "{name} está desligando..."
+            },
+            "stop_failed": {
+                "title": "Falha ao parar servidor"
+            },
+            "restarting": {
+                "title": "Servidor reiniciando",
+                "description": "{name} está reiniciando..."
+            },
+            "restart_failed": {
+                "title": "Falha ao reiniciar servidor"
+            },
+            "mod_uninstalled": {
+                "title": "Mod desinstalado",
+                "description": "{mod} foi removido"
+            },
+            "mod_uninstalled_failed": {
+                "title": "Falha ao desinstalar mod"
+            },
+            "killed": {
+                "title": "Servidor parado à força",
+                "description": "{name} foi encerrado abruptamente"
+            },
+            "kill_failed": {
+                "title": "Falha ao matar processo do servidor"
+            },
+            "created": {
+                "title": "Servidor criado",
+                "description": "{name} foi criado com sucesso"
+            },
+            "create_failed": {
+                "title": "Falha ao criar servidor"
+            },
+            "deleted": {
+                "title": "Servidor excluído",
+                "description": "{name} foi removido"
+            },
+            "delete_failed": {
+                "title": "Falha ao excluir servidor"
+            }
+        },
+        "detail": {
+            "back_to_servers": "Voltar aos Servidores",
+            "errors": {
+                "not_found": "Servidor Não Encontrado"
+            },
+            "actions": {
+                "start": "Iniciar",
+                "stop": "Parar",
+                "restart": "Reiniciar",
+                "worlds": "Mundos",
+                "settings": "Configurações"
+            },
+            "stats": {
+                "players": "Jogadores",
+                "tps": "TPS",
+                "memory": "Memória",
+                "uptime": "Tempo Online",
+                "offline": "Offline"
+            },
+            "info": {
+                "title": "Informações do Servidor",
+                "version": "Versão:",
+                "game_mode": "Modo de Jogo:",
+                "adapter_type": "Tipo de Adaptador:",
+                "adapter_java": "Java JAR",
+                "created": "Criado em:"
+            },
+            "resources": {
+                "title": "Uso de Recursos",
+                "cpu": "Uso de CPU",
+                "memory": "Uso de Memória",
+                "slots": "Vagas de Jogadores"
+            },
+            "mods": {
+                "title": "Mods Instalados",
+                "subtitle": "Mods e modpacks instalados neste servidor",
+                "browse": "Navegar Mods",
+                "browse_install": "Navegar e Instalar Mods",
+                "empty": "Nenhum mod instalado neste servidor",
+                "disabled": "Desativado",
+                "installed_on": "Instalado em {date}",
+                "uninstall_title": "Desinstalar mod",
+                "remove": "Remover",
+                "removing": "Removendo...",
+                "view_curseforge": "Ver no CurseForge",
+                "view_modtale": "Ver no Modtale"
+            },
+            "quick": {
+                "title": "Ações Rápidas",
+                "subtitle": "Tarefas comuns de gerenciamento",
+                "console": "Console",
+                "worlds": "Mundos",
+                "backups": "Backups",
+                "mods": "Mods",
+                "players": "Jogadores",
+                "update": "Atualizar",
+                "history": "Histórico"
+            }
+        },
+        "worlds": {
+            "title": "Mundos",
+            "subtitle": "Gerencie mundos no universo deste servidor. Cada mundo tem sua própria configuração.",
+            "toast": {
+                "load_failed": "Falha ao carregar mundos",
+                "deleted": {
+                    "title": "Mundo excluído",
+                    "description": "{name} foi removido"
+                },
+                "delete_failed": {
+                    "title": "Falha ao excluir mundo"
+                }
+            },
+            "confirm_delete": "Tem certeza que deseja excluir o mundo \"{name}\"? Esta ação não pode ser desfeita.",
+            "empty": {
+                "title": "Nenhum mundo encontrado",
+                "subtitle": "Os mundos aparecerão aqui quando o servidor os criar"
+            },
+            "size": "Tamanho: {size}",
+            "last_played": "Última vez jogado: {date}",
+            "actions": {
+                "settings": "Configurações do mundo",
+                "config": "Config",
+                "delete": "Excluir mundo"
+            },
+            "info": {
+                "title": "Sobre Universos e Mundos",
+                "body1": "No Hytale, um universo contém múltiplos mundos, cada um com seus próprios arquivos de configuração.",
+                "body2": "Cada mundo pode ter configurações diferentes para PvP, dano de queda, spawn de NPCs e mais."
+            },
+            "world_settings": {
+                "title": "Configurações do Mundo - {name}",
+                "tabs": {
+                    "basic": "Configurações Básicas",
+                    "gamerules": "Regras de Jogo",
+                    "border": "Borda do Mundo"
+                },
+                "basic": {
+                    "name": "Nome do Mundo",
+                    "difficulty": "Dificuldade",
+                    "difficulty_peaceful": "Pacífico",
+                    "difficulty_easy": "Fácil",
+                    "difficulty_normal": "Normal",
+                    "difficulty_hard": "Difícil",
+                    "environment": "Tipo de Ambiente",
+                    "env_normal": "Normal (Overworld)",
+                    "env_nether": "Nether",
+                    "env_end": "The End",
+                    "env_custom": "Personalizado",
+                    "seed": "Seed (somente leitura)",
+                    "seed_helper": "A seed do mundo não pode ser alterada após a criação",
+                    "spawn_x": "Spawn X",
+                    "spawn_y": "Spawn Y",
+                    "spawn_z": "Spawn Z",
+                    "loaded": "Carregar mundo ao iniciar o servidor"
+                },
+                "rules": {
+                    "helper": "Configure regras de jogo que afetam a mecânica neste mundo",
+                    "items": {
+                        "doDaylightCycle": "Ciclo de Luz Solar",
+                        "doWeatherCycle": "Ciclo de Clima",
+                        "doMobSpawning": "Spawn de Monstros",
+                        "keepInventory": "Manter Inventário",
+                        "mobGriefing": "Destruição por Monstros",
+                        "naturalRegeneration": "Regeneração Natural",
+                        "showDeathMessages": "Mostrar Mensagens de Morte",
+                        "doFireTick": "Propagação de Fogo",
+                        "randomTickSpeed": "Velocidade de Tick Aleatório",
+                        "spawnRadius": "Raio de Spawn"
+                    },
+                    "additional": "Regras de Jogo Adicionais ({count} no total)"
+                },
+                "border": {
+                    "helper": "Configure a borda do mundo para limitar a área jogável",
+                    "size": "Tamanho da Borda (blocos)",
+                    "size_helper": "Diâmetro da borda do mundo (padrão: 60.000.000)",
+                    "center_x": "Centro X",
+                    "center_z": "Centro Z",
+                    "info_title": "Info da Borda",
+                    "info_radius": "Raio da borda: {radius} blocos",
+                    "info_area": "Área total: {area}M blocos²",
+                    "info_center": "Ponto central: ({x}, {z})"
+                }
+            }
+        },
+        "world_config": {
+            "title": "Configuração do Mundo - {name}",
+            "toast": {
+                "load_failed": "Falha ao carregar config do mundo",
+                "saved": {
+                    "title": "Config salva",
+                    "description": "A configuração do mundo foi atualizada"
+                },
+                "save_failed": {
+                    "title": "Falha ao salvar config"
+                }
+            },
+            "running": {
+                "title": "O servidor está em execução",
+                "subtitle": "Pare o servidor para editar a configuração do mundo"
+            },
+            "view": {
+                "form": "Formulário",
+                "json": "JSON"
+            },
+            "json": {
+                "invalid": "JSON Inválido: {error}"
+            },
+            "sections": {
+                "gameplay": "Jogabilidade",
+                "time": "Tempo e Efeitos",
+                "management": "Gerenciamento do Mundo",
+                "info": "Info (Somente leitura)"
+            },
+            "gameplay": {
+                "pvp": "PvP Habilitado",
+                "pvp_desc": "Permitir que jogadores causem dano uns aos outros",
+                "fall_damage": "Dano de Queda",
+                "fall_damage_desc": "Jogadores recebem dano ao cair",
+                "npc_spawning": "Spawn de NPCs",
+                "npc_spawning_desc": "Permitir spawn de NPCs no mundo",
+                "freeze_npc": "Congelar todos os NPCs",
+                "freeze_npc_desc": "Impedir que todos os NPCs se movam",
+                "spawn_markers": "Marcadores de Spawn",
+                "spawn_markers_desc": "Mostrar marcadores de pontos de spawn",
+                "objective_markers": "Marcadores de Objetivo",
+                "objective_markers_desc": "Mostrar marcadores de objetivo no HUD",
+                "compass": "Atualização da Bússola",
+                "compass_desc": "Permitir que a bússola atualize a direção"
+            },
+            "time": {
+                "paused": "Tempo de Jogo Pausado",
+                "paused_desc": "Congelar o ciclo dia/noite",
+                "sun_height": "% Altura do Sol",
+                "sun_height_desc": "Posição vertical do sol (0-100%)",
+                "sun_angle": "Ângulo do Sol",
+                "sun_angle_desc": "Ângulo de rotação do sol em graus",
+                "sun_intensity": "Intensidade do Sol",
+                "sun_intensity_desc": "Brilho do sol",
+                "bloom_intensity": "Intensidade do Bloom",
+                "bloom_intensity_desc": "Efeito de pós-processamento bloom",
+                "bloom_power": "Poder do Bloom",
+                "bloom_power_desc": "Poder do efeito bloom"
+            },
+            "management": {
+                "world_ticking": "Ticking do Mundo",
+                "world_ticking_desc": "Habilitar atualizações de simulação do mundo",
+                "block_ticking": "Ticking de Blocos",
+                "block_ticking_desc": "Habilitar atualizações aleatórias de blocos",
+                "save_players": "Salvar Jogadores",
+                "save_players_desc": "Persistir dados dos jogadores no disco",
+                "save_chunks": "Salvar Chunks",
+                "save_chunks_desc": "Persistir dados de chunks no disco",
+                "save_new_chunks": "Salvar Novos Chunks",
+                "save_new_chunks_desc": "Salvar chunks recém-gerados",
+                "unload_chunks": "Descarregar Chunks",
+                "unload_chunks_desc": "Remover chunks inativos da memória",
+                "delete_on_start": "Excluir ao Iniciar Universo",
+                "delete_on_start_desc": "Remover mundo quando o universo iniciar",
+                "delete_on_remove": "Excluir ao Remover",
+                "delete_on_remove_desc": "Excluir arquivos do mundo ao ser removido"
+            },
+            "info": {
+                "version": "Versão",
+                "seed": "Seed",
+                "generator": "Gerador de Mundo",
+                "gameplay": "Config de Jogabilidade"
+            }
+        },
+        "settings": {
+            "title": "Configurações do Servidor",
+            "back": "Voltar ao Servidor",
+            "reset": "Resetar",
+            "tabs": {
+                "general": "Geral",
+                "general_desc": "Configurações básicas do servidor",
+                "storage": "Armazenamento",
+                "storage_desc": "Diretórios do servidor e local de backup",
+                "network": "Rede",
+                "network_desc": "Configurações de rede e conexão",
+                "advanced": "Avançado",
+                "advanced_desc": "JVM e configuração avançada"
+            },
+            "toast": {
+                "saved": {
+                    "title": "Configurações salvas",
+                    "description": "Configuração do servidor atualizada com sucesso"
+                },
+                "error": {
+                    "title": "Falha ao salvar configurações",
+                    "fallback": "Ocorreu um erro"
+                }
+            },
+            "general": {
+                "title": "Configurações Gerais",
+                "subtitle": "Configure informações básicas e comportamento do servidor",
+                "name": "Nome do Servidor",
+                "name_placeholder": "Meu Servidor de Hytale",
+                "version": "Versão do Servidor",
+                "version_placeholder": "ex: 2025.01.15",
+                "version_helper": "A versão do servidor de jogo (atualizada automaticamente ao usar o recurso de Atualização)",
+                "max_players": "Máximo de Jogadores",
+                "game_mode": "Modo de Jogo",
+                "modes": {
+                    "exploration": "Exploração",
+                    "creative": "Criativo",
+                    "custom": "Personalizado"
+                }
+            },
+            "storage": {
+                "title": "Configurações de Armazenamento",
+                "subtitle": "Configure diretórios do servidor e local de backups",
+                "toast": {
+                    "saved": {
+                        "title": "Configurações de armazenamento salvas",
+                        "description": "Configuração de armazenamento atualizada com sucesso"
+                    },
+                    "error": {
+                        "title": "Falha ao salvar configurações de armazenamento"
+                    }
+                },
+                "server_dir": "Diretório do Servidor",
+                "server_dir_placeholder": "/caminho/para/servidor",
+                "server_dir_helper": "O diretório onde os arquivos do servidor estão armazenados",
+                "type": "Tipo de Armazenamento de Backup",
+                "type_local": "Diretório Local",
+                "type_ftp": "Servidor FTP",
+                "backup_path_local": "Diretório de Backup Local",
+                "backup_path_local_placeholder": "/caminho/para/backups",
+                "backup_path_local_helper": "Diretório local para armazenar backups. Deixe vazio para usar o padrão.",
+                "backup_path_ftp": "Caminho Remoto FTP",
+                "backup_path_ftp_placeholder": "/backups/meu-servidor/",
+                "backup_path_ftp_helper": "Caminho no servidor FTP onde os backups serão salvos. Deixe vazio para o padrão.",
+                "exclusions": "Exclusões de Backup",
+                "exclusions_helper": "Arquivos e pastas que coincidam com estes padrões serão excluídos. Exemplos: *.log, logs/*, *.log.gz",
+                "exclusions_placeholder": "ex: *.log, logs/*, crash-reports/**",
+                "exclusions_add": "Adicionar",
+                "exclusions_remove": "Remover exclusão",
+                "exclusions_empty": "Nenhuma exclusão configurada. Todos os arquivos serão incluídos.",
+                "ftp": {
+                    "connected": "FTP Conectado",
+                    "disconnected": "FTP Desconectado",
+                    "not_configured": "Não Configurado",
+                    "note_label": "Nota:",
+                    "note": "Ao usar FTP, os backups serão enviados e removidos do local após o sucesso. Certifique-se que o FTP tenha espaço suficiente."
+                },
+                "save": "Salvar Configurações de Armazenamento"
+            },
+            "network": {
+                "title": "Configurações de Rede",
+                "subtitle": "Configure endereço de rede e portas",
+                "address": "IP / Endereço do Servidor",
+                "address_helper": "O endereço IP ao qual o servidor se vinculará. Use 0.0.0.0 para todas as interfaces.",
+                "port": "Porta do Servidor",
+                "port_helper": "A porta que o servidor irá escutar (padrão: 5520)."
+            },
+            "advanced": {
+                "title": "Configurações Avançadas",
+                "subtitle": "Configuração Java e argumentos JVM",
+                "java_path": "Caminho do Executável Java",
+                "java_path_helper": "Caminho para o executável Java. Use \"java\" para o padrão do sistema ou o caminho completo.",
+                "jar_path": "Caminho do Arquivo JAR",
+                "jar_path_helper": "Caminho para o arquivo JAR relativo ao diretório do servidor.",
+                "assets_path": "Caminho dos Assets",
+                "assets_path_helper": "Caminho para o Assets.zip relativo ao JAR. Usado com o argumento --assets.",
+                "jvm_args": "Argumentos JVM",
+                "jvm_args_helper": "Argumentos passados ao processo Java. O cache AOT permite carregamento mais rápido.",
+                "server_args": "Argumentos do Servidor",
+                "server_args_helper": "Argumentos passados ao servidor após o JAR (ex: --accept-early-plugins)",
+                "preview": "Prévia do Comando",
+                "preview_helper": "Assim ficará o comando de inicialização com suas configurações atuais:",
+                "legend": {
+                    "jvm": "Argumentos JVM",
+                    "default_args": "Args Padrão do Servidor",
+                    "custom_args": "Args Personalizados"
+                }
+            }
+        }
+    }
+}

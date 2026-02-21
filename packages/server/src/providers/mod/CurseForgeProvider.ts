@@ -498,15 +498,21 @@ export class CurseForgeProvider implements IModProvider {
     let downloadUrl = fileResponse.data.downloadUrl;
 
     // If downloadUrl is null, try to get it from the download-url endpoint
+    // This can return 403 if the mod author has disabled third-party downloads
     if (!downloadUrl) {
-      const urlResponse = await this.request<{ data: string }>(
-        `/v1/mods/${projectId}/files/${versionId}/download-url`
-      );
-      downloadUrl = urlResponse.data;
+      try {
+        const urlResponse = await this.request<{ data: string }>(
+          `/v1/mods/${projectId}/files/${versionId}/download-url`
+        );
+        downloadUrl = urlResponse.data;
+      } catch (urlError: any) {
+        logger.warn(`[CurseForgeProvider] download-url endpoint failed for ${projectId}/${versionId}: ${urlError.message}`);
+      }
     }
 
     if (!downloadUrl) {
-      throw new Error('Download URL not available for this file');
+      const fileName = fileResponse.data.fileName || 'this file';
+      throw new Error(`Download not available for "${fileName}". The mod author has disabled third-party downloads. Please download it manually from CurseForge and install via the file manager.`);
     }
 
     logger.info(`[CurseForgeProvider] Downloading from: ${downloadUrl}`);

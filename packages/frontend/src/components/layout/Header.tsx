@@ -289,7 +289,7 @@ export const Header = () => {
                     </div>
                     <div className="pl-6">
                       <select
-                        value={i18n.language.split('-')[0]}
+                        value={SUPPORTED_LANGUAGES.find(l => l.code === i18n.language)?.code || i18n.language.split('-')[0]}
                         onChange={(e) => changeLanguage(e.target.value)}
                         className="w-full bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-text-light-primary dark:text-text-primary text-sm rounded-md px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-primary"
                       >

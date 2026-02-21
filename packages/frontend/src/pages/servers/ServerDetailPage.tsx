@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, Button, Badge, StatusIndicator } from '../../components/ui';
-import { ArrowLeft, Play, Square, RotateCw, Settings, Users, Activity, Terminal, Database, Package, Trash2, ExternalLink, Plus, RefreshCw, Globe, ArrowUp, History } from 'lucide-react';
+import { ArrowLeft, Play, Square, RotateCw, Settings, Users, Activity, Terminal, Database, Package, Trash2, ExternalLink, Plus, RefreshCw, Globe, ArrowUp, History, Power } from 'lucide-react';
 import { useToast } from '../../stores/toastStore';
 import api from '../../services/api';
 import websocket from '../../services/websocket';
@@ -89,6 +89,7 @@ export const ServerDetailPage = () => {
   const [installedMods, setInstalledMods] = useState<InstalledMod[]>([]);
   const [modsLoading, setModsLoading] = useState(false);
   const [uninstallingMod, setUninstallingMod] = useState<string | null>(null);
+  const [togglingMod, setTogglingMod] = useState<string | null>(null);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
 
@@ -187,6 +188,27 @@ export const ServerDetailPage = () => {
       toast.error(t('servers.toast.mod_uninstalled_failed.title'), err.message);
     } finally {
       setUninstallingMod(null);
+    }
+  };
+
+  const handleToggleMod = async (mod: InstalledMod) => {
+    if (!id) return;
+
+    setTogglingMod(mod.id);
+    try {
+      if (mod.enabled) {
+        await api.disableMod(id, mod.id);
+        setInstalledMods(prev => prev.map(m => m.id === mod.id ? { ...m, enabled: false } : m));
+        toast.success(t('servers.toast.mod_disabled.title'), t('servers.toast.mod_disabled.description', { mod: mod.projectTitle }));
+      } else {
+        await api.enableMod(id, mod.id);
+        setInstalledMods(prev => prev.map(m => m.id === mod.id ? { ...m, enabled: true } : m));
+        toast.success(t('servers.toast.mod_enabled.title'), t('servers.toast.mod_enabled.description', { mod: mod.projectTitle }));
+      }
+    } catch (err: any) {
+      toast.error(t('servers.toast.mod_toggle_failed.title'), err.message);
+    } finally {
+      setTogglingMod(null);
     }
   };
 
@@ -557,6 +579,16 @@ export const ServerDetailPage = () => {
 
                     {/* Actions */}
                     <div className="flex gap-2 flex-shrink-0">
+                      <Button
+                        variant={mod.enabled ? 'secondary' : 'ghost'}
+                        size="sm"
+                        icon={<Power size={14} />}
+                        onClick={() => handleToggleMod(mod)}
+                        disabled={togglingMod === mod.id}
+                        title={mod.enabled ? t('servers.detail.mods.disable') : t('servers.detail.mods.enable')}
+                      >
+                        {mod.enabled ? t('servers.detail.mods.disable') : t('servers.detail.mods.enable')}
+                      </Button>
                       <Button
                         variant="ghost"
                         size="sm"

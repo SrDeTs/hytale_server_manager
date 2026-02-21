@@ -531,8 +531,11 @@ export function createServerRoutes(
         return;
       }
 
-      // Use versionName for download URL (API expects version number, not UUID)
-      const downloadVersion = versionName || versionId;
+      // For CurseForge, use numeric versionId (file ID) since the API requires it.
+      // For Modtale, prefer versionName (version number) since their API expects it.
+      const downloadVersion = providerId === 'curseforge'
+        ? versionId
+        : (versionName || versionId);
       logger.info(`Installing mod ${projectId} version ${downloadVersion} from ${providerId} to server ${req.params.id}`);
 
       // Ensure providerId is set in metadata

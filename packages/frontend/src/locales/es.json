@@ -243,6 +243,17 @@
             "restart_failed": {
                 "title": "No se pudo reiniciar el servidor"
             },
+            "mod_enabled": {
+                "title": "Mod habilitado",
+                "description": "{mod} ha sido habilitado"
+            },
+            "mod_disabled": {
+                "title": "Mod deshabilitado",
+                "description": "{mod} ha sido deshabilitado"
+            },
+            "mod_toggle_failed": {
+                "title": "No se pudo cambiar el estado del mod"
+            },
             "mod_uninstalled": {
                 "title": "Mod desinstalado",
                 "description": "{mod} ha sido eliminado"
@@ -312,6 +323,8 @@
                 "browse_install": "Explorar e instalar mods",
                 "empty": "No hay mods instalados en este servidor",
                 "disabled": "Deshabilitado",
+                "enable": "Habilitar",
+                "disable": "Deshabilitar",
                 "installed_on": "Instalado {date}",
                 "uninstall_title": "Desinstalar mod",
                 "remove": "Eliminar",
