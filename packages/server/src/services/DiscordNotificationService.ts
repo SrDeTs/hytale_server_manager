@@ -81,7 +81,12 @@ export class DiscordNotificationService {
    * Send a Discord notification
    */
   async notify(event: NotificationEvent, data: NotificationData): Promise<void> {
-    if (!this.isEnabled() || !this.isEventEnabled(event)) {
+    if (!this.isEnabled()) {
+      logger.debug(`[Discord] Skipping notification for ${event}: service not enabled`);
+      return;
+    }
+    if (!this.isEventEnabled(event)) {
+      logger.debug(`[Discord] Skipping notification for ${event}: event not in enabledEvents`);
       return;
     }
 

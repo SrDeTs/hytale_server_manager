@@ -23,7 +23,7 @@ const SETTING_DEFINITIONS: SettingDefinition[] = [
   { key: 'discord.webhookUrl', category: 'discord', encrypted: true, description: 'Discord webhook URL', envVar: 'DISCORD_WEBHOOK_URL' },
   { key: 'discord.username', category: 'discord', encrypted: false, description: 'Bot username', defaultValue: 'Hytale Server Manager', envVar: 'DISCORD_USERNAME' },
   { key: 'discord.avatarUrl', category: 'discord', encrypted: false, description: 'Bot avatar URL', envVar: 'DISCORD_AVATAR_URL' },
-  { key: 'discord.enabledEvents', category: 'discord', encrypted: false, description: 'Enabled notification events (JSON array)', defaultValue: '["server_start","server_stop","server_crash","alert_critical"]', envVar: 'DISCORD_ENABLED_EVENTS' },
+  { key: 'discord.enabledEvents', category: 'discord', encrypted: false, description: 'Enabled notification events (JSON array)', defaultValue: '["server_start","server_stop","server_crash","server_update_started","server_update_completed","server_update_failed","alert_critical"]', envVar: 'DISCORD_ENABLED_EVENTS' },
   { key: 'discord.mentionRoleId', category: 'discord', encrypted: false, description: 'Discord role ID to mention for alerts', envVar: 'DISCORD_MENTION_ROLE_ID' },
 
   // FTP settings
